@@ -1,4 +1,4 @@
-package no.entra.bacnet.json;
+package no.entra.bacnet.json.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
