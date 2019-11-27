@@ -45,7 +45,7 @@ public class ValidateObservedHexStringsTest {
                 assertNotNull(npdu);
                 if (HexStringParser.hasApdu(hexString)) {
                     String apduHexString = HexStringParser.findApduHexString(hexString);
-                    String json = parser.jasonFromApdu(apduHexString);
+                    String json = parser.jsonFromApdu(apduHexString);
                     assertNotNull(json, "Failed to parse: " + apduHexString);
                 }
             } catch (Exception e) {

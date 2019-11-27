@@ -3,6 +3,7 @@ package no.entra.bacnet.json;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -14,19 +15,29 @@ public class BacnetMessagesValidator {
     private static final Logger log = getLogger(BacnetMessagesValidator.class);
 
     final File hexStringFile;
+    private final BacNetParser bacnetParser;
 
     public BacnetMessagesValidator(File hexStringFile) {
         if (hexStringFile == null || !hexStringFile.isFile()) {
             throw new IllegalArgumentException("File is not readable: " + hexStringFile);
         }
         this.hexStringFile = hexStringFile;
+        bacnetParser = new BacNetParser();
     }
 
     void validateTestdata() {
-        Scanner scanner = new Scanner(hexStringFile.getAbsolutePath());
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            // process the line
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(hexStringFile);
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String apduHexString = bacnetParser.findApduHexString(line);
+                String json = bacnetParser.jsonFromApdu(apduHexString);
+                log.info("Hextring: {} \n{}", line, json);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

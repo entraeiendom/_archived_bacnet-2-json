@@ -46,7 +46,7 @@ public class BacNetParser {
         return apduHexString;
     }
 
-    public String jasonFromApdu(String apduHexString) {
+    public String jsonFromApdu(String apduHexString) {
         String json = null;
         final ByteQueue queue = new ByteQueue(apduHexString);
         ServicesSupported services = new ServicesSupported();
