@@ -36,6 +36,16 @@ public class BacNetParser {
         this.gson = gson;
     }
 
+    public String findApduHexString(String hexString) {
+        String apduHexString = null;
+        if (hexString != null && hexString.startsWith("81")) {
+            apduHexString = hexString.substring(10);
+        } else {
+            apduHexString = hexString;
+        }
+        return apduHexString;
+    }
+
     public String jasonFromApdu(String apduHexString) {
         String json = null;
         final ByteQueue queue = new ByteQueue(apduHexString);
