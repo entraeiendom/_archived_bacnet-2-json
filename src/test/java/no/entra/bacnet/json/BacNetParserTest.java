@@ -49,7 +49,7 @@ public class BacNetParserTest {
         String complexAckApdu = bacNetParser.findApduHexString(complexAck);
         String json = bacNetParser.jsonFromApdu(complexAckApdu);
         assertNotNull(json);
-        assertTrue(json.contains("ygg1"));
+        assertTrue(json.contains("Blokk1"));
         String confirmedRequest = "810b00340100100209001c020004d22c020004d239004e09702e91002f09cb2e2ea4770b1605b40f06303b2f2f09c42e91002f4f0000";
         String apduHexString = bacNetParser.findApduHexString(confirmedRequest);
         String confirmedJson = bacNetParser.jsonFromApdu(apduHexString);
