@@ -54,5 +54,6 @@ public class BacNetParserTest {
         String apduHexString = bacNetParser.findApduHexString(confirmedRequest);
         String confirmedJson = bacNetParser.jsonFromApdu(apduHexString);
         log.debug("confirmedJson: {}", confirmedJson);
+        assertNotNull(confirmedJson);
     }
 }

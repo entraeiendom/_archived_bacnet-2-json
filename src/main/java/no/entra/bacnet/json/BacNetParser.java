@@ -39,7 +39,7 @@ public class BacNetParser {
     public String findApduHexString(String hexString) {
         String apduHexString = null;
         if (hexString != null && hexString.startsWith("81")) {
-            apduHexString = hexString.substring(10);
+            apduHexString = hexString.substring(12);
         } else {
             apduHexString = hexString;
         }
