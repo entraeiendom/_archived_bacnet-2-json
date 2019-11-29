@@ -1,5 +1,7 @@
 package no.entra.bacnet.json;
 
+import java.time.LocalDateTime;
+
 /**
  * "id": "uuid when known",
  *   "source": {
@@ -17,6 +19,7 @@ public class Observation {
     private Object value;
     private String name;
     private String description;
+    private LocalDateTime observedAt;
 
     private Observation() {
 
@@ -70,5 +73,13 @@ public class Observation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getObservedAt() {
+        return observedAt;
+    }
+
+    public void setObservedAt(LocalDateTime observedAt) {
+        this.observedAt = observedAt;
     }
 }
