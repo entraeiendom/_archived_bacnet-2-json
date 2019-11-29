@@ -66,4 +66,5 @@ public class ReadAccessResult {
     public void setResults(HashMap<String, Object> results) {
         this.results = results;
     }
+
 }

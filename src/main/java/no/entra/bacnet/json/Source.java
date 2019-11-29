@@ -5,7 +5,7 @@ public class Source {
     private String deviceId;
     private String objectId;
 
-    public Source() {
+    private Source() {
     }
 
     public Source(String deviceId, String objectId) {

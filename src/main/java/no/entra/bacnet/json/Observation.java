@@ -24,11 +24,23 @@ public class Observation {
     private Observation() {
 
     }
+
+    /**
+     *
+     * @param source
+     * @param value
+     */
     public Observation(Source source, Object value) {
         this.source = source;
         this.value = value;
     }
 
+    /**
+     *
+     * @param id
+     * @param source
+     * @param value
+     */
     public Observation(String id, Source source, Object value) {
         this.id = id;
         this.source = source;
