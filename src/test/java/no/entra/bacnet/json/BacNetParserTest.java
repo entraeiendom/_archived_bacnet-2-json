@@ -1,6 +1,7 @@
 package no.entra.bacnet.json;
 
 import com.serotonin.bacnet4j.exception.BACnetException;
+import no.entra.bacnet.json.bacnet4j.BacNet4jParser;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class BacNetParserTest {
             "  }}";
     @BeforeEach
     void setUp() {
-        bacNetParser = new BacNetParser();
+        bacNetParser = new BacNet4jParser();
     }
 
     @Test

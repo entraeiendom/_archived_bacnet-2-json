@@ -12,13 +12,14 @@ import com.serotonin.bacnet4j.type.AmbiguousValue;
 import com.serotonin.bacnet4j.type.Encodable;
 import com.serotonin.bacnet4j.type.constructed.ServicesSupported;
 import com.serotonin.bacnet4j.util.sero.ByteQueue;
+import no.entra.bacnet.json.BacNetParser;
 import no.entra.bacnet.json.adapters.AmbiguousValueAdapter;
 import no.entra.bacnet.json.adapters.EncodableAdapter;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class BacNet4jParser {
+public class BacNet4jParser extends BacNetParser {
     private static final Logger log = getLogger(BacNet4jParser.class);
 
     private final Gson gson;
