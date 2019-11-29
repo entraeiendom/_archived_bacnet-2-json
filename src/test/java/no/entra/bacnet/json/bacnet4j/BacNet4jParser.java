@@ -8,13 +8,9 @@ import com.serotonin.bacnet4j.exception.BACnetException;
 import com.serotonin.bacnet4j.service.acknowledgement.AcknowledgementService;
 import com.serotonin.bacnet4j.service.confirmed.ConfirmedRequestService;
 import com.serotonin.bacnet4j.service.unconfirmed.UnconfirmedRequestService;
-import com.serotonin.bacnet4j.type.AmbiguousValue;
-import com.serotonin.bacnet4j.type.Encodable;
 import com.serotonin.bacnet4j.type.constructed.ServicesSupported;
 import com.serotonin.bacnet4j.util.sero.ByteQueue;
 import no.entra.bacnet.json.BacNetParser;
-import no.entra.bacnet.json.adapters.AmbiguousValueAdapter;
-import no.entra.bacnet.json.adapters.EncodableAdapter;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -26,8 +22,6 @@ public class BacNet4jParser extends BacNetParser {
 
     public BacNet4jParser() {
         gson = new GsonBuilder()
-                .registerTypeAdapter(AmbiguousValue.class, new AmbiguousValueAdapter())
-                .registerTypeAdapter(Encodable.class, new EncodableAdapter())
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();

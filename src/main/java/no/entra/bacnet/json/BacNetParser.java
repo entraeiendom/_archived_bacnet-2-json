@@ -34,6 +34,9 @@ public class BacNetParser {
 
     public String jsonFromApdu(String apduHexString) {
         String json = null;
+        Observation observation = null;
+        Source source = null;
+
 
 
         return json;
