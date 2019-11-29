@@ -2,6 +2,7 @@ package no.entra.bacnet.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import no.entra.bacnet.json.objects.ReadAccessResult;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -34,12 +35,18 @@ public class BacNetParser {
 
     public String jsonFromApdu(String apduHexString) {
         String json = null;
+        ReadAccessResult accessResult = buildReadAccessResult(apduHexString);
         Observation observation = null;
         Source source = null;
 
 
 
         return json;
+    }
+
+    //TODO move to separate class
+    private ReadAccessResult buildReadAccessResult(String apduHexString) {
+        return null;
     }
 
 
