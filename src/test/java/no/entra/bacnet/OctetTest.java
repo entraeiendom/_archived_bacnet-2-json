@@ -2,12 +2,32 @@ package no.entra.bacnet;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static no.entra.bacnet.Octet.isValidHexChar;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OctetTest {
 
     @Test
-    void isValidHexChar() {
+    void createFromChars() {
+        char nibble1 = 'a';
+        char nibble2 = '0';
+        Octet octet = new Octet(nibble1, nibble2);
+        assertNotNull(octet);
+        assertEquals("a0", octet.toString());
+        assertThrows(IllegalArgumentException.class,() -> {
+            Octet failedOctet = new Octet(nibble1, 'g');
+        });
+    }
+
+    @Test
+    void isValidHexCharTest() {
+        assertTrue(isValidHexChar('0'));
+        assertTrue(isValidHexChar('9'));
+        assertTrue(isValidHexChar('a'));
+        assertTrue(isValidHexChar('f'));
+        assertFalse(isValidHexChar('F'));
+        assertFalse(isValidHexChar('g'));
+
     }
 
     @Test

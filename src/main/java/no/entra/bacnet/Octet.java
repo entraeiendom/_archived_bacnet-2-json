@@ -7,18 +7,35 @@ import java.util.regex.Pattern;
  * String consisting of two hex chars.
  */
 public class Octet {
-    public static final Pattern REGEX_PATTERN = Pattern.compile("^\\p{XDigit}+$");
+    public static final Pattern REGEX_PATTERN = Pattern.compile("^[0-9a-f]+$"); //Pattern.compile("^\\p{XDigit}+$");
     private final char[] octet;
 
+    /**
+     *
+     * @param hexString 0-9a-f only lower case of hex is accepted.
+     */
     public Octet(String hexString) {
         if (hexString != null && hexString.length() == 2) {
             if (isValidHexChar(hexString.charAt(0)) && isValidHexChar(hexString.charAt(1))) {
                 octet = new char[]{hexString.charAt(0), hexString.charAt(1)};
             } else {
-                throw new IllegalArgumentException("hexString may only be two character long. Each 0-F");
+                throw new IllegalArgumentException("hexString may only be two character long. Each 0-f");
             }
         } else {
-            throw new IllegalArgumentException("hexString may only be two character long. Each 0-F");
+            throw new IllegalArgumentException("hexString may only be two character long. Each 0-f");
+        }
+    }
+
+    /**
+     *
+     * @param nibble1 0-9a-f only lower case is accepted.
+     * @param nibble2 0-9a-f only lower case is accepted.
+     */
+    public Octet(char nibble1, char nibble2) {
+        if (isValidHexChar(nibble1) && isValidHexChar(nibble2)) {
+            octet = new char[]{nibble1, nibble2};
+        } else {
+            throw new IllegalArgumentException("nibble1 and nibble2 may only contain numbers 0-9 and letters a-f.");
         }
     }
 
