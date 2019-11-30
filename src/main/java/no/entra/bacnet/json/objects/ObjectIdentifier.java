@@ -4,6 +4,8 @@ import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
+import java.math.BigInteger;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ObjectIdentifier {
@@ -46,6 +48,8 @@ public class ObjectIdentifier {
                 if (objectTypeOctet.getSecondNibble() == 'c') {
                     int length = 4; //number of octets
                     String instanceNumberHex = idReader.next(4);
+                    BigInteger instanceNumberBI = new BigInteger(instanceNumberHex, 16);
+                    objectIdentifier = new ObjectIdentifier(objectTypeOctet.toString(), instanceNumberBI.toString());
                 }
             }
         }
