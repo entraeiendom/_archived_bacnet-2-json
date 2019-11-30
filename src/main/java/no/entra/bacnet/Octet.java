@@ -44,6 +44,14 @@ public class Octet {
         return octet;
     }
 
+    public char getFirstNibble() {
+        return  octet[0];
+    }
+
+    public char getSecondNibble() {
+        return  octet[1];
+    }
+
     /**
      *
      * @param hexString two char long

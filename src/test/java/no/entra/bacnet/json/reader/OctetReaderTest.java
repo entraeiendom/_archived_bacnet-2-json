@@ -31,8 +31,21 @@ class OctetReaderTest {
     }
 
     @Test
+    void getManyNext() {
+        octetReader = new OctetReader("112233445566");
+        octetReader.next();
+        assertEquals("223344", octetReader.next(3));
+        // 4 octets are read, only two are left
+        assertThrows(IllegalStateException.class, () -> {
+            octetReader.next(3);
+        });
+    }
+
+    @Test
     void getCurrentPos() {
         octetReader.next();
         assertEquals(2, octetReader.getCurrentPos());
     }
+
+
 }

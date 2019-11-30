@@ -53,4 +53,16 @@ public class OctetReader {
     public int getCurrentPos() {
         return currentPos;
     }
+
+    public String next(int numberOfOctets) throws IllegalStateException {
+        String nextString = "";
+        for (int i = 0; i < numberOfOctets; i++) {
+            if (hasNext()) {
+                nextString += next().toString();
+            } else {
+                throw new IllegalStateException("You requested: " + numberOfOctets + ". Only " + (i +1) + " is available.");
+            }
+        }
+        return nextString;
+    }
 }

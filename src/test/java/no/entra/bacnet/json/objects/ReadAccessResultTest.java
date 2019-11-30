@@ -10,6 +10,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import static no.entra.bacnet.json.PropertyId.description;
 import static no.entra.bacnet.json.PropertyId.presentValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ReadAccessResultTest {
 
@@ -48,5 +49,12 @@ class ReadAccessResultTest {
                 "}";
         JSONAssert.assertEquals(expected, jsonBuilt, true);
 
+    }
+
+    @Test
+    void buildFromResultListTest() {
+        String readPropertyMultiple = "0e0c002dc6ef1e29554e4441b15c494f29754e913e4f294d4e7549040053004f004b005000310036002d004e004100450034002f004600430042002e003400330034005f003100300031002d0031004f0055003000300031002e005200540030003000314f291c4e7541040052006f006d00200031003000310033002c002000640065006c0031002c00200070006c0061006e002000550031002c00200042006c006f006b006b003100204f1f";
+        ReadAccessResult result = ReadAccessResult.buildFromResultList(readPropertyMultiple);
+        assertNotNull(result);
     }
 }
