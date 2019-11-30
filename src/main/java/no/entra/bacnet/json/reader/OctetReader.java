@@ -2,6 +2,11 @@ package no.entra.bacnet.json.reader;
 
 import no.entra.bacnet.Octet;
 
+/**
+ * Enable readaing a HexString Octet by Octet.
+ * An Octet has two nibbles.
+ * Each nibble is one Hexadecimal character.
+ */
 public class OctetReader {
 
     //Zero based pointer to where you last read.
@@ -15,8 +20,8 @@ public class OctetReader {
     public Octet next() {
         Octet octet = null;
         if (hasNext()) {
-            char char1 = hexString.charAt(currentPos + 1);
-            char char2 = hexString.charAt(currentPos + 2);
+            char char1 = hexString.charAt(currentPos);
+            char char2 = hexString.charAt(currentPos + 1);
             octet = new Octet(char1, char2);
             currentPos += 2;
         }
