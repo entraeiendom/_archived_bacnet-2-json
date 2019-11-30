@@ -2,7 +2,7 @@ package no.entra.bacnet;
 
 import org.junit.jupiter.api.Test;
 
-import static no.entra.bacnet.Octet.isValidHexChar;
+import static no.entra.bacnet.json.utils.HexMatcher.isValidHexChar;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OctetTest {

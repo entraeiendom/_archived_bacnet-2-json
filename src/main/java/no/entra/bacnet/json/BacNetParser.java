@@ -3,6 +3,7 @@ package no.entra.bacnet.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import no.entra.bacnet.json.objects.ReadAccessResult;
+import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -50,5 +51,10 @@ public class BacNetParser {
     }
 
 
+    public Observation buildObservation(String hexString) {
+        OctetReader octetReader = new OctetReader(hexString);
+        Observation observation = null;
 
+        return observation;
+    }
 }

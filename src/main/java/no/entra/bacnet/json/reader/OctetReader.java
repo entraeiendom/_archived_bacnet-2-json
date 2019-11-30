@@ -2,6 +2,9 @@ package no.entra.bacnet.json.reader;
 
 import no.entra.bacnet.Octet;
 
+import static no.entra.bacnet.json.utils.HexMatcher.isValidHex;
+
+
 /**
  * Enable readaing a HexString Octet by Octet.
  * An Octet has two nibbles.
@@ -13,8 +16,17 @@ public class OctetReader {
     private int currentPos = 0;
     private final String hexString;
 
-    public OctetReader(String hexString) {
-        this.hexString = hexString;
+    /**
+     *
+     * @param hexString 0-9a-f
+     * @throws IllegalArgumentException if any character is not Hexadecimal.
+     */
+    public OctetReader(String hexString) throws IllegalArgumentException {
+        if (isValidHex(hexString)) {
+            this.hexString = hexString;
+        } else {
+            throw new IllegalArgumentException("HexString may only contain 0-9a-f.");
+        }
     }
 
     public Octet next() {

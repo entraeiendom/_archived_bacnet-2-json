@@ -1,13 +1,14 @@
 package no.entra.bacnet;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
+
+import static no.entra.bacnet.json.utils.HexMatcher.isValidHexChar;
 
 /**
  * String consisting of two hex chars.
  */
 public class Octet {
-    public static final Pattern REGEX_PATTERN = Pattern.compile("^[0-9a-f]+$"); //Pattern.compile("^\\p{XDigit}+$");
+
     private final char[] octet;
 
     /**
@@ -37,11 +38,6 @@ public class Octet {
         } else {
             throw new IllegalArgumentException("nibble1 and nibble2 may only contain numbers 0-9 and letters a-f.");
         }
-    }
-
-    public static boolean isValidHexChar(char nibble) {
-        String nibbleString = String.valueOf(nibble);
-        return REGEX_PATTERN.matcher(nibbleString).matches();
     }
 
     public char[] getOctet() {
