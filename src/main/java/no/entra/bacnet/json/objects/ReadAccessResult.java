@@ -13,21 +13,21 @@ public class ReadAccessResult {
     private static final Logger log = getLogger(ReadAccessResult.class);
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
-    private String objectId;
+    private ObjectIdentifier objectId;
     private HashMap<String, Object> results = new HashMap<>();
 
     private ReadAccessResult() {
 
     }
-    public ReadAccessResult(String objectId) {
+    public ReadAccessResult(ObjectIdentifier objectId) {
         this.objectId = objectId;
     }
 
-    public String getObjectId() {
+    public ObjectIdentifier getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(String objectId) {
+    public void setObjectId(ObjectIdentifier objectId) {
         this.objectId = objectId;
     }
 
@@ -77,15 +77,23 @@ public class ReadAccessResult {
 
     public static ReadAccessResult buildFromResultList(String resultListHexString) {
         ReadAccessResult accessResult = null;
-        if (resultListHexString != null && resultListHexString.startsWith(LIST_START_HEX) && resultListHexString.endsWith(LIST_END_HEX)) {
+        if (resultListHexString != null) { //&& resultListHexString.startsWith(LIST_START_HEX) && resultListHexString.endsWith(LIST_END_HEX)) {
 
             OctetReader listReader = new OctetReader(resultListHexString);
 
-            //List Start Hex
-            listReader.next();
             //Expect Object Identifier
-            Octet oid = listReader.next();
-            log.debug("oid: {}", oid);
+            Octet oidType = listReader.next();
+            log.debug("oid: {}", oidType);
+            if (oidType.equals(new Octet("0c"))) {
+                String objectIdString = "0c" + listReader.next(4);
+                ObjectIdentifier objectIdentifier = ObjectIdentifier.buildFromHexString(objectIdString);
+                accessResult = new ReadAccessResult(objectIdentifier);
+            }
+
+            //List Start Hex
+            if (listReader.next().equals(LIST_END_HEX)) {
+                //FIXME
+            };
 
         }
         return accessResult;

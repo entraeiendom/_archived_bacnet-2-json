@@ -47,7 +47,7 @@ public class ObjectIdentifier {
             if (objectTypeOctet.equals(new Octet("0c"))) {
                 if (objectTypeOctet.getSecondNibble() == 'c') {
                     int length = 4; //number of octets
-                    String instanceNumberHex = idReader.next(4);
+                    String instanceNumberHex = idReader.next(length);
                     BigInteger instanceNumberBI = new BigInteger(instanceNumberHex, 16);
                     objectIdentifier = new ObjectIdentifier(objectTypeOctet.toString(), instanceNumberBI.toString());
                 }
