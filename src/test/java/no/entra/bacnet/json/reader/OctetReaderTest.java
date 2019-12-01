@@ -47,5 +47,10 @@ class OctetReaderTest {
         assertEquals(2, octetReader.getCurrentPos());
     }
 
-
+    @Test
+    void unprocessedHexStringTest() {
+        String expected = "01a0";
+        octetReader.next();
+        assertEquals(expected, octetReader.unprocessedHexString());
+    }
 }

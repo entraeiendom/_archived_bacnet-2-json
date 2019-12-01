@@ -2,6 +2,7 @@ package no.entra.bacnet.json.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import no.entra.bacnet.json.PropertyId;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class ReadAccessResultTest {
         ReadAccessResult result = ReadAccessResult.buildFromResultList(readPropertyMultiple);
         assertNotNull(result);
         assertNotNull(result.getObjectId());
-        //FIXME
         assertFalse(result.getResults().isEmpty());
+        assertEquals("41b15c49", result.getResultByKey(PropertyId.presentValue));
     }
 }

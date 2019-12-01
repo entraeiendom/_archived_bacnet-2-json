@@ -65,4 +65,7 @@ public class OctetReader {
         }
         return nextString;
     }
+    public String unprocessedHexString() {
+        return hexString.substring(currentPos);
+    }
 }

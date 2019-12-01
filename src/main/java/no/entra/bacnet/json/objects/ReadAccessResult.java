@@ -7,12 +7,17 @@ import org.slf4j.Logger;
 
 import java.util.HashMap;
 
+import static java.lang.Integer.parseInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReadAccessResult {
     private static final Logger log = getLogger(ReadAccessResult.class);
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
+    public static final String SD_CONTEXT_TAG_2_MESSGE_PRIORITY = "29";
+    public static final String PRESENT_VALUE_HEX = "55";
+    public static final String PD_OPENING_TAG_4 = "4e";
+    public static final String PD_CLOSING_TAG_4 = "4f";
     private ObjectIdentifier objectId;
     private HashMap<String, Object> results = new HashMap<>();
 
@@ -86,13 +91,38 @@ public class ReadAccessResult {
             log.debug("oid: {}", oidType);
             if (oidType.equals(new Octet("0c"))) {
                 String objectIdString = "0c" + listReader.next(4);
+                log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
                 ObjectIdentifier objectIdentifier = ObjectIdentifier.buildFromHexString(objectIdString);
                 accessResult = new ReadAccessResult(objectIdentifier);
             }
 
             //List Start Hex
-            if (listReader.next().equals(LIST_END_HEX)) {
+            Octet startList = listReader.next();
+            if (startList.equals(Octet.fromHexString(LIST_START_HEX))) {
+
+                Octet contextTag = listReader.next();
+                log.debug("Context Tag: {}", contextTag);
+                PropertyId propertyIdentifier = null;
+                if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2_MESSGE_PRIORITY))) {
+                    Octet propertyIdentifierOctet = listReader.next();
+                    propertyIdentifier = PropertyId.fromOctet(propertyIdentifierOctet);
+                }
+                //Expect start of list eg 4e
+                Octet startOfList = listReader.next();
+                log.debug(listReader.unprocessedHexString());
                 //FIXME
+                if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
+                    Octet applicationTag = listReader.next();
+                    if (applicationTag.getFirstNibble() == '4') {
+                        //expect Real value
+                    }
+                    char valueLength = applicationTag.getSecondNibble();
+                    int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
+                    String valueAsString = listReader.next(valueOctetLength);
+                    log.debug("valueAsString {}", valueAsString);
+                    String key = "PresentValue"; //FIXM is a hack
+                    accessResult.setResultByKey(propertyIdentifier, valueAsString);
+                }
             };
 
         }
