@@ -2,6 +2,7 @@ package no.entra.bacnet.json.objects;
 
 import org.junit.jupiter.api.Test;
 
+import static no.entra.bacnet.json.objects.ObjectType.AnalogInput;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -12,9 +13,8 @@ class ObjectIdentifierTest {
         String idHexString = "0c002dc6ef";
         ObjectIdentifier objectIdentifier = ObjectIdentifier.buildFromHexString(idHexString);
         assertNotNull(objectIdentifier);
-        assertEquals("0c", objectIdentifier.getObjectType());
-        //FIXME object type
-        assertEquals("Analog Input", objectIdentifier.getObjectType());
+        assertEquals(AnalogInput, objectIdentifier.getObjectType());
         assertEquals("3000047", objectIdentifier.getInstanceNumber());
+        assertEquals(AnalogInput + " 3000047", objectIdentifier.toString());
     }
 }

@@ -11,22 +11,22 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ObjectIdentifier {
     private static final Logger log = getLogger(ObjectIdentifier.class);
 
-    private String objectType;
+    private ObjectType objectType;
     private String instanceNumber;
 
     public ObjectIdentifier() {
     }
 
-    public ObjectIdentifier(String objectType, String instanceNumber) {
+    public ObjectIdentifier(ObjectType objectType, String instanceNumber) {
         this.objectType = objectType;
         this.instanceNumber = instanceNumber;
     }
 
-    public String getObjectType() {
+    public ObjectType getObjectType() {
         return objectType;
     }
 
-    public void setObjectType(String objectType) {
+    public void setObjectType(ObjectType objectType) {
         this.objectType = objectType;
     }
 
@@ -50,7 +50,8 @@ public class ObjectIdentifier {
                     Octet objectTypeOctet = idReader.next();
                     String instanceNumberHex = idReader.next(length-1);
                     BigInteger instanceNumberBI = new BigInteger(instanceNumberHex, 16);
-                    objectIdentifier = new ObjectIdentifier(objectTypeOctet.toString(), instanceNumberBI.toString());
+                    ObjectType objectType = ObjectType.fromOctet(objectTypeOctet);
+                    objectIdentifier = new ObjectIdentifier(objectType, instanceNumberBI.toString());
                 }
             }
         }
@@ -59,6 +60,6 @@ public class ObjectIdentifier {
 
     @Override
     public String toString() {
-        return objectType + " " + instanceNumber;
+        return objectType.name() + " " + instanceNumber;
     }
 }
