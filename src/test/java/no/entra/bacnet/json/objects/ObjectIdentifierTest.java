@@ -13,6 +13,8 @@ class ObjectIdentifierTest {
         ObjectIdentifier objectIdentifier = ObjectIdentifier.buildFromHexString(idHexString);
         assertNotNull(objectIdentifier);
         assertEquals("0c", objectIdentifier.getObjectType());
+        //FIXME object type
+        assertEquals("Analog Input", objectIdentifier.getObjectType());
         assertEquals("3000047", objectIdentifier.getInstanceNumber());
     }
 }

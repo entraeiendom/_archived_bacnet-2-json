@@ -42,12 +42,13 @@ public class ObjectIdentifier {
         ObjectIdentifier objectIdentifier = null;
         OctetReader idReader = new OctetReader(hexString);
         if (idReader != null) {
-            Octet objectTypeOctet = idReader.next();
-            log.debug("ObjectType: {}", objectTypeOctet);
-            if (objectTypeOctet.equals(new Octet("0c"))) {
-                if (objectTypeOctet.getSecondNibble() == 'c') {
-                    int length = 4; //number of octets
-                    String instanceNumberHex = idReader.next(length);
+            Octet objectTypeOctetxx = idReader.next();
+            log.debug("ObjectType: {}", objectTypeOctetxx);
+            if (objectTypeOctetxx.equals(new Octet("0c"))) {
+                if (objectTypeOctetxx.getSecondNibble() == 'c') {
+                    int length = 4; //number of octets, as by specification 20.2.14 one is for Object Type 00 = Analog Input
+                    Octet objectTypeOctet = idReader.next();
+                    String instanceNumberHex = idReader.next(length-1);
                     BigInteger instanceNumberBI = new BigInteger(instanceNumberHex, 16);
                     objectIdentifier = new ObjectIdentifier(objectTypeOctet.toString(), instanceNumberBI.toString());
                 }

@@ -9,8 +9,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import static no.entra.bacnet.json.PropertyId.description;
 import static no.entra.bacnet.json.PropertyId.presentValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ReadAccessResultTest {
 
@@ -59,5 +58,7 @@ class ReadAccessResultTest {
         ReadAccessResult result = ReadAccessResult.buildFromResultList(readPropertyMultiple);
         assertNotNull(result);
         assertNotNull(result.getObjectId());
+        //FIXME
+        assertFalse(result.getResults().isEmpty());
     }
 }
