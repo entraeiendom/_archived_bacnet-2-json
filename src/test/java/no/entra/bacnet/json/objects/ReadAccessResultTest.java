@@ -60,6 +60,6 @@ class ReadAccessResultTest {
         assertNotNull(result);
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
-        assertEquals("41b15c49", result.getResultByKey(PropertyId.presentValue));
+        assertEquals(22.170061, result.getResultByKey(PropertyId.presentValue));
     }
 }

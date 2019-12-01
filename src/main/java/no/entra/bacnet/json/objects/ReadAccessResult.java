@@ -110,18 +110,22 @@ public class ReadAccessResult {
                 //Expect start of list eg 4e
                 Octet startOfList = listReader.next();
                 log.debug(listReader.unprocessedHexString());
-                //FIXME
                 if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
                     Octet applicationTag = listReader.next();
-                    if (applicationTag.getFirstNibble() == '4') {
-                        //expect Real value
-                    }
                     char valueLength = applicationTag.getSecondNibble();
                     int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
                     String valueAsString = listReader.next(valueOctetLength);
                     log.debug("valueAsString {}", valueAsString);
-                    String key = "PresentValue"; //FIXM is a hack
-                    accessResult.setResultByKey(propertyIdentifier, valueAsString);
+                    if (applicationTag.getFirstNibble() == '4') {
+                        //expect Real value
+                        int valueAsNumber = Integer.parseInt(valueAsString,16);
+                        //IEEE 754
+                        Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
+                        accessResult.setResultByKey(propertyIdentifier, valueAsReal);
+                    } else {
+                        //Setting string value
+                        accessResult.setResultByKey(propertyIdentifier, valueAsString);
+                    }
                 }
             };
 
