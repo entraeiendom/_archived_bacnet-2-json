@@ -1,5 +1,9 @@
 package no.entra.bacnet.json.objects;
 
+import no.entra.bacnet.Octet;
+
+import static java.lang.Integer.parseInt;
+
 public enum ObjectType {
     AccessCredential(32),
     AccessDoor(30),
@@ -73,25 +77,15 @@ public enum ObjectType {
         return null;
     }
 
-    /*
-    public static PduType fromOctet(Octet pduTypeOctet) {
-        if (pduTypeOctet == null) {
+
+    public static ObjectType fromOctet(Octet objectTypeOctet) throws NumberFormatException {
+        if (objectTypeOctet == null) {
             return null;
         }
-        switch (pduTypeOctet.toString()) {
-            case "00":
-                return ConfirmedRequest;
-            case "10":
-                return UnconfirmedRequest;
-            case "20":
-                return SimpleAck;
-            case "30":
-                return ComplexAck;
-            default:
-                return null;
-        }
+        Integer objectTypeInt = parseInt(objectTypeOctet.toString(), 16);
+        ObjectType objectType = fromObjectTypeInt(objectTypeInt.intValue());
+        return objectType;
     }
-    */
 
 
     public int getObjectTypeInt() {
