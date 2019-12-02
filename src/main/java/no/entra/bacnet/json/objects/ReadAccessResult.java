@@ -1,12 +1,15 @@
 package no.entra.bacnet.json.objects;
 
 import no.entra.bacnet.Octet;
+import no.entra.bacnet.json.EntraUnknownOperationException;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import static java.lang.Integer.parseInt;
+import static no.entra.bacnet.json.utils.HexByteConverter.hexStringToByteArray;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReadAccessResult {
@@ -69,34 +72,37 @@ public class ReadAccessResult {
 
     public static ReadAccessResult buildFromResultList(String resultListHexString) {
         ReadAccessResult accessResult = null;
-        if (resultListHexString != null) { //&& resultListHexString.startsWith(LIST_START_HEX) && resultListHexString.endsWith(LIST_END_HEX)) {
+        try {
+            if (resultListHexString != null) { //&& resultListHexString.startsWith(LIST_START_HEX) && resultListHexString.endsWith(LIST_END_HEX)) {
 
-            OctetReader listReader = new OctetReader(resultListHexString);
+                OctetReader listReader = new OctetReader(resultListHexString);
 
-            //Expect Object Identifier
-            Octet oidType = listReader.next();
-            log.debug("oid: {}", oidType);
-            if (oidType.equals(new Octet("0c"))) {
-                String objectIdString = "0c" + listReader.next(4);
-                log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
-                ObjectId objectIdentifier = ObjectId.buildFromHexString(objectIdString);
-                accessResult = new ReadAccessResult(objectIdentifier);
-            }
+                //Expect Object Identifier
+                Octet oidType = listReader.next();
+                log.debug("oid: {}", oidType);
+                if (oidType.equals(new Octet("0c"))) {
+                    String objectIdString = "0c" + listReader.next(4);
+                    log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
+                    ObjectId objectIdentifier = ObjectId.buildFromHexString(objectIdString);
+                    accessResult = new ReadAccessResult(objectIdentifier);
+                }
 
-            //List Start Hex
-            Octet startList = listReader.next();
-            if (startList.equals(Octet.fromHexString(LIST_START_HEX))) {
+                //List Start Hex
+                Octet startList = listReader.next();
+                if (startList.equals(Octet.fromHexString(LIST_START_HEX))) {
 
-                //PresentValue
-                String unprocessedHexString = listReader.unprocessedHexString();
-               PropertyResult propertyResult = parseProperty(unprocessedHexString);
-               if (propertyResult != null && propertyResult.getProperty() != null) {
-                   Property property = propertyResult.getProperty();
-                   String key = property.getKey();
-                   Object value = property.getValue();
-                   accessResult.setResultByKey(key, value);
-                   unprocessedHexString = propertyResult.getUnprocessedHexString();
-               }
+                    //PresentValue
+                    String unprocessedHexString = listReader.unprocessedHexString();
+                    while (unprocessedHexString != null && !unprocessedHexString.isEmpty()) {
+                        PropertyResult propertyResult = parseProperty(unprocessedHexString);
+                        if (propertyResult != null && propertyResult.getProperty() != null) {
+                            Property property = propertyResult.getProperty();
+                            String key = property.getKey();
+                            Object value = property.getValue();
+                            accessResult.setResultByKey(key, value);
+                            unprocessedHexString = propertyResult.getUnprocessedHexString();
+                        }
+                    }
                /*
                 //Units
                 log.debug("Ready for Units. unprocessedHexString: {}", unprocessedHexString);
@@ -114,8 +120,12 @@ public class ReadAccessResult {
 
                 */
 
-            };
+                }
+                ;
 
+            }
+        } catch (EntraUnknownOperationException e) {
+            log.info("Failed to parse: {}. Reason: {}", resultListHexString, e.getMessage());
         }
         return accessResult;
     }
@@ -130,32 +140,88 @@ public class ReadAccessResult {
             Octet propertyIdentifierOctet = propertyReader.next();
             presentValuePid = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
         }
+
         //Expect start of list eg 4e
         Octet startOfList = propertyReader.next();
         log.debug(propertyReader.unprocessedHexString());
         if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
-            Octet applicationTag = propertyReader.next();
-            char valueLength = applicationTag.getSecondNibble();
-            int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
-            String valueAsString = propertyReader.next(valueOctetLength);
-            log.debug("valueAsString {}", valueAsString);
             Property property = null;
-            if (presentValuePid != null) {
-                if (applicationTag.getFirstNibble() == '4') {
-                    //expect Real value
-                    int valueAsNumber = Integer.parseInt(valueAsString, 16);
-                    //IEEE 754
-                    Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
-                    property = new Property(presentValuePid.name(), valueAsReal);
-                } else {
-                    //Setting string value
-                    property = new Property(presentValuePid.name(), valueAsString);
+            if (presentValuePid == PropertyIdentifier.PresentValue) {
+                Octet applicationTag = propertyReader.next();
+                char valueLength = applicationTag.getSecondNibble();
+                int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
+                String valueAsString = propertyReader.next(valueOctetLength);
+                log.debug("valueAsString {}", valueAsString);
+
+                if (presentValuePid != null) {
+                    if (applicationTag.getFirstNibble() == '4') {
+                        //expect Real value
+                        int valueAsNumber = Integer.parseInt(valueAsString, 16);
+                        //IEEE 754
+                        Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
+                        property = new Property(presentValuePid.name(), valueAsReal);
+                    } else {
+                        //Setting string value
+                        property = new Property(presentValuePid.name(), valueAsString);
+                    }
                 }
+            } else if (presentValuePid == PropertyIdentifier.Units) {
+                Octet applicationTag = propertyReader.next();
+                char valueLength = applicationTag.getSecondNibble();
+                int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
+                String valueAsHex = propertyReader.next(valueOctetLength);
+                PropertyIdentifier unitsPid = PropertyIdentifier.fromPropertyIdentifierHex(valueAsHex);
+                if (unitsPid != null) {
+                    property = new Property(presentValuePid.name(), unitsPid.name());
+                }
+            } else if (presentValuePid == PropertyIdentifier.ObjectName) {
+                log.debug("Find ObjectName from: {}", propertyReader.unprocessedHexString());
+                String objectName = null;
+                Octet applicationTag = propertyReader.next();
+                if (applicationTag.getFirstNibble() == '7') {
+                   log.debug("Expecting String.");
+                }
+                if (applicationTag.getSecondNibble() == '5') {
+                    log.debug("Expecting extended value");
+                    Octet valueLength = propertyReader.next();
+                    int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
+                    Octet encoding = propertyReader.next();
+                    String objectNameHex = propertyReader.next(valueOctetLength-1);
+                    log.debug("ObjectNameHex: {}", objectNameHex);
+                    if (encoding.equals(Octet.fromHexString("04"))) {
+                        byte[] bytes = hexStringToByteArray(objectNameHex);
+                        objectName = new String(bytes, StandardCharsets.UTF_16);
+                    }
+                    log.debug("The rest: {}", propertyReader.unprocessedHexString());
+                } else {
+                    log.debug("Do not know what to do....");
+                    Octet next;
+                    do {
+                        next = propertyReader.next();
+                        log.debug("next: {}", next);
+                    } while (!next.equals(Octet.fromHexString("4f")));
+                }
+
+
+
+                if (objectName != null) {
+                    property = new Property(presentValuePid.name(), objectName);
+                }
+
+            } else {
+                log.debug("PresentValuePid: {}", presentValuePid);
+                throw new EntraUnknownOperationException("I do not know how to parse PropertyIdentifier: " + presentValuePid + ". UnprocessedHexString: " + propertyReader.unprocessedHexString());
             }
+
+            propertyReader.next();
             unprocessedHexString = propertyReader.unprocessedHexString();
             propertyResult = new PropertyResult(unprocessedHexString, property);
             //Pull closing tag
-            //listReader.next();
+
+        } else {
+            propertyReader.next();
+            unprocessedHexString = propertyReader.unprocessedHexString();
+            propertyResult = new PropertyResult(unprocessedHexString, null);
         }
         return propertyResult;
     }

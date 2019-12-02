@@ -7,8 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static no.entra.bacnet.json.objects.PropertyIdentifier.Description;
-import static no.entra.bacnet.json.objects.PropertyIdentifier.PresentValue;
+import static no.entra.bacnet.json.objects.PropertyIdentifier.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReadAccessResultTest {
@@ -63,6 +62,15 @@ class ReadAccessResultTest {
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
         assertEquals(Float.parseFloat("22.170061"), result.getResultByKey(PresentValue));
-//        assertEquals("degres-cecius", result.getResultByKey(Units));
+        assertEquals("degres-cecius", result.getResultByKey(Units));
+        assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getResultByKey(ObjectName));
+    }
+
+    @Test
+    void buildObjectNameTest() {
+        String objectNameHexString = "294d4e7549040053004f004b005000310036002d004e004100450034002f004600430042002e003400330034005f003100300031002d0031004f0055003000300031002e005200540030003000314f";
+        PropertyResult result = ReadAccessResult.parseProperty(objectNameHexString);
+        assertNotNull(result);
+        assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getProperty().getValue());
     }
 }
