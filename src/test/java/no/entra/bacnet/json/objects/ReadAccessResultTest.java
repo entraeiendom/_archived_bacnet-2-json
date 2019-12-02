@@ -62,8 +62,9 @@ class ReadAccessResultTest {
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
         assertEquals(Float.parseFloat("22.170061"), result.getResultByKey(PresentValue));
-        assertEquals("degres-cecius", result.getResultByKey(Units));
+//        assertEquals("degres-cecius", result.getResultByKey(Units));
         assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getResultByKey(ObjectName));
+        assertEquals("Rom 1013, del1, plan U1, Blokk1", result.getResultByKey(Description));
     }
 
     @Test
