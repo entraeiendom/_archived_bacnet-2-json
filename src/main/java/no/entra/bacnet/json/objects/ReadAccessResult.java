@@ -1,7 +1,6 @@
 package no.entra.bacnet.json.objects;
 
 import no.entra.bacnet.Octet;
-import no.entra.bacnet.json.PropertyId;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
@@ -60,11 +59,11 @@ public class ReadAccessResult {
         results.put(key, value);
     }
 
-    public void setResultByKey(PropertyId key, String value) throws IllegalStateException {
+    public void setResultByKey(PropertyIdentifier key, String value) throws IllegalStateException {
         setResultByKey(key.name(), value);
     }
 
-    public void setResultByKey(PropertyId key, Number value) throws IllegalStateException {
+    public void setResultByKey(PropertyIdentifier key, Number value) throws IllegalStateException {
         setResultByKey(key.name(), value);
     }
 
@@ -72,7 +71,7 @@ public class ReadAccessResult {
         return results.get(key);
     }
 
-    public Object getResultByKey(PropertyId key) {
+    public Object getResultByKey(PropertyIdentifier key) {
         return results.get(key.name());
     }
 

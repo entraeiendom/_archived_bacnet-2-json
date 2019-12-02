@@ -2,14 +2,13 @@ package no.entra.bacnet.json.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import no.entra.bacnet.json.PropertyId;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static no.entra.bacnet.json.PropertyId.description;
-import static no.entra.bacnet.json.PropertyId.presentValue;
+import static no.entra.bacnet.json.objects.PropertyIdentifier.Description;
+import static no.entra.bacnet.json.objects.PropertyIdentifier.PresentValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReadAccessResultTest {
@@ -23,8 +22,8 @@ class ReadAccessResultTest {
     void setUp() {
         objectId = ObjectIdentifier.buildFromHexString(objectIdString);
         accessResult = new ReadAccessResult(objectId);
-        accessResult.setResultByKey(presentValue, Double.valueOf(22.567));
-        accessResult.setResultByKey(description, "some short one");
+        accessResult.setResultByKey(PresentValue, Double.valueOf(22.567));
+        accessResult.setResultByKey(Description, "some short one");
         gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .serializeNulls()
@@ -34,8 +33,8 @@ class ReadAccessResultTest {
     @Test
     void validOutput() {
         assertEquals(objectId, accessResult.getObjectId());
-        assertEquals(Double.valueOf(22.567), accessResult.getResultByKey("presentValue"));
-        assertEquals("some short one", accessResult.getResultByKey(description));
+        assertEquals(Double.valueOf(22.567), accessResult.getResultByKey("PresentValue"));
+        assertEquals("some short one", accessResult.getResultByKey(Description));
     }
 
     @Test
@@ -43,10 +42,13 @@ class ReadAccessResultTest {
 
         String jsonBuilt = gson.toJson(accessResult);
         String expected = "{\n" +
-                "  \"objectId\": \"123erfgh\",\n" +
+                "  \"objectId\": {\n" +
+                "    \"objectType\": \"AnalogInput\",\n" +
+                "    \"instanceNumber\": \"3000047\"\n" +
+                "  },\n" +
                 "  \"results\": {\n" +
-                "    \"presentValue\": 22.567,\n" +
-                "    \"description\": \"some short one\"\n" +
+                "    \"PresentValue\": 22.567,\n" +
+                "    \"Description\": \"some short one\"\n" +
                 "  }\n" +
                 "}";
         JSONAssert.assertEquals(expected, jsonBuilt, true);
@@ -60,6 +62,6 @@ class ReadAccessResultTest {
         assertNotNull(result);
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
-        assertEquals(22.170061, result.getResultByKey(PropertyId.presentValue));
+        assertEquals(Float.parseFloat("22.170061"), result.getResultByKey(PresentValue));
     }
 }
