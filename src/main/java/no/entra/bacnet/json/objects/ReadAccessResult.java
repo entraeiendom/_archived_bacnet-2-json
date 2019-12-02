@@ -102,10 +102,10 @@ public class ReadAccessResult {
 
                 Octet contextTag = listReader.next();
                 log.debug("Context Tag: {}", contextTag);
-                PropertyId propertyIdentifier = null;
+                PropertyIdentifier propertyIdentifier = null;
                 if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2_MESSGE_PRIORITY))) {
                     Octet propertyIdentifierOctet = listReader.next();
-                    propertyIdentifier = PropertyId.fromOctet(propertyIdentifierOctet);
+                    propertyIdentifier = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
                 }
                 //Expect start of list eg 4e
                 Octet startOfList = listReader.next();
@@ -116,15 +116,17 @@ public class ReadAccessResult {
                     int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
                     String valueAsString = listReader.next(valueOctetLength);
                     log.debug("valueAsString {}", valueAsString);
-                    if (applicationTag.getFirstNibble() == '4') {
-                        //expect Real value
-                        int valueAsNumber = Integer.parseInt(valueAsString,16);
-                        //IEEE 754
-                        Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
-                        accessResult.setResultByKey(propertyIdentifier, valueAsReal);
-                    } else {
-                        //Setting string value
-                        accessResult.setResultByKey(propertyIdentifier, valueAsString);
+                    if (propertyIdentifier != null) {
+                        if (applicationTag.getFirstNibble() == '4') {
+                            //expect Real value
+                            int valueAsNumber = Integer.parseInt(valueAsString, 16);
+                            //IEEE 754
+                            Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
+                            accessResult.setResultByKey(propertyIdentifier.name(), valueAsReal);
+                        } else {
+                            //Setting string value
+                            accessResult.setResultByKey(propertyIdentifier.name(), valueAsString);
+                        }
                     }
                 }
             };
