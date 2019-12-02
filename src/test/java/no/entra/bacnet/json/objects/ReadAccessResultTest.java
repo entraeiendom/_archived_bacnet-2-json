@@ -7,20 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static no.entra.bacnet.json.objects.PropertyIdentifier.Description;
-import static no.entra.bacnet.json.objects.PropertyIdentifier.PresentValue;
+import static no.entra.bacnet.json.objects.PropertyIdentifier.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReadAccessResultTest {
 
     private ReadAccessResult accessResult;
     private String objectIdString = "0c002dc6ef";
-    private ObjectIdentifier objectId;
+    private ObjectId objectId;
     private Gson gson;
 
     @BeforeEach
     void setUp() {
-        objectId = ObjectIdentifier.buildFromHexString(objectIdString);
+        objectId = ObjectId.buildFromHexString(objectIdString);
         accessResult = new ReadAccessResult(objectId);
         accessResult.setResultByKey(PresentValue, Double.valueOf(22.567));
         accessResult.setResultByKey(Description, "some short one");
@@ -63,5 +62,16 @@ class ReadAccessResultTest {
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
         assertEquals(Float.parseFloat("22.170061"), result.getResultByKey(PresentValue));
+//        assertEquals("degres-cecius", result.getResultByKey(Units));
+        assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getResultByKey(ObjectName));
+        assertEquals("Rom 1013, del1, plan U1, Blokk1", result.getResultByKey(Description));
+    }
+
+    @Test
+    void buildObjectNameTest() {
+        String objectNameHexString = "294d4e7549040053004f004b005000310036002d004e004100450034002f004600430042002e003400330034005f003100300031002d0031004f0055003000300031002e005200540030003000314f";
+        PropertyResult result = ReadAccessResult.parseProperty(objectNameHexString);
+        assertNotNull(result);
+        assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getProperty().getValue());
     }
 }
