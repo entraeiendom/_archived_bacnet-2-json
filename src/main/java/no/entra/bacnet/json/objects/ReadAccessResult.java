@@ -17,21 +17,21 @@ public class ReadAccessResult {
     public static final String PRESENT_VALUE_HEX = "55";
     public static final String PD_OPENING_TAG_4 = "4e";
     public static final String PD_CLOSING_TAG_4 = "4f";
-    private ObjectIdentifier objectId;
+    private ObjectId objectId;
     private HashMap<String, Object> results = new HashMap<>();
 
     private ReadAccessResult() {
 
     }
-    public ReadAccessResult(ObjectIdentifier objectId) {
+    public ReadAccessResult(ObjectId objectId) {
         this.objectId = objectId;
     }
 
-    public ObjectIdentifier getObjectId() {
+    public ObjectId getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(ObjectIdentifier objectId) {
+    public void setObjectId(ObjectId objectId) {
         this.objectId = objectId;
     }
 
@@ -91,7 +91,7 @@ public class ReadAccessResult {
             if (oidType.equals(new Octet("0c"))) {
                 String objectIdString = "0c" + listReader.next(4);
                 log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
-                ObjectIdentifier objectIdentifier = ObjectIdentifier.buildFromHexString(objectIdString);
+                ObjectId objectIdentifier = ObjectId.buildFromHexString(objectIdString);
                 accessResult = new ReadAccessResult(objectIdentifier);
             }
 
@@ -107,6 +107,7 @@ public class ReadAccessResult {
                     propertyIdentifier = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
                 }
                 //Expect start of list eg 4e
+                //PresentValue
                 Octet startOfList = listReader.next();
                 log.debug(listReader.unprocessedHexString());
                 if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
@@ -128,6 +129,7 @@ public class ReadAccessResult {
                         }
                     }
                 }
+                //Units
             };
 
         }

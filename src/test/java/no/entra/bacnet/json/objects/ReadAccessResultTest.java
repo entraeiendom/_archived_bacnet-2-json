@@ -15,12 +15,12 @@ class ReadAccessResultTest {
 
     private ReadAccessResult accessResult;
     private String objectIdString = "0c002dc6ef";
-    private ObjectIdentifier objectId;
+    private ObjectId objectId;
     private Gson gson;
 
     @BeforeEach
     void setUp() {
-        objectId = ObjectIdentifier.buildFromHexString(objectIdString);
+        objectId = ObjectId.buildFromHexString(objectIdString);
         accessResult = new ReadAccessResult(objectId);
         accessResult.setResultByKey(PresentValue, Double.valueOf(22.567));
         accessResult.setResultByKey(Description, "some short one");
@@ -63,5 +63,6 @@ class ReadAccessResultTest {
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
         assertEquals(Float.parseFloat("22.170061"), result.getResultByKey(PresentValue));
+//        assertEquals(Float.parseFloat("degres-cecius"), result.getResultByKey(Units));
     }
 }

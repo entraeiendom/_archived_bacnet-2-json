@@ -8,16 +8,16 @@ import java.math.BigInteger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class ObjectIdentifier {
-    private static final Logger log = getLogger(ObjectIdentifier.class);
+public class ObjectId {
+    private static final Logger log = getLogger(ObjectId.class);
 
     private ObjectType objectType;
     private String instanceNumber;
 
-    public ObjectIdentifier() {
+    public ObjectId() {
     }
 
-    public ObjectIdentifier(ObjectType objectType, String instanceNumber) {
+    public ObjectId(ObjectType objectType, String instanceNumber) {
         this.objectType = objectType;
         this.instanceNumber = instanceNumber;
     }
@@ -38,8 +38,8 @@ public class ObjectIdentifier {
         this.instanceNumber = instanceNumber;
     }
 
-    public static ObjectIdentifier buildFromHexString(String hexString) {
-        ObjectIdentifier objectIdentifier = null;
+    public static ObjectId buildFromHexString(String hexString) {
+        ObjectId ObjectId = null;
         OctetReader idReader = new OctetReader(hexString);
         if (idReader != null) {
             Octet objectTypeOctetxx = idReader.next();
@@ -51,11 +51,11 @@ public class ObjectIdentifier {
                     String instanceNumberHex = idReader.next(length-1);
                     BigInteger instanceNumberBI = new BigInteger(instanceNumberHex, 16);
                     ObjectType objectType = ObjectType.fromOctet(objectTypeOctet);
-                    objectIdentifier = new ObjectIdentifier(objectType, instanceNumberBI.toString());
+                    ObjectId = new ObjectId(objectType, instanceNumberBI.toString());
                 }
             }
         }
-        return objectIdentifier;
+        return ObjectId;
     }
 
     @Override
