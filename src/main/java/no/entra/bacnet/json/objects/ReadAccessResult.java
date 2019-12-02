@@ -13,7 +13,7 @@ public class ReadAccessResult {
     private static final Logger log = getLogger(ReadAccessResult.class);
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
-    public static final String SD_CONTEXT_TAG_2_MESSGE_PRIORITY = "29";
+    public static final String SD_CONTEXT_TAG_2 = "29";
     public static final String PRESENT_VALUE_HEX = "55";
     public static final String PD_OPENING_TAG_4 = "4e";
     public static final String PD_CLOSING_TAG_4 = "4f";
@@ -45,28 +45,16 @@ public class ReadAccessResult {
      * @param value
      * @throws IllegalStateException Duplicate key is not allowed.
      */
-    public void setResultByKey(String key, String value) throws IllegalStateException {
+    public void setResultByKey(String key, Object value) throws IllegalStateException {
         if (results.containsKey(key)) {
             throw new IllegalStateException("Duplicate insert is not implemented. Key: " + key + " is already set.");
         }
         results.put(key, value);
     }
 
-    public void setResultByKey(String key, Number value) throws IllegalStateException {
-        if (results.containsKey(key)) {
-            throw new IllegalStateException("Duplicate insert is not implemented. Key: " + key + " is already set.");
-        }
-        results.put(key, value);
-    }
-
-    public void setResultByKey(PropertyIdentifier key, String value) throws IllegalStateException {
+    public void setResultByKey(PropertyIdentifier key, Object value) throws IllegalStateException {
         setResultByKey(key.name(), value);
     }
-
-    public void setResultByKey(PropertyIdentifier key, Number value) throws IllegalStateException {
-        setResultByKey(key.name(), value);
-    }
-
     public Object getResultByKey(String key) {
         return results.get(key);
     }
@@ -99,41 +87,77 @@ public class ReadAccessResult {
             Octet startList = listReader.next();
             if (startList.equals(Octet.fromHexString(LIST_START_HEX))) {
 
-                Octet contextTag = listReader.next();
-                log.debug("Context Tag: {}", contextTag);
-                PropertyIdentifier propertyIdentifier = null;
-                if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2_MESSGE_PRIORITY))) {
+                //PresentValue
+                String unprocessedHexString = listReader.unprocessedHexString();
+               PropertyResult propertyResult = parseProperty(unprocessedHexString);
+               if (propertyResult != null && propertyResult.getProperty() != null) {
+                   Property property = propertyResult.getProperty();
+                   String key = property.getKey();
+                   Object value = property.getValue();
+                   accessResult.setResultByKey(key, value);
+                   unprocessedHexString = propertyResult.getUnprocessedHexString();
+               }
+               /*
+                //Units
+                log.debug("Ready for Units. unprocessedHexString: {}", unprocessedHexString);
+                PropertyIdentifier unitsPid = null;
+                if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2))) {
                     Octet propertyIdentifierOctet = listReader.next();
-                    propertyIdentifier = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
+                    unitsPid = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
                 }
                 //Expect start of list eg 4e
-                //PresentValue
                 Octet startOfList = listReader.next();
                 log.debug(listReader.unprocessedHexString());
                 if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
-                    Octet applicationTag = listReader.next();
-                    char valueLength = applicationTag.getSecondNibble();
-                    int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
-                    String valueAsString = listReader.next(valueOctetLength);
-                    log.debug("valueAsString {}", valueAsString);
-                    if (propertyIdentifier != null) {
-                        if (applicationTag.getFirstNibble() == '4') {
-                            //expect Real value
-                            int valueAsNumber = Integer.parseInt(valueAsString, 16);
-                            //IEEE 754
-                            Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
-                            accessResult.setResultByKey(propertyIdentifier.name(), valueAsReal);
-                        } else {
-                            //Setting string value
-                            accessResult.setResultByKey(propertyIdentifier.name(), valueAsString);
-                        }
-                    }
+
                 }
-                //Units
+
+                */
+
             };
 
         }
         return accessResult;
+    }
+
+    static PropertyResult parseProperty(String unprocessedHexString) {
+        PropertyResult propertyResult = null;
+        OctetReader propertyReader = new OctetReader(unprocessedHexString);
+        Octet contextTag = propertyReader.next();
+        log.debug("Context Tag: {}", contextTag);
+        PropertyIdentifier presentValuePid = null;
+        if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2))) {
+            Octet propertyIdentifierOctet = propertyReader.next();
+            presentValuePid = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
+        }
+        //Expect start of list eg 4e
+        Octet startOfList = propertyReader.next();
+        log.debug(propertyReader.unprocessedHexString());
+        if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
+            Octet applicationTag = propertyReader.next();
+            char valueLength = applicationTag.getSecondNibble();
+            int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
+            String valueAsString = propertyReader.next(valueOctetLength);
+            log.debug("valueAsString {}", valueAsString);
+            Property property = null;
+            if (presentValuePid != null) {
+                if (applicationTag.getFirstNibble() == '4') {
+                    //expect Real value
+                    int valueAsNumber = Integer.parseInt(valueAsString, 16);
+                    //IEEE 754
+                    Float valueAsReal = Float.intBitsToFloat(valueAsNumber);
+                    property = new Property(presentValuePid.name(), valueAsReal);
+                } else {
+                    //Setting string value
+                    property = new Property(presentValuePid.name(), valueAsString);
+                }
+            }
+            unprocessedHexString = propertyReader.unprocessedHexString();
+            propertyResult = new PropertyResult(unprocessedHexString, property);
+            //Pull closing tag
+            //listReader.next();
+        }
+        return propertyResult;
     }
 
 }

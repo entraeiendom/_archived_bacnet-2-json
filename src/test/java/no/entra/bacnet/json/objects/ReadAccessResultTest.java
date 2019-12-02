@@ -63,6 +63,6 @@ class ReadAccessResultTest {
         assertNotNull(result.getObjectId());
         assertFalse(result.getResults().isEmpty());
         assertEquals(Float.parseFloat("22.170061"), result.getResultByKey(PresentValue));
-//        assertEquals(Float.parseFloat("degres-cecius"), result.getResultByKey(Units));
+//        assertEquals("degres-cecius", result.getResultByKey(Units));
     }
 }
