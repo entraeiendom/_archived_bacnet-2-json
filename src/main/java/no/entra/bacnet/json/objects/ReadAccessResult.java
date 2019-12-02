@@ -171,13 +171,14 @@ public class ReadAccessResult {
                         }
                     }
                 } else if (presentValuePid == PropertyIdentifier.Units) {
+                    log.debug("Find Units from: {}", propertyReader.unprocessedHexString());
                     Octet applicationTag = propertyReader.next();
                     char valueLength = applicationTag.getSecondNibble();
                     int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
                     String valueAsHex = propertyReader.next(valueOctetLength);
-                    PropertyIdentifier unitsPid = PropertyIdentifier.fromPropertyIdentifierHex(valueAsHex);
-                    if (unitsPid != null) {
-                        property = new Property(presentValuePid.name(), unitsPid.name());
+                    Unit unit = Unit.fromUnitHex(valueAsHex);
+                    if (unit != null) {
+                        property = new Property(presentValuePid.name(), unit.name());
                     }
                 } else if (presentValuePid == PropertyIdentifier.ObjectName || presentValuePid == PropertyIdentifier.Description) {
                     log.debug("Find ObjectName from: {}", propertyReader.unprocessedHexString());
