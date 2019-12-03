@@ -29,19 +29,23 @@ public class BacnetMessagesValidator {
         Scanner scanner = null;
         try {
             scanner = new Scanner(hexStringFile);
-
+            long found = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 //                String apduHexString = bacnetParser.findApduHexString(line);
 //                String json = bacnetParser.jsonFromApdu(apduHexString);
                 try {
                     Observation observation = bacnetParser.buildObservation(line);
-                    log.debug("Observation: {}", observation);
+                    if (observation != null) {
+                        log.debug("Observation: {} \n\thexString: {}", observation, line);
+                        found++;
+                    }
                 } catch (Exception e) {
                     log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
                 }
 //                log.info("Hextring: {} \n{}", line, json);
             }
+            log.info("Understood {} observations.", found);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

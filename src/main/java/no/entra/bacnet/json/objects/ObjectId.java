@@ -60,6 +60,9 @@ public class ObjectId {
 
     @Override
     public String toString() {
+        if (objectType == null) {
+            return "typ-missing " + " " + instanceNumber;
+        }
         return objectType.name() + " " + instanceNumber;
     }
 }
