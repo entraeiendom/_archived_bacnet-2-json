@@ -21,6 +21,7 @@ class BvlcParserTest {
         assertEquals(24, bvlc.getFullMessageLength());
         assertEquals("9.47.81.12", bvlc.getOriginatingDeviceIp());
         assertEquals(47808, bvlc.getPort());
+        assertEquals("0120ffff00ff10080a07ae1a07ae", result.getUnprocessedHexString());
 
     }
 }
