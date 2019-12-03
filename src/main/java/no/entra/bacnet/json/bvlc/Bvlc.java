@@ -2,6 +2,8 @@ package no.entra.bacnet.json.bvlc;
 
 import no.entra.bacnet.Octet;
 
+import java.util.Arrays;
+
 public class Bvlc {
     private final Octet type = Octet.fromHexString("81");
     private final BvlcFunction function;
@@ -80,4 +82,15 @@ public class Bvlc {
         return length;
     }
 
+    @Override
+    public String toString() {
+        return "Bvlc{" +
+                "type=" + type +
+                ", function=" + function +
+                ", bvlcLength=" + bvlcLength +
+                ", fullMessageLength=" + fullMessageLength +
+                ", originatingDeviceIp=" + Arrays.toString(originatingDeviceIp) +
+                ", port=" + Arrays.toString(port) +
+                '}';
+    }
 }

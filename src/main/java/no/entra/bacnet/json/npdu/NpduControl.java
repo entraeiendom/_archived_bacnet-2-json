@@ -3,6 +3,7 @@ package no.entra.bacnet.json.npdu;
 import no.entra.bacnet.Octet;
 
 public enum  NpduControl {
+    NormalMessage("00"),
     DestinationSpecifier("20");
     private String npduControlHex;
 

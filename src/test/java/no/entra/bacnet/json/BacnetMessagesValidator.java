@@ -4,6 +4,9 @@ import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.services.Service;
+import no.entra.bacnet.json.services.ServiceParser;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -36,6 +39,7 @@ public class BacnetMessagesValidator {
             long validBvlc = 0;
             long validNpdu = 0;
             long validApdu = 0;
+            long verifiedService = 0;
             long lineNum = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -50,14 +54,22 @@ public class BacnetMessagesValidator {
                         if (npduResult != null && npduResult.isParsedOk()) {
                             validNpdu++;
                             String apduHexString = npduResult.getUnprocessedHexString();
-                            try {
-                                Observation observation = bacnetParser.buildObservation(apduHexString);
-                                if (observation != null) {
-                                    log.debug("Observation: {} \n\thexString: {}", observation, apduHexString);
-                                    validApdu++;
+                            Service service = ServiceParser.fromApduHexString(apduHexString);
+                            if (service != null && service.getPduType().equals(PduType.ComplexAck)) {
+                                try {
+//FIXME need to change buildObservation to use BVLC and NPDU are removed.
+//                                    observationHexString = ServiceResult.getUnprocessedHexString();
+                                    Observation observation = bacnetParser.buildObservation(apduHexString);
+                                    if (observation != null) {
+                                        log.debug("Observation: {} \n\thexString: {}", observation, apduHexString);
+                                        validApdu++;
+                                    }
+                                } catch (Exception e) {
+                                    log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
                                 }
-                            } catch (Exception e) {
-                                log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
+                            } else if (service != null){
+                                log.trace("Verified Service: {}", service );
+                                verifiedService ++;
                             }
                         }
                     }
@@ -65,7 +77,8 @@ public class BacnetMessagesValidator {
                     log.debug("Failed to parse line number: {}. Reason: {}", lineNum, e.getMessage());
                 }
             }
-            log.info("Verified BVLC: {}, Verified NPUD: {}, Understood {} observations.", validBvlc, validNpdu, validApdu);
+            log.info("Verified BVLC: {}, Verified NPUD: {}, Verified Service: {}, Understood {} observations.",
+                    validBvlc, validNpdu, verifiedService,validApdu);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

@@ -2,6 +2,10 @@ package no.entra.bacnet.json;
 
 import com.serotonin.bacnet4j.exception.BACnetException;
 import no.entra.bacnet.json.bacnet4j.BacNet4jParser;
+import no.entra.bacnet.json.bvlc.BvlcParser;
+import no.entra.bacnet.json.bvlc.BvlcResult;
+import no.entra.bacnet.json.npdu.NpduParser;
+import no.entra.bacnet.json.npdu.NpduResult;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,6 +69,11 @@ public class BacNetParserTest {
         String complexAckApdu = bacNetParser.findApduHexString(complexAck);
         Observation observation = bacNetParser.buildObservation(complexAckApdu);
         assertNotNull(observation);
+        BvlcResult bvlcResult = BvlcParser.parse(complexAck);
+        log.debug("Bvlc: {}", bvlcResult.getBvlc());
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        log.debug("Npdu: {}", npduResult.getNpdu());
+        assertEquals(complexAckApdu, npduResult.getUnprocessedHexString());
     }
 
     @Test

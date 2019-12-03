@@ -23,6 +23,9 @@ public class NpduParser {
         Npdu npdu = new NpduBuilder(controlOctet).build();
         NpduControl control = npdu.getControl();
         switch (control) {
+            case NormalMessage:
+                //TODO Do noting?
+                break;
             case DestinationSpecifier:
                 result = addDestinationSpecifierInfo(npdu, npduReader);
                 break;

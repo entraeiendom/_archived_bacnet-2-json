@@ -2,6 +2,8 @@ package no.entra.bacnet.json.npdu;
 
 import no.entra.bacnet.Octet;
 
+import java.util.Arrays;
+
 public class Npdu {
     public static final Octet version = Octet.fromHexString("01");
     private NpduControl control;
@@ -44,5 +46,15 @@ public class Npdu {
 
     public void setHopCount(Octet hopCount) {
         this.hopCount = hopCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Npdu{" +
+                "control=" + control +
+                ", destinationNetworkAddress=" + Arrays.toString(destinationNetworkAddress) +
+                ", destinationMacLayerAddress=" + destinationMacLayerAddress +
+                ", hopCount=" + hopCount +
+                '}';
     }
 }

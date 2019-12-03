@@ -18,4 +18,12 @@ public class Service {
     public ServiceChoice getServiceChoice() {
         return serviceChoice;
     }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "pduType=" + pduType +
+                ", serviceChoice=" + serviceChoice +
+                '}';
+    }
 }
