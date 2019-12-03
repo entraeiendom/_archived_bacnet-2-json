@@ -4,7 +4,7 @@ import no.entra.bacnet.Octet;
 
 public class Npdu {
     public static final Octet version = Octet.fromHexString("01");
-    private Octet control;
+    private NpduControl control;
     private Octet[] destinationNetworkAddress;
     private Octet destinationMacLayerAddress;
     private Octet hopCount;
@@ -13,12 +13,13 @@ public class Npdu {
         return version;
     }
 
-    public Octet getControl() {
+    public NpduControl getControl() {
+
         return control;
     }
 
-    public void setControl(Octet control) {
-        this.control = control;
+    public void setControl(Octet controlOctet) {
+        this.control = NpduControl.fromOctet(controlOctet);
     }
 
     public Octet[] getDestinationNetworkAddress() {
