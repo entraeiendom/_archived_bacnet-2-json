@@ -23,6 +23,8 @@ public class BvlcParser {
         if (bvlc.getFunction().equals(BvlcFunction.ForwardedNpdu)) {
             //Add forwarding info
             result = addForwardingInfo(bvlc, bvlcReader);
+        } else {
+            result.setParsedOk(false);
         }
         return result;
     }

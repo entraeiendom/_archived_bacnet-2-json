@@ -1,5 +1,9 @@
 package no.entra.bacnet.json;
 
+import no.entra.bacnet.json.bvlc.BvlcParser;
+import no.entra.bacnet.json.bvlc.BvlcResult;
+import no.entra.bacnet.json.npdu.NpduParser;
+import no.entra.bacnet.json.npdu.NpduResult;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -29,23 +33,39 @@ public class BacnetMessagesValidator {
         Scanner scanner = null;
         try {
             scanner = new Scanner(hexStringFile);
-            long found = 0;
+            long validBvlc = 0;
+            long validNpdu = 0;
+            long validApdu = 0;
+            long lineNum = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-//                String apduHexString = bacnetParser.findApduHexString(line);
-//                String json = bacnetParser.jsonFromApdu(apduHexString);
+                lineNum++;
                 try {
-                    Observation observation = bacnetParser.buildObservation(line);
-                    if (observation != null) {
-                        log.debug("Observation: {} \n\thexString: {}", observation, line);
-                        found++;
+                    BvlcResult bvlcResult = BvlcParser.parse(line);
+                    if (bvlcResult != null && bvlcResult.isParsedOk()) {
+                        validBvlc++;
+                        log.trace("Verified BVLC: {}", bvlcResult.getBvlc().getFunction());
+                        String npduHexString = bvlcResult.getUnprocessedHexString();
+                        NpduResult npduResult = NpduParser.parse(npduHexString);
+                        if (npduResult != null && npduResult.isParsedOk()) {
+                            validNpdu++;
+                            String apduHexString = npduResult.getUnprocessedHexString();
+                            try {
+                                Observation observation = bacnetParser.buildObservation(apduHexString);
+                                if (observation != null) {
+                                    log.debug("Observation: {} \n\thexString: {}", observation, apduHexString);
+                                    validApdu++;
+                                }
+                            } catch (Exception e) {
+                                log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
+                            }
+                        }
                     }
                 } catch (Exception e) {
-                    log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
+                    log.debug("Failed to parse line number: {}. Reason: {}", lineNum, e.getMessage());
                 }
-//                log.info("Hextring: {} \n{}", line, json);
             }
-            log.info("Understood {} observations.", found);
+            log.info("Verified BVLC: {}, Verified NPUD: {}, Understood {} observations.", validBvlc, validNpdu, validApdu);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
