@@ -35,7 +35,8 @@ public class BacnetMessagesValidator {
 //                String apduHexString = bacnetParser.findApduHexString(line);
 //                String json = bacnetParser.jsonFromApdu(apduHexString);
                 try {
-                    bacnetParser.buildObservation(line);
+                    Observation observation = bacnetParser.buildObservation(line);
+                    log.debug("Observation: {}", observation);
                 } catch (Exception e) {
                     log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
                 }

@@ -10,7 +10,7 @@ import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
 import static no.entra.bacnet.json.objects.ReadAccessResult.LIST_END_HEX;
-import static no.entra.bacnet.json.objects.ReadAccessResult.LIST_START_HEX;
+import static no.entra.bacnet.json.objects.ReadAccessResult.OBJECT_IDENTIFIER;
 import static org.slf4j.LoggerFactory.getLogger;
 
     public class BacNetParser {
@@ -69,7 +69,7 @@ import static org.slf4j.LoggerFactory.getLogger;
                 log.info("ReadAccessResult: {}", accessResult);
 
                 String objectId = null;
-                if (objectId != null) {
+                if (accessResult.getObjectId() != null) {
                     objectId = accessResult.getObjectId().toString();
                     Source source = new Source(devicdId, objectId);
                     Object presentValue = accessResult.getResultByKey(PropertyIdentifier.PresentValue);
@@ -87,7 +87,7 @@ import static org.slf4j.LoggerFactory.getLogger;
     }
 
     String findListResultHexString(String hexString) {
-        int listStartPos = hexString.indexOf(LIST_START_HEX);
+        int listStartPos = hexString.indexOf(OBJECT_IDENTIFIER);
         int listEndPos = hexString.indexOf(LIST_END_HEX);
         String listResulHexString = null;
         if (listStartPos > 0 && listEndPos > 0) {

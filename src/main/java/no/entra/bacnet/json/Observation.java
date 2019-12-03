@@ -32,8 +32,7 @@ public class Observation {
      * @param value
      */
     public Observation(Source source, Object value) {
-        this.source = source;
-        this.value = value;
+        this(null, source, value);
     }
 
     /**
@@ -46,6 +45,7 @@ public class Observation {
         this.id = id;
         this.source = source;
         this.value = value;
+        observedAt = LocalDateTime.now();
     }
 
     public String getId() {
@@ -102,5 +102,18 @@ public class Observation {
 
     public void setObservedAt(LocalDateTime observedAt) {
         this.observedAt = observedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Observation{" +
+                "id='" + id + '\'' +
+                ", source=" + source +
+                ", value=" + value +
+                ", unit='" + unit + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", observedAt=" + observedAt +
+                '}';
     }
 }

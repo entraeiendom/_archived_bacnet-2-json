@@ -14,6 +14,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReadAccessResult {
     private static final Logger log = getLogger(ReadAccessResult.class);
+    public static final String OBJECT_IDENTIFIER = "0c";
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
     public static final String SD_CONTEXT_TAG_2 = "29";
@@ -70,6 +71,11 @@ public class ReadAccessResult {
         this.results = results;
     }
 
+    /**
+     *
+     * @param resultListHexString must start with "0c" and end with "1f"
+     * @return A Bacnet message parsed into ReadAccessResult.
+     */
     public static ReadAccessResult buildFromResultList(String resultListHexString) {
         ReadAccessResult accessResult = null;
         try {
@@ -80,7 +86,7 @@ public class ReadAccessResult {
                 //Expect Object Identifier
                 Octet oidType = listReader.next();
                 log.debug("oid: {}", oidType);
-                if (oidType.equals(new Octet("0c"))) {
+                if (oidType.equals(new Octet(OBJECT_IDENTIFIER))) {
                     String objectIdString = "0c" + listReader.next(4);
                     log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
                     ObjectId objectIdentifier = ObjectId.buildFromHexString(objectIdString);
@@ -105,25 +111,7 @@ public class ReadAccessResult {
                             unprocessedHexString = propertyResult.getUnprocessedHexString();
                         }
                     }
-               /*
-                //Units
-                log.debug("Ready for Units. unprocessedHexString: {}", unprocessedHexString);
-                PropertyIdentifier unitsPid = null;
-                if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2))) {
-                    Octet propertyIdentifierOctet = listReader.next();
-                    unitsPid = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
                 }
-                //Expect start of list eg 4e
-                Octet startOfList = listReader.next();
-                log.debug(listReader.unprocessedHexString());
-                if(startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
-
-                }
-
-                */
-
-                }
-                ;
 
             }
         } catch (EntraUnknownOperationException e) {
