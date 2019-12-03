@@ -16,6 +16,7 @@ class BvlcParserTest {
         Bvlc bvlc = result.getBvlc();
         assertNotNull(bvlc);
         assertEquals(BvlcFunction.ForwardedNpdu, bvlc.getFunction());
+        assertEquals(24, bvlc.getFullMessageLength());
 
     }
 }
