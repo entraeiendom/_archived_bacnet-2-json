@@ -31,7 +31,7 @@ public class BacNet4jParser extends BacNetParser {
         this.gson = gson;
     }
 
-    public String findApduHexString(String hexString) {
+    public static String findApduHexString(String hexString) {
         String apduHexString = null;
         if (hexString != null && hexString.startsWith("81")) {
             apduHexString = hexString.substring(12);

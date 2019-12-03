@@ -1,5 +1,6 @@
 package no.entra.bacnet.json.services;
 
+import no.entra.bacnet.json.BacNetParser;
 import no.entra.bacnet.json.objects.PduType;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,12 @@ public class WhoIsTest {
     public static final String bvlcHexString = "810400180a3f510cbac0";
     public static final String npduHexString = "0120ffff00ff";
     public static final String apduHexString = "10080a07ae1a07ae";
+
+    @Test
+    void findApduHexString() {
+        String apduParsed = BacNetParser.findApduHexString(bacnetHexString);
+        assertEquals(apduHexString, apduParsed);
+    }
 
     @Test
     void findWhoIsService() {
