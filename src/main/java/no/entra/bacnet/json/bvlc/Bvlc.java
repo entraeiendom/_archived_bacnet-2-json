@@ -7,7 +7,7 @@ public class Bvlc {
     private final BvlcFunction function;
     private int bvlcLength = -1;
     private int fullMessageLength = -1;
-    private Octet[] observerIpAddress = null;
+    private Octet[] originatingDeviceIp = null;
     private Octet[] port = null;
 
     public Bvlc(Octet function) {
@@ -43,12 +43,19 @@ public class Bvlc {
         this.fullMessageLength = findExpectdNumberOfOctetsInBvll(fullMessageLength);
     }
 
-    public Octet[] getObserverIpAddress() {
-        return observerIpAddress;
+    public String getOriginatingDeviceIp() {
+        String original = null;
+        if (originatingDeviceIp != null && originatingDeviceIp.length == 4) {
+            original = "" + originatingDeviceIp[0].toInt() + "."
+                    + originatingDeviceIp[1].toInt() + "." +
+                    originatingDeviceIp[2].toInt() + "." +
+                    originatingDeviceIp[3].toInt();
+        }
+        return original;
     }
 
-    public void setObserverIpAddress(Octet[] observerIpAddress) {
-        this.observerIpAddress = observerIpAddress;
+    public void setOriginatingDeviceIp(Octet[] originatingDeviceIp) {
+        this.originatingDeviceIp = originatingDeviceIp;
     }
 
     public Octet[] getPort() {

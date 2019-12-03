@@ -2,6 +2,9 @@ package no.entra.bacnet.json.reader;
 
 import no.entra.bacnet.Octet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static no.entra.bacnet.json.utils.HexMatcher.isValidHex;
 
 
@@ -64,6 +67,20 @@ public class OctetReader {
             }
         }
         return nextString;
+    }
+
+    public Octet[] nextOctets(int numberOfOctets) throws IllegalStateException {
+        List<Octet> nextOctets = new ArrayList<>(numberOfOctets);
+        for (int i = 0; i < numberOfOctets; i++) {
+            if (hasNext()) {
+                nextOctets.add(next());
+            } else {
+                throw new IllegalStateException("You requested: " + numberOfOctets + ". Only " + (i +1) + " is available.");
+            }
+        }
+        Octet[] arr = new Octet[nextOctets.size()];
+        arr = nextOctets.toArray(arr);
+        return arr;
     }
     public String unprocessedHexString() {
         return hexString.substring(currentPos);

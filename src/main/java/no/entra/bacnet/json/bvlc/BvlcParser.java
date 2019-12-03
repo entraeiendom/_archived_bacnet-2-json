@@ -17,9 +17,25 @@ public class BvlcParser {
         }
         Octet functionOctet = bvlcReader.next();
         BvlcFunction function = BvlcFunction.fromOctet(functionOctet);
-        Octet[] messageLength = {bvlcReader.next(), bvlcReader.next()}; //Length is two octets
+        Octet[] messageLength = bvlcReader.nextOctets(2); //Length is two octets
         Bvlc bvlc = new BvlcBuilder(function).withMessageLength(messageLength).build();
         result = new BvlcResult(bvlc, bvlcReader.unprocessedHexString());
+        if (bvlc.getFunction().equals(BvlcFunction.ForwardedNpdu)) {
+            //Add forwarding info
+            result = addForwardingInfo(bvlc, bvlcReader);
+        }
+        return result;
+    }
+
+    static BvlcResult addForwardingInfo(Bvlc bvlc, OctetReader bvlcReader) {
+        BvlcResult result = null;
+        Octet[] originatingAddressOctet = bvlcReader.nextOctets(4); //Specified in spec.
+        Octet[] port = bvlcReader.nextOctets(2);
+        bvlc.setOriginatingDeviceIp(originatingAddressOctet);
+        bvlc.setPort(port);
+        String unprocessedBacnetHexString = bvlcReader.unprocessedHexString();
+        result = new BvlcResult(bvlc, unprocessedBacnetHexString);
+
         return result;
     }
 }

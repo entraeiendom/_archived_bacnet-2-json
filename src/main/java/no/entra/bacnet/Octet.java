@@ -61,6 +61,10 @@ public class Octet {
         return new Octet(hexString);
     }
 
+    public int toInt() {
+        return Integer.parseInt(toString(), 16);
+    }
+
     @Override
     public String toString() {
         return String.valueOf(octet);
