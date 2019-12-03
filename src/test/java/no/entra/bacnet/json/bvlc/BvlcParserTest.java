@@ -20,6 +20,7 @@ class BvlcParserTest {
         assertEquals(BvlcFunction.ForwardedNpdu, bvlc.getFunction());
         assertEquals(24, bvlc.getFullMessageLength());
         assertEquals("9.47.81.12", bvlc.getOriginatingDeviceIp());
+        assertEquals(47808, bvlc.getPort());
 
     }
 }

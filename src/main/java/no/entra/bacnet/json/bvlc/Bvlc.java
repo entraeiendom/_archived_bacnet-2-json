@@ -58,8 +58,12 @@ public class Bvlc {
         this.originatingDeviceIp = originatingDeviceIp;
     }
 
-    public Octet[] getPort() {
-        return port;
+    public int getPort() {
+        int originalPort = -1;
+        if (port != null && port.length == 2) {
+            originalPort = findExpectdNumberOfOctetsInBvll(port);
+        }
+        return originalPort;
     }
 
     public void setPort(Octet[] port) {
