@@ -17,6 +17,7 @@ public class Observation {
     private String id;
     private Source source;
     private Object value;
+    private String unit;
     private String name;
     private String description;
     private LocalDateTime observedAt;
@@ -69,6 +70,14 @@ public class Observation {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getName() {

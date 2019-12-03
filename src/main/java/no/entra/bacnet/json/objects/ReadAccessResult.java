@@ -232,4 +232,11 @@ public class ReadAccessResult {
         return propertyResult;
     }
 
+    @Override
+    public String toString() {
+        return "ReadAccessResult{" +
+                "objectId=" + objectId +
+                ", results=" + results +
+                '}';
+    }
 }

@@ -32,9 +32,14 @@ public class BacnetMessagesValidator {
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String apduHexString = bacnetParser.findApduHexString(line);
-                String json = bacnetParser.jsonFromApdu(apduHexString);
-                log.info("Hextring: {} \n{}", line, json);
+//                String apduHexString = bacnetParser.findApduHexString(line);
+//                String json = bacnetParser.jsonFromApdu(apduHexString);
+                try {
+                    bacnetParser.buildObservation(line);
+                } catch (Exception e) {
+                    log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
+                }
+//                log.info("Hextring: {} \n{}", line, json);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

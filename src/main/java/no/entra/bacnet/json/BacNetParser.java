@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.objects.ReadAccessResult;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import static no.entra.bacnet.json.objects.ReadAccessResult.LIST_END_HEX;
 import static no.entra.bacnet.json.objects.ReadAccessResult.LIST_START_HEX;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class BacNetParser {
+    public class BacNetParser {
     private static final Logger log = getLogger(BacNetParser.class);
 
     private final Gson gson;
@@ -45,7 +46,6 @@ public class BacNetParser {
         Source source = null;
 
 
-
         return json;
     }
 
@@ -60,9 +60,28 @@ public class BacNetParser {
         Octet pduTypeKey = apduReader.next();
         PduType pduType = PduType.fromOctet(pduTypeKey);
         Observation observation = null;
+        String devicdId = "TODO"; //#4 FIXME find deviceId from hexString.
 
         String resultListHexString = findListResultHexString(hexString);
-        ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(resultListHexString);
+        try {
+            ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(resultListHexString);
+            if (accessResult != null) {
+                log.info("ReadAccessResult: {}", accessResult);
+
+                String objectId = null;
+                if (objectId != null) {
+                    objectId = accessResult.getObjectId().toString();
+                    Source source = new Source(devicdId, objectId);
+                    Object presentValue = accessResult.getResultByKey(PropertyIdentifier.PresentValue);
+                    observation = new Observation(source, presentValue);
+                    observation.setName((String)accessResult.getResultByKey(PropertyIdentifier.ObjectName));
+                    observation.setDescription((String) accessResult.getResultByKey(PropertyIdentifier.Description));
+                    observation.setUnit((String) accessResult.getResultByKey(PropertyIdentifier.Units));
+                }
+            }
+        } catch (Exception e) {
+            log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
+        }
 
         return observation;
     }
