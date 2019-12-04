@@ -1,12 +1,13 @@
 package no.entra.bacnet.json.npdu;
 
 import no.entra.bacnet.Octet;
+import no.entra.bacnet.json.utils.HexUtils;
 
 import java.util.Arrays;
 
 public class Npdu {
     public static final Octet version = Octet.fromHexString("01");
-    private NpduControl control;
+    private Octet control;
     private Octet[] sourceNetworkAddress;
     private Octet sourceMacLayerAddress;
     private Octet[] destinationNetworkAddress;
@@ -17,17 +18,12 @@ public class Npdu {
         return version;
     }
 
-    public NpduControl getControl() {
-
+    public Octet getControl() {
         return control;
     }
 
     public void setControl(Octet controlOctet) {
-        this.control = NpduControl.fromOctet(controlOctet);
-    }
-
-    public void setControl(NpduControl control) {
-        this.control = control;
+        this.control = controlOctet;
     }
 
     public Octet[] getSourceNetworkAddress() {
@@ -80,5 +76,19 @@ public class Npdu {
                 ", destinationMacLayerAddress=" + destinationMacLayerAddress +
                 ", hopCount=" + hopCount +
                 '}';
+    }
+
+    public boolean isSourceAvailable() {
+        boolean sourceIsAvailable = false;
+        char lowerControl = control.getSecondNibble();
+        sourceIsAvailable = HexUtils.isBitSet(lowerControl, 3);
+        return sourceIsAvailable;
+    }
+
+    public boolean isDestinationAvailable() {
+        boolean destinationIsAvailable = false;
+        char higerControl = control.getFirstNibble();
+        destinationIsAvailable = HexUtils.isBitSet(higerControl, 1);
+        return destinationIsAvailable;
     }
 }

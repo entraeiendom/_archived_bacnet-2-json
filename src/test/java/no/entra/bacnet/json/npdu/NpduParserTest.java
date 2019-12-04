@@ -19,7 +19,7 @@ class NpduParserTest {
         assertTrue(result.isParsedOk());
         Npdu npdu = result.getNpdu();
         assertNotNull(npdu);
-        assertEquals(NpduControl.DestinationSpecifier, npdu.getControl());
+        assertEquals("20", npdu.getControl().toString());
         Octet[] networkAddress = {fromHexString("ff"), fromHexString("ff")};
         assertTrue(Arrays.equals(networkAddress, npdu.getDestinationNetworkAddress()));
         assertEquals(fromHexString("00"), npdu.getDestinationMacLayerAddress());

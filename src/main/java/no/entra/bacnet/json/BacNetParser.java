@@ -38,7 +38,9 @@ import static org.slf4j.LoggerFactory.getLogger;
         BvlcResult bvlcResult = BvlcParser.parse(hexString);
         String unprocessedHexString = bvlcResult.getUnprocessedHexString();
         NpduResult npduResult = NpduParser.parse(unprocessedHexString);
-        apduHexString = npduResult.getUnprocessedHexString();
+        if (npduResult != null) {
+            apduHexString = npduResult.getUnprocessedHexString();
+        }
         return apduHexString;
     }
 

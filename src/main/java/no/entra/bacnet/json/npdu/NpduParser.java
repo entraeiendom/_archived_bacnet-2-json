@@ -21,32 +21,25 @@ public class NpduParser {
         }
         Octet controlOctet = npduReader.next();
         Npdu npdu = new NpduBuilder(controlOctet).build();
-        NpduControl control = npdu.getControl();
-//        if (npdu.isSourceAvailable()) {
-//
-//        }
-        switch (control) {
-            case NormalMessage:
-                //TODO Do noting?
-                break;
-            case SourceAvailable:
-                //SNET, SLEN, and SADR present
-                //SLEN = 0 Invalid
-                //SLEN > 0 specifies length of SADR field
-                //SNET 2-octet original source network number
-                //SLEN 1-octet length of SADR
-                //SADR Original source MAC layer address.
-                result = addSourceSpecifierInfo(npdu, npduReader);
-            case DestinationSpecifier:
-                result = addDestinationSpecifierInfo(npdu, npduReader);
-                break;
-            default:
-                log.debug("No processing available for Npdu Control: {}. BacnetHexString: {}", controlOctet, bacnetHexString);
-                result.setParsedOk(false);
-        }
 
-        String unprocessedHexString = npduReader.unprocessedHexString();
-        result = new NpduResult(npdu, unprocessedHexString);
+        if (npdu.isDestinationAvailable()) {
+            result = addDestinationSpecifierInfo(npdu, npduReader);
+            if (result.isParsedOk()) {
+                npdu = result.getNpdu();
+                npduReader = new OctetReader(result.getUnprocessedHexString());
+            }
+        }
+        if (npdu.isSourceAvailable()) {
+            result = addSourceSpecifierInfo(npdu, npduReader);
+            if (result.isParsedOk()) {
+                npdu = result.getNpdu();
+                npduReader = new OctetReader(result.getUnprocessedHexString());
+            }
+        }
+        if (result == null) {
+            String unprocessedHexString = npduReader.unprocessedHexString();
+            result = new NpduResult(npdu, unprocessedHexString);
+        }
         return result;
     }
 
