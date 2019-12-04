@@ -40,6 +40,7 @@ import static org.slf4j.LoggerFactory.getLogger;
     }
 
     public String jsonFromApdu(String apduHexString) {
+        //FIXME need implementation.
         String json = null;
         ReadAccessResult accessResult = buildReadAccessResult(apduHexString);
         Observation observation = null;
