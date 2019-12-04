@@ -3,6 +3,10 @@ package no.entra.bacnet.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import no.entra.bacnet.Octet;
+import no.entra.bacnet.json.bvlc.BvlcParser;
+import no.entra.bacnet.json.bvlc.BvlcResult;
+import no.entra.bacnet.json.npdu.NpduParser;
+import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.objects.ReadAccessResult;
@@ -31,11 +35,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 
     public static String findApduHexString(String hexString) {
         String apduHexString = null;
-        if (hexString != null && hexString.startsWith("81")) {
-            apduHexString = hexString.substring(12);
-        } else {
-            apduHexString = hexString;
-        }
+        BvlcResult bvlcResult = BvlcParser.parse(hexString);
+        String unprocessedHexString = bvlcResult.getUnprocessedHexString();
+        NpduResult npduResult = NpduParser.parse(unprocessedHexString);
+        apduHexString = npduResult.getUnprocessedHexString();
         return apduHexString;
     }
 
