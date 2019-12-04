@@ -2,6 +2,7 @@ package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
+import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
@@ -23,6 +24,9 @@ public class ConfigurationParser {
     private static final char TIME_SYNC_DATE_KEY = 'a';
     private static final char TIME_SYNC_TIME_KEY = 'b';
 
+    /*
+    // Who Is
+     */
     public static ConfigurationRequest buildWhoIsRequest(String whoIsBody) {
         ConfigurationRequest configuration = null;
         Integer rangeLowLimit = null;
@@ -72,6 +76,33 @@ public class ConfigurationParser {
                 break;
         }
         return length;
+    }
+
+    /*
+    // I AM
+     */
+    public static ConfigurationRequest buildIamRequest(String iamBody) {
+//        String iamBody = "c40200020f22040091002105";
+//        String objectIdentifier = "c40200020f"; //c = BacnetObjectIdentifier, 4 = length, ObjectType device
+//        String maxADPULengthAccepted = "220400"; //2= unsigned integer, 2 = length 1024
+//        String segmentationSupported = "9100"; //9 Enumerated, 1 = length
+//        String vendorId = "2105"; //2 = unsigned integer, 1 = length, 5 = Johnson Controls
+        ConfigurationRequest configuration = new ConfigurationRequest("TODO", null);
+        OctetReader iamReader = new OctetReader(iamBody);
+        Octet objectIdOctet = iamReader.next();
+        char idLengthChar = objectIdOctet.getSecondNibble();
+        int idLength = HexUtils.toInt(idLengthChar);
+        Octet objectType = iamReader.next();
+        if (objectType.equals(Octet.fromHexString("02"))) {
+            configuration.setProperty("ObjectType", ObjectType.Device.name());
+        }
+        String instanceNumberOctet = iamReader.next(idLength -1);
+        Integer instanceNumber = HexUtils.toInt(instanceNumberOctet);
+        if (instanceNumber != null) {
+            configuration.setProperty("InstanceNumber", instanceNumber.toString());
+        }
+
+        return configuration;
     }
 
     public static ConfigurationRequest buildWhoHasRequest(String whoHasBody) {

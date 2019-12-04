@@ -58,4 +58,18 @@ class ConfigurationParserTest {
         String unknown = "3b006176500072006f006700720061006d006d0069006e0067002e002b00300032003d00330032003000200030003500200053006e00f80073006d0065006c0074002e0053006e0065002e005200540035003000310061006d006d0065007200620061007200650020006d006f00640075006c00650072002e00440043004f002e00440043004f00350000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
         //FIXME
     }
+
+    @Test
+    void iAmTest() {
+        String iamApdu = "1000c40200020f22040091002105";
+        String iamBody = "c40200020f22040091002105";
+        String objectIdentifier = "c40200020f"; //c = BacnetObjectIdentifier, 4 = length, ObjectType device
+        String maxADPULengthAccepted = "220400"; //2= unsigned integer, 2 = length 1024
+        String segmentationSupported = "9100"; //9 Enumerated, 1 = length
+        String vendorId = "2105"; //2 = unsigned integer, 1 = length, 5 = Johnson Controls
+
+        ConfigurationRequest configuration = ConfigurationParser.buildIamRequest(iamBody);
+        assertNotNull(configuration);
+        assertEquals("Device", configuration.getProperty("ObjectType"));
+    }
 }
