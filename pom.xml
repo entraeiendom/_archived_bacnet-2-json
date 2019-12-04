@@ -21,28 +21,6 @@
   <repositories>
     <repository>
       <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>ias-snapshots</id>
-      <name>Infinite Automation Snapshot Repository</name>
-      <url>https://maven.mangoautomation.net/repository/ias-snapshot/</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>ias-releases</id>
-      <name>Infinite Automation Release Repository</name>
-      <url>https://maven.mangoautomation.net/repository/ias-release/</url>
-    </repository>
-    <repository>
-      <releases>
         <enabled>true</enabled>
       </releases>
       <snapshots>
@@ -98,12 +76,6 @@
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.infiniteautomation</groupId>
-      <artifactId>bacnet4j</artifactId>
-      <version>5.0.2</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

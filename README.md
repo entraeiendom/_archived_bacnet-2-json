@@ -2,10 +2,10 @@
 Parse BacnetUDP and convert to Json. Must be GPLv3 due to bacnet4j dependency
 
 
-## Json "sheema"
+## Json "shcema"
 
 ```
-"observation": {
+{"observation": {
   "id": "uuid when known",
   "source": {
     "device-id": "dsfas",

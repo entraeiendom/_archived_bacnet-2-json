@@ -1,7 +1,5 @@
 package no.entra.bacnet.json;
 
-import com.serotonin.bacnet4j.exception.BACnetException;
-import no.entra.bacnet.json.bacnet4j.BacNet4jParser;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
@@ -30,11 +28,11 @@ public class BacNetParserTest {
             "  }}";
     @BeforeEach
     void setUp() {
-        bacNetParser = new BacNet4jParser();
+        bacNetParser = new BacNetParser();
     }
 
     @Test
-    void buildJsonFromAdpuHexString() throws BACnetException, JSONException {
+    void buildJsonFromAdpuHexString() throws JSONException {
         String byteHex = "100209001c020007d12c020007d139004e09702e91002f09cb2e2ea4770b0105b40d2300442f2f09c42e91002f4f";
         String json = bacNetParser.jsonFromApdu(byteHex);
         log.debug("Json built: {}", json);
