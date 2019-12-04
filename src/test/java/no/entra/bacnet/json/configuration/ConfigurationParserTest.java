@@ -1,6 +1,7 @@
 package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.json.ConfigurationRequest;
+import no.entra.bacnet.json.objects.Segmentation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,5 +74,6 @@ class ConfigurationParserTest {
         assertEquals("Device", configuration.getProperty("ObjectType"));
         assertEquals("527", configuration.getProperty("InstanceNumber"));
         assertEquals("1024", configuration.getProperty("MaxADPULengthAccepted"));
+        assertEquals(Segmentation.SegmentedBoth.name(), configuration.getProperty("SegmentationSupported"));
     }
 }

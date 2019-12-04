@@ -3,6 +3,7 @@ package no.entra.bacnet.json.configuration;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.objects.ObjectType;
+import no.entra.bacnet.json.objects.Segmentation;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
@@ -110,6 +111,18 @@ public class ConfigurationParser {
         Integer maxAdpu = HexUtils.toInt(maxPduLengthString);
         if (maxAdpu != null) {
             configuration.setProperty("MaxADPULengthAccepted",maxAdpu.toString());
+        }
+
+        //segmentationSupported
+        Octet acceptSegmentationOctet = iamReader.next();
+        char segLengthChar = acceptSegmentationOctet.getSecondNibble();
+        int segLength = HexUtils.toInt(segLengthChar);
+        if (segLength == 1) {
+            Octet segmentationOcet = iamReader.next();
+            Segmentation segmentation = Segmentation.fromOctet(segmentationOcet);
+            if (segmentation != null) {
+                configuration.setProperty("SegmentationSupported", segmentation.name());
+            }
         }
         return configuration;
     }
