@@ -30,10 +30,10 @@ class ConfigurationParserTest {
 
     @Test
     void mapToValueOctetLengthTest() {
-        assertEquals(1, ConfigurationParser.mapToValueOctetLength('9'));
-        assertEquals(2, ConfigurationParser.mapToValueOctetLength('a'));
-        assertEquals(3, ConfigurationParser.mapToValueOctetLength('b'));
-        assertEquals(0, ConfigurationParser.mapToValueOctetLength('c'));
+        assertEquals(1, ConfigurationParser.mapWhoIsLength('9'));
+        assertEquals(2, ConfigurationParser.mapWhoIsLength('a'));
+        assertEquals(3, ConfigurationParser.mapWhoIsLength('b'));
+        assertEquals(0, ConfigurationParser.mapWhoIsLength('c'));
     }
 
     @Test
@@ -42,5 +42,13 @@ class ConfigurationParserTest {
         ConfigurationRequest configuration = ConfigurationParser.buildWhoHasRequest(whoHasBody);
         assertNotNull(configuration);
         assertEquals("SOMS2-NAEX", configuration.getProperty("ObjectName"));
+    }
+
+    @Test
+    void buildTimeSynchronizationRequestTest() {
+        String timeSyncBody = "a4770b1b03b40c0b3939";
+        ConfigurationRequest configuration = ConfigurationParser.buildTimeSynchronizationRequest(timeSyncBody);
+        assertNotNull(configuration);
+        assertEquals("12:11:57",configuration.getProperty("TimeSyncTime"));
     }
 }

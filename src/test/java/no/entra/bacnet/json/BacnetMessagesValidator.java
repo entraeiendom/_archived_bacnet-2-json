@@ -15,8 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWhoHasRequest;
-import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWhoIsRequest;
+import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -114,14 +113,16 @@ public class BacnetMessagesValidator {
                     log.trace("Is WhoHasMessage");
                     configuration = buildWhoHasRequest(service.getUnprocessedHexString());
                     break;
+                case TimeSynchronization:
+                    String timeSyncHexString = service.getUnprocessedHexString();
+                    configuration = buildTimeSynchronizationRequest(timeSyncHexString);
+                    break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);
             }
         }
         return configuration;
     }
-
-
 
     Observation buildObservation(long validApdu, String line, String apduHexString) {
         Observation observation = null;
