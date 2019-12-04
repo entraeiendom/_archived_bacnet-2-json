@@ -12,6 +12,7 @@ public class ServiceParser {
         PduType pduType = PduType.fromOctet(pduTypeOctet);
         Octet serviceChoiceOctet = serviceReader.next();
         Service service = new ServiceBuilder(pduType).withServiceChoice(serviceChoiceOctet).build();
+        service.setUnprocessedHexString(serviceReader.unprocessedHexString());
         return service;
     }
 }

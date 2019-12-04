@@ -5,6 +5,7 @@ import no.entra.bacnet.json.objects.PduType;
 public class Service {
     private final PduType pduType;
     private final ServiceChoice serviceChoice;
+    private String unprocessedHexString;
 
     public Service(PduType pduType, ServiceChoice serviceChoice) {
         this.pduType = pduType;
@@ -19,11 +20,20 @@ public class Service {
         return serviceChoice;
     }
 
+    public void setUnprocessedHexString(String unprocessedHexString) {
+        this.unprocessedHexString = unprocessedHexString;
+    }
+
+    public String getUnprocessedHexString() {
+        return unprocessedHexString;
+    }
+
     @Override
     public String toString() {
         return "Service{" +
                 "pduType=" + pduType +
                 ", serviceChoice=" + serviceChoice +
+                ", unprocessedHexString='" + unprocessedHexString + '\'' +
                 '}';
     }
 }

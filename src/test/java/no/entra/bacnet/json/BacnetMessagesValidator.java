@@ -6,13 +6,17 @@ import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.services.Service;
+import no.entra.bacnet.json.services.ServiceChoice;
 import no.entra.bacnet.json.services.ServiceParser;
+import no.entra.bacnet.json.services.UnconfirmedServiceChoice;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWhoHasRequest;
+import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWhoIsRequest;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -55,21 +59,29 @@ public class BacnetMessagesValidator {
                             validNpdu++;
                             String apduHexString = npduResult.getUnprocessedHexString();
                             Service service = ServiceParser.fromApduHexString(apduHexString);
-                            if (service != null && service.getPduType().equals(PduType.ComplexAck)) {
-                                try {
-//FIXME need to change buildObservation to use BVLC and NPDU are removed.
-//                                    observationHexString = ServiceResult.getUnprocessedHexString();
-                                    Observation observation = bacnetParser.buildObservation(apduHexString);
-                                    if (observation != null) {
-                                        log.debug("Observation: {} \n\thexString: {}", observation, apduHexString);
-                                        validApdu++;
-                                    }
-                                } catch (Exception e) {
-                                    log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
+                            if (service != null) {
+                                log.trace("Verified Service: {}", service);
+                                verifiedService++;
+
+                                PduType pduType = service.getPduType();
+                                switch (pduType) {
+                                    case ComplexAck:
+                                        Observation observation = buildObservation(validApdu, line, apduHexString);
+                                        log.trace("Observation built: ", observation);
+                                        if (observation != null) {
+                                            validApdu++;
+                                        }
+                                        break;
+                                    case UnconfirmedRequest:
+                                        Object request = tryToUnderstandUnconfirmedRequest(service);
+                                        if (request != null) {
+                                            validApdu++;
+                                        }
+                                        break;
+                                    default:
+                                        log.debug("Do not know how to handle PduType: {}. ApduHexString: {}", pduType, apduHexString);
+
                                 }
-                            } else if (service != null){
-                                log.trace("Verified Service: {}", service );
-                                verifiedService ++;
                             }
                         }
                     }
@@ -78,10 +90,55 @@ public class BacnetMessagesValidator {
                 }
             }
             log.info("Verified BVLC: {}, Verified NPUD: {}, Verified Service: {}, Understood {} observations.",
-                    validBvlc, validNpdu, verifiedService,validApdu);
+                    validBvlc, validNpdu, verifiedService, validApdu);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    ConfigurationRequest tryToUnderstandUnconfirmedRequest(Service service) {
+        ConfigurationRequest configuration = null;
+        if (service == null) {
+            return null;
+        }
+        ServiceChoice serviceChoice = service.getServiceChoice();
+        if (serviceChoice != null && serviceChoice instanceof UnconfirmedServiceChoice) {
+            UnconfirmedServiceChoice unconfirmedServiceChoice = (UnconfirmedServiceChoice) serviceChoice;
+            switch (unconfirmedServiceChoice) {
+                case WhoIs:
+                    //TODO parse WhoIs
+//                    Instance Range Low Limit: ContextTag0, length a == 2 Octet
+                    //Instance Range High Limit: ContextTag1, length a == 2 Octet
+                    log.trace("Is WhoIsMessage. hexString: {}", service.getUnprocessedHexString());
+                    configuration = buildWhoIsRequest(service.getUnprocessedHexString());
+                    break;
+                case WhoHas:
+                    log.trace("Is WhoHasMessage");
+                    configuration = buildWhoHasRequest(service.getUnprocessedHexString());
+                    break;
+                default:
+                    log.trace("I do not know how to parse this service: {}", service);
+            }
+        }
+        return configuration;
+    }
+
+
+
+    Observation buildObservation(long validApdu, String line, String apduHexString) {
+        Observation observation = null;
+        try {
+//FIXME need to change buildObservation to use BVLC and NPDU are removed.
+//                                    observationHexString = service.getUnprocessedHexString();
+            observation = bacnetParser.buildObservation(apduHexString);
+            if (observation != null) {
+                log.debug("Observation: {} \n\thexString: {}", observation, apduHexString);
+                validApdu++;
+            }
+        } catch (Exception e) {
+            log.debug("Failed to build observation from: {}. Reason: {}", line, e.getMessage());
+        }
+        return observation;
     }
 
     public static void main(String[] args) {

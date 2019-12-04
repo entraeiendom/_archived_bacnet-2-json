@@ -3,13 +3,12 @@ package no.entra.bacnet.json.objects;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.EntraUnknownOperationException;
 import no.entra.bacnet.json.reader.OctetReader;
+import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import static java.lang.Integer.parseInt;
-import static no.entra.bacnet.json.utils.HexByteConverter.hexStringToByteArray;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReadAccessResult {
@@ -18,7 +17,8 @@ public class ReadAccessResult {
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
     public static final String SD_CONTEXT_TAG_2 = "29";
-    public static final String PRESENT_VALUE_HEX = "55";
+    public static final char ExtendedValue = '5';
+    public static final String PRESENT_VALUE_HEX = ExtendedValue + "5";
     public static final String PD_OPENING_TAG_4 = "4e";
     public static final String PD_CLOSING_TAG_4 = "4f";
     private ObjectId objectId;
@@ -175,17 +175,14 @@ public class ReadAccessResult {
                     if (applicationTag.getFirstNibble() == '7') {
                         log.debug("Expecting String.");
                     }
-                    if (applicationTag.getSecondNibble() == '5') {
+                    if (applicationTag.getSecondNibble() == ExtendedValue) {
                         log.debug("Expecting extended value");
                         Octet valueLength = propertyReader.next();
                         int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
                         Octet encoding = propertyReader.next();
                         String objectNameHex = propertyReader.next(valueOctetLength - 1);
                         log.debug("ObjectNameHex: {}", objectNameHex);
-                        if (encoding.equals(Octet.fromHexString("04"))) {
-                            byte[] bytes = hexStringToByteArray(objectNameHex);
-                            objectName = new String(bytes, StandardCharsets.UTF_16);
-                        }
+                        objectName = HexUtils.parseExtendedValue(encoding,objectNameHex);
                         log.debug("The rest: {}", propertyReader.unprocessedHexString());
                     } else {
                         log.debug("Do not know what to do....");
