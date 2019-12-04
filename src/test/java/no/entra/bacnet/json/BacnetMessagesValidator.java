@@ -69,12 +69,16 @@ public class BacnetMessagesValidator {
                                         log.trace("Observation built: ", observation);
                                         if (observation != null) {
                                             validApdu++;
+                                        } else {
+                                            log.trace("I did not understand PDU: {} from hex: {}", pduType, apduHexString);
                                         }
                                         break;
                                     case UnconfirmedRequest:
                                         Object request = tryToUnderstandUnconfirmedRequest(service);
                                         if (request != null) {
                                             validApdu++;
+                                        } else {
+                                            log.trace("I did not understand PDU: {} from hex: {}", pduType, service.getUnprocessedHexString());
                                         }
                                         break;
                                     default:
