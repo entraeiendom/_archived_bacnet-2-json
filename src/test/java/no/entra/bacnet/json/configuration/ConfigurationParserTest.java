@@ -72,5 +72,6 @@ class ConfigurationParserTest {
         assertNotNull(configuration);
         assertEquals("Device", configuration.getProperty("ObjectType"));
         assertEquals("527", configuration.getProperty("InstanceNumber"));
+        assertEquals("1024", configuration.getProperty("MaxADPULengthAccepted"));
     }
 }

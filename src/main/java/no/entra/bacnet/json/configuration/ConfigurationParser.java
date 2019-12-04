@@ -102,6 +102,15 @@ public class ConfigurationParser {
             configuration.setProperty("InstanceNumber", instanceNumber.toString());
         }
 
+        //MaxADPULengthAccepted
+        Octet adpuLengthOctet = iamReader.next();
+        char maxPdpuLengthChar = adpuLengthOctet.getSecondNibble();
+        int octetCount = HexUtils.toInt(maxPdpuLengthChar);
+        String maxPduLengthString = iamReader.next(octetCount);
+        Integer maxAdpu = HexUtils.toInt(maxPduLengthString);
+        if (maxAdpu != null) {
+            configuration.setProperty("MaxADPULengthAccepted",maxAdpu.toString());
+        }
         return configuration;
     }
 
