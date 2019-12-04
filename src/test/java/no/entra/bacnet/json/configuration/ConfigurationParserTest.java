@@ -75,5 +75,7 @@ class ConfigurationParserTest {
         assertEquals("527", configuration.getProperty("InstanceNumber"));
         assertEquals("1024", configuration.getProperty("MaxADPULengthAccepted"));
         assertEquals(Segmentation.SegmentedBoth.name(), configuration.getProperty("SegmentationSupported"));
+        assertEquals("Johnson Controls, Inc", configuration.getProperty("Vendor"));
+        assertEquals("05", configuration.getProperty("VendorId"));
     }
 }

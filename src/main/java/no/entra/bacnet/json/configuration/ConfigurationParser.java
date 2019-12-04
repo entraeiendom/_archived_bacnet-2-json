@@ -113,7 +113,7 @@ public class ConfigurationParser {
             configuration.setProperty("MaxADPULengthAccepted",maxAdpu.toString());
         }
 
-        //segmentationSupported
+        //SegmentationSupported
         Octet acceptSegmentationOctet = iamReader.next();
         char segLengthChar = acceptSegmentationOctet.getSecondNibble();
         int segLength = HexUtils.toInt(segLengthChar);
@@ -124,6 +124,19 @@ public class ConfigurationParser {
                 configuration.setProperty("SegmentationSupported", segmentation.name());
             }
         }
+
+        //Vendor
+        Octet vendorOctet = iamReader.next();
+        char vendorLengthChar = vendorOctet.getSecondNibble();
+        int vendorLength = HexUtils.toInt(vendorLengthChar);
+        if (vendorLength == 1) {
+            Octet vendorId = iamReader.next();
+            configuration.setProperty("VendorId", vendorId.toString());
+            if (vendorId.equals(Octet.fromHexString("05"))) {
+                configuration.setProperty("Vendor", "Johnson Controls, Inc");
+            }
+        }
+
         return configuration;
     }
 
