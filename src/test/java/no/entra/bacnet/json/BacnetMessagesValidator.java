@@ -106,11 +106,9 @@ public class BacnetMessagesValidator {
             UnconfirmedServiceChoice unconfirmedServiceChoice = (UnconfirmedServiceChoice) serviceChoice;
             switch (unconfirmedServiceChoice) {
                 case WhoIs:
-                    //TODO parse WhoIs
-//                    Instance Range Low Limit: ContextTag0, length a == 2 Octet
-                    //Instance Range High Limit: ContextTag1, length a == 2 Octet
                     log.trace("Is WhoIsMessage. hexString: {}", service.getUnprocessedHexString());
-                    configuration = buildWhoIsRequest(service.getUnprocessedHexString());
+                    String whoIsBody = service.getUnprocessedHexString();
+                    configuration = buildWhoIsRequest(whoIsBody);
                     break;
                 case WhoHas:
                     log.trace("Is WhoHasMessage");

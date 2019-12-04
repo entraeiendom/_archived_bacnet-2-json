@@ -13,8 +13,8 @@ public class ConfigurationParser {
     private static final Logger log = getLogger(ConfigurationParser.class);
 
     private static final char WHO_HAS_EXTENDED_VALUE = 'd';
-    private static final Octet LOWER_LIMIT_KEY = Octet.fromHexString("0a");
-    private static final Octet HIGH_LIMIT_KEY = Octet.fromHexString("1a");
+    private static final char LOWER_LIMIT_KEY = '0';
+    private static final char HIGH_LIMIT_KEY = '1';
 
     public static ConfigurationRequest buildWhoIsRequest(String whoIsBody) {
         ConfigurationRequest configuration = null;
@@ -23,13 +23,15 @@ public class ConfigurationParser {
         log.debug("whoisbody: {}", whoIsBody);
         OctetReader whoHasReader = new OctetReader(whoIsBody);
         Octet lowerLimitOctet = whoHasReader.next();
-        if (lowerLimitOctet.equals(LOWER_LIMIT_KEY)) {
-            String lowerLimitHex = whoHasReader.next(2);
+        if (lowerLimitOctet.getFirstNibble() == LOWER_LIMIT_KEY) {
+            int numberOfOctets = mapToValueOctetLength(lowerLimitOctet.getSecondNibble());
+            String lowerLimitHex = whoHasReader.next(numberOfOctets);
             rangeLowLimit = HexUtils.toInt(lowerLimitHex);
         }
         Octet highLimitOctet = whoHasReader.next();
-        if (highLimitOctet.equals(HIGH_LIMIT_KEY)) {
-            String highLimitHex = whoHasReader.next(2);
+        if (highLimitOctet.getFirstNibble() == HIGH_LIMIT_KEY) {
+            int numberOfOctets = mapToValueOctetLength(highLimitOctet.getSecondNibble());
+            String highLimitHex = whoHasReader.next(numberOfOctets);
             rangeHighLimit = HexUtils.toInt(highLimitHex);
         }
 
@@ -46,6 +48,25 @@ public class ConfigurationParser {
         return configuration;
     }
 
+    static int mapToValueOctetLength(char lengthKey) {
+        int length = 0;
+        switch (lengthKey) {
+            case '9':
+                length = 1;
+                break;
+            case 'a':
+                length = 2;
+                break;
+            case 'b':
+                length = 3;
+                break;
+            default:
+                log.debug("Unknown lenght of who is seccond nibble: {}", lengthKey);
+                break;
+        }
+        return length;
+    }
+
     public static ConfigurationRequest buildWhoHasRequest(String whoHasBody) {
         ConfigurationRequest configuration = null;
         String objectName = null;
@@ -59,7 +80,7 @@ public class ConfigurationParser {
             Octet encoding = whoHasReader.next();
             String objectNameHex = whoHasReader.next(valueOctetLength - 1);
             log.debug("WhoHas-ObjectNameHex: {}", objectNameHex);
-            objectName = HexUtils.parseExtendedValue(encoding,objectNameHex);
+            objectName = HexUtils.parseExtendedValue(encoding, objectNameHex);
         }
         if (objectName != null) {
             configuration = new ConfigurationRequest("TODO", null);

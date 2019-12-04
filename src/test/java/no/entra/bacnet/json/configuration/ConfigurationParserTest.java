@@ -15,6 +15,25 @@ class ConfigurationParserTest {
         assertNotNull(configuration);
         assertEquals("1966",configuration.getProperty("DeviceInstanceRangeLowLimit"));
         assertEquals("1966",configuration.getProperty("DeviceInstanceRangeHighLimit"));
+        whoIsBody = "0b26259f1b26259f310036002d004e004100450032002f004600430042002e004c006f00630061006c0020004";
+        configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        assertNotNull(configuration);
+        assertEquals("2499999",configuration.getProperty("DeviceInstanceRangeLowLimit"));
+        assertEquals("2499999",configuration.getProperty("DeviceInstanceRangeHighLimit"));
+        whoIsBody = "09101910";
+        configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        assertNotNull(configuration);
+        assertEquals("16",configuration.getProperty("DeviceInstanceRangeLowLimit"));
+        assertEquals("16",configuration.getProperty("DeviceInstanceRangeHighLimit"));
+
+    }
+
+    @Test
+    void mapToValueOctetLengthTest() {
+        assertEquals(1, ConfigurationParser.mapToValueOctetLength('9'));
+        assertEquals(2, ConfigurationParser.mapToValueOctetLength('a'));
+        assertEquals(3, ConfigurationParser.mapToValueOctetLength('b'));
+        assertEquals(0, ConfigurationParser.mapToValueOctetLength('c'));
     }
 
     @Test
