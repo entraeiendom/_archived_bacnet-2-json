@@ -49,6 +49,7 @@ class ConfigurationParserTest {
         String timeSyncBody = "a4770b1b03b40c0b3939";
         ConfigurationRequest configuration = ConfigurationParser.buildTimeSynchronizationRequest(timeSyncBody);
         assertNotNull(configuration);
+        assertEquals("2019-11-27",configuration.getProperty("TimeSyncDate"));
         assertEquals("12:11:57",configuration.getProperty("TimeSyncTime"));
     }
 }

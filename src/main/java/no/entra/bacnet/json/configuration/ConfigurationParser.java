@@ -6,6 +6,8 @@ import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
@@ -97,35 +99,47 @@ public class ConfigurationParser {
 
     public static ConfigurationRequest buildTimeSynchronizationRequest(String timeSyncHexString) {
         ConfigurationRequest configuration = null;
-        Integer date = null;
-        String time = null;
+        LocalDate date = null;
+        LocalTime time = null;
         log.debug("whoisbody: {}", timeSyncHexString);
         OctetReader timeSyncReader = new OctetReader(timeSyncHexString);
         Octet dateOctet = timeSyncReader.next();
         if (dateOctet.getFirstNibble() == TIME_SYNC_DATE_KEY) {
             int numberOfOctets = mapTimeSyncLength(dateOctet.getSecondNibble());
-            String dateHex = timeSyncReader.next(numberOfOctets);
-            date = HexUtils.toInt(dateHex);
+            if (numberOfOctets == 4) {
+                int year = 1900 + HexUtils.toInt(timeSyncReader.next());
+                int month = HexUtils.toInt(timeSyncReader.next());
+                int day = HexUtils.toInt(timeSyncReader.next());
+                date = LocalDate.of(year,month,day);
+                //Get day of week even if we do not need that one
+                timeSyncReader.next();
+            }
         }
         Octet timeOctet = timeSyncReader.next();
         if (timeOctet.getFirstNibble() == TIME_SYNC_TIME_KEY) {
             int numberOfOctets = mapTimeSyncLength(timeOctet.getSecondNibble());
-            int hour = HexUtils.toInt(timeSyncReader.next());
-            int min = HexUtils.toInt(timeSyncReader.next());
-            int sec = HexUtils.toInt(timeSyncReader.next());
-            int hundredsOfSec = HexUtils.toInt(timeSyncReader.next());
-            LocalTime localTime = LocalTime.of(hour,min,sec,tenthToNano(hundredsOfSec));
-            time = localTime.toString();
+            if (numberOfOctets == 4) {
+                int hour = HexUtils.toInt(timeSyncReader.next());
+                int min = HexUtils.toInt(timeSyncReader.next());
+                int sec = HexUtils.toInt(timeSyncReader.next());
+                int hundredsOfSec = HexUtils.toInt(timeSyncReader.next());
+                time = LocalTime.of(hour, min, sec, tenthToNano(hundredsOfSec));
+            }
         }
 
         if (date != null || time != null) {
             configuration = new ConfigurationRequest("TODO", null);
-        }
-        if (date != null) {
-            configuration.setProperty("TimeSyncDate", date.toString());
-        }
-        if (time != null) {
-            configuration.setProperty("TimeSyncTime", time.toString());
+
+            if (date != null) {
+                configuration.setProperty("TimeSyncDate", date.toString());
+            }
+            if (time != null) {
+                configuration.setProperty("TimeSyncTime", time.toString());
+            }
+            if (date != null && time != null) {
+                LocalDateTime dateTime = LocalDateTime.of(date,time);
+                configuration.setProperty("TimeSyncDateTime", dateTime.toString());
+            }
         }
 
         return configuration;
