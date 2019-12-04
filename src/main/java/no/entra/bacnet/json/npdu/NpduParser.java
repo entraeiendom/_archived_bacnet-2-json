@@ -22,10 +22,21 @@ public class NpduParser {
         Octet controlOctet = npduReader.next();
         Npdu npdu = new NpduBuilder(controlOctet).build();
         NpduControl control = npdu.getControl();
+//        if (npdu.isSourceAvailable()) {
+//
+//        }
         switch (control) {
             case NormalMessage:
                 //TODO Do noting?
                 break;
+            case SourceAvailable:
+                //SNET, SLEN, and SADR present
+                //SLEN = 0 Invalid
+                //SLEN > 0 specifies length of SADR field
+                //SNET 2-octet original source network number
+                //SLEN 1-octet length of SADR
+                //SADR Original source MAC layer address.
+                result = addSourceSpecifierInfo(npdu, npduReader);
             case DestinationSpecifier:
                 result = addDestinationSpecifierInfo(npdu, npduReader);
                 break;
@@ -39,6 +50,18 @@ public class NpduParser {
         return result;
     }
 
+    static NpduResult addSourceSpecifierInfo(Npdu npdu, OctetReader npduReader) {
+        NpduResult result = null;
+        Octet[] sourceNetworkAddress = npduReader.nextOctets(2);
+        npdu.setSourceNetworkAddress(sourceNetworkAddress);
+        Octet sourceMacLayerAddress = npduReader.next();
+        npdu.setSourceMacLayerAddress(sourceMacLayerAddress);
+//        Octet hopCount = npduReader.next();
+//        npdu.setHopCount(hopCount);
+        String unprocessedHexString = npduReader.unprocessedHexString();
+        result = new NpduResult(npdu, unprocessedHexString);
+        return result;
+    }
     static NpduResult addDestinationSpecifierInfo(Npdu npdu, OctetReader npduReader) {
         NpduResult result = null;
         Octet[] destinationNetworkAddress = npduReader.nextOctets(2);

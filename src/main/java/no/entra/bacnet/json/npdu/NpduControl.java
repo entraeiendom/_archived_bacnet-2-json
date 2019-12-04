@@ -4,6 +4,7 @@ import no.entra.bacnet.Octet;
 
 public enum  NpduControl {
     NormalMessage("00"),
+    SourceAvailable("08"),
     DestinationSpecifier("20");
     private String npduControlHex;
 
