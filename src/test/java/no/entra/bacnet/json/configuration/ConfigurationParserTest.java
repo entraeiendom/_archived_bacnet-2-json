@@ -71,5 +71,6 @@ class ConfigurationParserTest {
         ConfigurationRequest configuration = ConfigurationParser.buildIamRequest(iamBody);
         assertNotNull(configuration);
         assertEquals("Device", configuration.getProperty("ObjectType"));
+        assertEquals("527", configuration.getProperty("InstanceNumber"));
     }
 }
