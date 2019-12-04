@@ -13,12 +13,35 @@ public class ConfigurationParser {
     private static final Logger log = getLogger(ConfigurationParser.class);
 
     private static final char WHO_HAS_EXTENDED_VALUE = 'd';
+    private static final Octet LOWER_LIMIT_KEY = Octet.fromHexString("0a");
+    private static final Octet HIGH_LIMIT_KEY = Octet.fromHexString("1a");
 
-    public static ConfigurationRequest buildWhoIsRequest(String whoIsBodyHexString) {
+    public static ConfigurationRequest buildWhoIsRequest(String whoIsBody) {
         ConfigurationRequest configuration = null;
-        //TODO parse WhoIs
-        //Instance Range Low Limit: ContextTag0, length a == 2 Octet
-        //Instance Range High Limit: ContextTag1, length a == 2 Octet
+        Integer rangeLowLimit = null;
+        Integer rangeHighLimit = null;
+        log.debug("whoisbody: {}", whoIsBody);
+        OctetReader whoHasReader = new OctetReader(whoIsBody);
+        Octet lowerLimitOctet = whoHasReader.next();
+        if (lowerLimitOctet.equals(LOWER_LIMIT_KEY)) {
+            String lowerLimitHex = whoHasReader.next(2);
+            rangeLowLimit = HexUtils.toInt(lowerLimitHex);
+        }
+        Octet highLimitOctet = whoHasReader.next();
+        if (highLimitOctet.equals(HIGH_LIMIT_KEY)) {
+            String highLimitHex = whoHasReader.next(2);
+            rangeHighLimit = HexUtils.toInt(highLimitHex);
+        }
+
+        if (rangeLowLimit != null || rangeHighLimit != null) {
+            configuration = new ConfigurationRequest("TODO", null);
+        }
+        if (rangeLowLimit != null) {
+            configuration.setProperty("DeviceInstanceRangeLowLimit", rangeLowLimit.toString());
+        }
+        if (rangeHighLimit != null) {
+            configuration.setProperty("DeviceInstanceRangeHighLimit", rangeHighLimit.toString());
+        }
 
         return configuration;
     }
@@ -31,18 +54,16 @@ public class ConfigurationParser {
         char contextTag = contextTagOctet.getFirstNibble();
         char namedTag = contextTagOctet.getSecondNibble();
         if (namedTag == WHO_HAS_EXTENDED_VALUE) {
-            log.debug("Expecting extended value");
             Octet valueLength = whoHasReader.next();
             int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
             Octet encoding = whoHasReader.next();
             String objectNameHex = whoHasReader.next(valueOctetLength - 1);
-            log.debug("ObjectNameHex: {}", objectNameHex);
+            log.debug("WhoHas-ObjectNameHex: {}", objectNameHex);
             objectName = HexUtils.parseExtendedValue(encoding,objectNameHex);
-            log.debug("The rest: {}", whoHasReader.unprocessedHexString());
         }
         if (objectName != null) {
             configuration = new ConfigurationRequest("TODO", null);
-            configuration.setProperty("ObjectName", objectName);
+            configuration.setProperty("WhoHasObjectName", objectName);
         }
 
         return configuration;
