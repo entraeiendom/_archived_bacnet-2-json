@@ -121,6 +121,9 @@ public class BacnetMessagesValidator {
                     String timeSyncHexString = service.getUnprocessedHexString();
                     configuration = buildTimeSynchronizationRequest(timeSyncHexString);
                     break;
+                case IAm:
+                    String iamHexString = service.getUnprocessedHexString();
+                    configuration = buildIamRequest(iamHexString);
                 default:
                     log.trace("I do not know how to parse this service: {}", service);
             }
