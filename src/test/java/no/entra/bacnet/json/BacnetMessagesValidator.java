@@ -6,16 +6,14 @@ import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.services.Service;
-import no.entra.bacnet.json.services.ServiceChoice;
 import no.entra.bacnet.json.services.ServiceParser;
-import no.entra.bacnet.json.services.UnconfirmedServiceChoice;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
+import static no.entra.bacnet.json.services.UnconfirmedService.tryToUnderstandUnconfirmedRequest;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -99,37 +97,7 @@ public class BacnetMessagesValidator {
         }
     }
 
-    ConfigurationRequest tryToUnderstandUnconfirmedRequest(Service service) {
-        ConfigurationRequest configuration = null;
-        if (service == null) {
-            return null;
-        }
-        ServiceChoice serviceChoice = service.getServiceChoice();
-        if (serviceChoice != null && serviceChoice instanceof UnconfirmedServiceChoice) {
-            UnconfirmedServiceChoice unconfirmedServiceChoice = (UnconfirmedServiceChoice) serviceChoice;
-            switch (unconfirmedServiceChoice) {
-                case WhoIs:
-                    log.trace("Is WhoIsMessage. hexString: {}", service.getUnprocessedHexString());
-                    String whoIsBody = service.getUnprocessedHexString();
-                    configuration = buildWhoIsRequest(whoIsBody);
-                    break;
-                case WhoHas:
-                    log.trace("Is WhoHasMessage");
-                    configuration = buildWhoHasRequest(service.getUnprocessedHexString());
-                    break;
-                case TimeSynchronization:
-                    String timeSyncHexString = service.getUnprocessedHexString();
-                    configuration = buildTimeSynchronizationRequest(timeSyncHexString);
-                    break;
-                case IAm:
-                    String iamHexString = service.getUnprocessedHexString();
-                    configuration = buildIamRequest(iamHexString);
-                default:
-                    log.trace("I do not know how to parse this service: {}", service);
-            }
-        }
-        return configuration;
-    }
+
 
     Observation buildObservation(long validApdu, String line, String apduHexString) {
         Observation observation = null;
