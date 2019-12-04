@@ -157,7 +157,7 @@ public class ConfigurationParser {
         }
         if (objectName != null) {
             configuration = new ConfigurationRequest("TODO", null);
-            configuration.setProperty("WhoHasObjectName", objectName);
+            configuration.setProperty("ObjectName", objectName);
         }
 
         return configuration;
