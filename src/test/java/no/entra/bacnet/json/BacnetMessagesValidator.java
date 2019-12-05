@@ -37,7 +37,9 @@ public class BacnetMessagesValidator {
         Scanner scanner = null;
         try {
             scanner = new Scanner(hexStringFile);
+            long unknownBvlc = 0;
             long validBvlc = 0;
+            long unknownNpdu = 0;
             long validNpdu = 0;
             long validApdu = 0;
             long verifiedService = 0;
@@ -84,19 +86,24 @@ public class BacnetMessagesValidator {
 
                                 }
                             }
+                        } else {
+                            log.trace("Could not detect NPDU from: {}", npduHexString);
+                            unknownNpdu++;
                         }
+                    } else {
+                        log.trace("Could not detect BVLC from: {}", line);
+                        unknownBvlc++;
                     }
                 } catch (Exception e) {
                     log.debug("Failed to parse line number: {}. Reason: {}", lineNum, e.getMessage());
                 }
             }
-            log.info("Verified BVLC: {}, Verified NPUD: {}, Verified Service: {}, Understood {} observations.",
-                    validBvlc, validNpdu, verifiedService, validApdu);
+            log.info("Verified BVLC: {}, Unknown BVLC: {}, Verified NPDU: {}, Unknown NPDU: {}, Verified Service: {}, Understood {} APDU's.",
+                    validBvlc, unknownBvlc, validNpdu, unknownNpdu, verifiedService, validApdu);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
-
 
 
     Observation buildObservation(long validApdu, String line, String apduHexString) {
