@@ -20,11 +20,10 @@ public class BvlcParser {
         Octet[] messageLength = bvlcReader.nextOctets(2); //Length is two octets
         Bvlc bvlc = new BvlcBuilder(function).withMessageLength(messageLength).build();
         result = new BvlcResult(bvlc, bvlcReader.unprocessedHexString());
+
         if (bvlc.getFunction().equals(BvlcFunction.ForwardedNpdu)) {
-            //Add forwarding info
+            //Add BBMD forwarding info for messages routed between Bacnet subnets.
             result = addForwardingInfo(bvlc, bvlcReader);
-        } else {
-            result.setParsedOk(false);
         }
         return result;
     }
