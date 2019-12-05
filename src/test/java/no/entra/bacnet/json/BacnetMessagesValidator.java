@@ -70,7 +70,7 @@ public class BacnetMessagesValidator {
                                         if (observation != null) {
                                             validApdu++;
                                         } else {
-                                            log.trace("I did not understand PDU: {} from hex: {}", pduType, apduHexString);
+                                            log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, apduHexString);
                                         }
                                         break;
                                     case UnconfirmedRequest:
@@ -78,13 +78,15 @@ public class BacnetMessagesValidator {
                                         if (request != null) {
                                             validApdu++;
                                         } else {
-                                            log.trace("I did not understand PDU: {} from hex: {}", pduType, service.getUnprocessedHexString());
+                                            log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, service.getUnprocessedHexString());
                                         }
                                         break;
                                     default:
                                         log.debug("Do not know how to handle PduType: {}. ApduHexString: {}", pduType, apduHexString);
 
                                 }
+                            } else {
+                                log.trace("Could not detect Service from: {} ", apduHexString);
                             }
                         } else {
                             log.trace("Could not detect NPDU from: {}", npduHexString);
@@ -95,7 +97,7 @@ public class BacnetMessagesValidator {
                         unknownBvlc++;
                     }
                 } catch (Exception e) {
-                    log.debug("Failed to parse line number: {}. Reason: {}", lineNum, e.getMessage());
+                    log.debug("Failed to parse line number: {}. Reason: {}", lineNum, e.getMessage(), e);
                 }
             }
             log.info("Verified BVLC: {}, Unknown BVLC: {}, Verified NPDU: {}, Unknown NPDU: {}, Verified Service: {}, Understood {} APDU's.",

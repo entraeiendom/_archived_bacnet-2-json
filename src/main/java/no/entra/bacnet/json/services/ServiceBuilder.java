@@ -9,6 +9,9 @@ public class ServiceBuilder {
     private Octet serviceChoice;
 
     public ServiceBuilder(PduType pduType) {
+        if (pduType == null) {
+            throw new IllegalArgumentException("pduType is required.");
+        }
         this.pduType = pduType;
     }
 
