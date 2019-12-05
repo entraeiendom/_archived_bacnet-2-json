@@ -28,6 +28,12 @@ public class ServiceBuilder {
            case ConfirmedRequest:
                service = new ConfirmedService(pduType, serviceChoice);
                break;
+           case ComplexAck:
+               service = new ConfirmedService(pduType, serviceChoice);
+               break;
+           case SimpleAck:
+               service = new ConfirmedService(pduType, serviceChoice);
+               break;
            default:
                service = null;
        }

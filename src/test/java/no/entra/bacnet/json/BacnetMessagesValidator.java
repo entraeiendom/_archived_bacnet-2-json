@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import static no.entra.bacnet.json.services.ConfirmedService.tryToUnderstandConfirmedRequest;
 import static no.entra.bacnet.json.services.UnconfirmedService.tryToUnderstandUnconfirmedRequest;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -76,6 +77,14 @@ public class BacnetMessagesValidator {
                                     case UnconfirmedRequest:
                                         Object request = tryToUnderstandUnconfirmedRequest(service);
                                         if (request != null) {
+                                            validApdu++;
+                                        } else {
+                                            log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, service.getUnprocessedHexString());
+                                        }
+                                        break;
+                                    case ConfirmedRequest:
+                                        Object confirmedRequest = tryToUnderstandConfirmedRequest(service);
+                                        if (confirmedRequest != null) {
                                             validApdu++;
                                         } else {
                                             log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, service.getUnprocessedHexString());
