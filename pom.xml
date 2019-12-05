@@ -10,6 +10,21 @@
 
   <name>bacnet2json</name>
   <url>https://github.com/entraeiendom/bacnet-2-json/blob/master/README.md</url>
+  <developers>
+    <developer>
+      <id>baardl</id>
+      <name>Bard Lind</name>
+      <email>bard.lind@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <developerConnection>scm:git:ssh://git@github.com/entraeiendom/bacnet-2-json.git</developerConnection>
+    <connection>scm:git:https://github.com/entraeiendom/bacnet-2-json.git</connection>
+    <url>https://github.com/entraeiendom/bacnet-2-json</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
