@@ -33,7 +33,7 @@ public class HexUtils {
 
     public static int toInt(char length) throws IllegalArgumentException {
         try {
-            return Integer.parseInt(String.valueOf(length));
+            return Integer.parseInt(String.valueOf(length),16);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("length may not be null. length must be 0-9, a-f");
         }

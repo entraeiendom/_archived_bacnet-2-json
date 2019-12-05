@@ -43,6 +43,18 @@ class HexUtilsTest {
         assertFalse(isBitSet(nibble, 1));
         assertTrue(isBitSet(nibble, 2));
         assertFalse(isBitSet(nibble, 3));
+        nibble = 'a';
+        assertEquals("1010", toBitString(nibble));
+        assertFalse(isBitSet(nibble, 0));
+        assertTrue(isBitSet(nibble, 1));
+        assertFalse(isBitSet(nibble, 2));
+        assertTrue(isBitSet(nibble, 3));
+        nibble = 'f';
+        assertEquals("1111", toBitString(nibble));
+        assertTrue(isBitSet(nibble, 0));
+        assertTrue(isBitSet(nibble, 1));
+        assertTrue(isBitSet(nibble, 2));
+        assertTrue(isBitSet(nibble, 3));
 
     }
 

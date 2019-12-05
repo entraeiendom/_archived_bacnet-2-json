@@ -97,7 +97,7 @@ public class BacnetMessagesValidator {
                         unknownBvlc++;
                     }
                 } catch (Exception e) {
-                    log.debug("Failed to parse line number: {}. Reason: {}", lineNum, e.getMessage(), e);
+                    log.debug("Failed to parse line number: {}. Reason: {} from: {}", lineNum, e.getMessage(), line);
                 }
             }
             log.info("Verified BVLC: {}, Unknown BVLC: {}, Verified NPDU: {}, Unknown NPDU: {}, Verified Service: {}, Understood {} APDU's.",

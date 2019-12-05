@@ -27,14 +27,14 @@ public enum PduType {
         if (pduTypeOctet == null) {
             return null;
         }
-        switch (pduTypeOctet.toString()) {
-            case "00":
+        switch (pduTypeOctet.getFirstNibble()) {
+            case '0':
                 return ConfirmedRequest;
-            case "10":
+            case '1':
                 return UnconfirmedRequest;
-            case "20":
+            case '2':
                 return SimpleAck;
-            case "30":
+            case '3':
                 return ComplexAck;
             default:
                 return null;

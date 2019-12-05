@@ -25,6 +25,9 @@ public class ServiceBuilder {
            case UnconfirmedRequest:
                service = new UnconfirmedService(pduType, serviceChoice);
                break;
+           case ConfirmedRequest:
+               service = new ConfirmedService(pduType, serviceChoice);
+               break;
            default:
                service = null;
        }
