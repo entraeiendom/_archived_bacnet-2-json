@@ -3,8 +3,7 @@ package no.entra.bacnet.json.utils;
 import no.entra.bacnet.Octet;
 import org.junit.jupiter.api.Test;
 
-import static no.entra.bacnet.json.utils.HexUtils.isBitSet;
-import static no.entra.bacnet.json.utils.HexUtils.toBitString;
+import static no.entra.bacnet.json.utils.HexUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HexUtilsTest {
@@ -65,5 +64,11 @@ class HexUtilsTest {
         assertFalse(isBitSet(bits, 1));
         assertTrue(isBitSet(bits, 2));
         assertFalse(isBitSet(bits, 3));
+    }
+
+    @Test
+    void octetsToStringTest() {
+        Octet[] octets = {Octet.fromHexString("01"), Octet.fromHexString("23")};
+        assertEquals("0123", octetsToString(octets));
     }
 }

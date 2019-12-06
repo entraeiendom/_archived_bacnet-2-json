@@ -78,4 +78,11 @@ class ConfigurationParserTest {
         assertEquals("Johnson Controls, Inc", configuration.getProperty("Vendor"));
         assertEquals("05", configuration.getProperty("VendorId"));
     }
+
+    @Test
+    void iHaveTest() {
+        String iHaveApdu = "c40200000bc403c000007100";
+        ConfigurationRequest configuration = ConfigurationParser.buildIHaveRequest(iHaveApdu);
+        assertNotNull(configuration);
+    }
 }

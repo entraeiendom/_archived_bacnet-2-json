@@ -98,4 +98,15 @@ public class HexUtils {
         }
         return bitIsSet;
     }
+
+    public static String octetsToString(Octet[] octets) {
+        String value = null;
+        if (octets != null) {
+            value = "";
+            for (Octet octet : octets) {
+                value += octet;
+            }
+        }
+        return value;
+    }
 }

@@ -39,6 +39,11 @@ public class UnconfirmedService extends Service {
                 case IAm:
                     String iamHexString = service.getUnprocessedHexString();
                     configuration = buildIamRequest(iamHexString);
+                    break;
+                case IHave:
+                    String ihaveHexString = service.getUnprocessedHexString();
+                    configuration = buildIHaveRequest(ihaveHexString);
+                    break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);
             }

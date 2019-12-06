@@ -5,7 +5,7 @@ import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.objects.PduType;
 import org.slf4j.Logger;
 
-import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
+import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWritePropertyMultipleRequest;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfirmedService extends Service {
@@ -20,9 +20,15 @@ public class ConfirmedService extends Service {
             return null;
         }
         ServiceChoice serviceChoice = service.getServiceChoice();
-        if (serviceChoice != null && serviceChoice instanceof UnconfirmedServiceChoice) {
-            UnconfirmedServiceChoice unconfirmedServiceChoice = (UnconfirmedServiceChoice) serviceChoice;
-            switch (unconfirmedServiceChoice) {
+        if (serviceChoice != null && serviceChoice instanceof ConfirmedServiceChoice) {
+            ConfirmedServiceChoice confirmedServiceChoice = (ConfirmedServiceChoice) serviceChoice;
+            switch (confirmedServiceChoice) {
+                case WritePropertyMultiple:
+                    log.trace("Is WritePropertyMultiple message. hexString: {}", service.getUnprocessedHexString());
+                    String hexString = service.getUnprocessedHexString();
+                    configuration = buildWritePropertyMultipleRequest(hexString);
+                    break;
+                /*
                 case WhoIs:
                     log.trace("Is WhoIsMessage. hexString: {}", service.getUnprocessedHexString());
                     String whoIsBody = service.getUnprocessedHexString();
@@ -39,6 +45,7 @@ public class ConfirmedService extends Service {
                 case IAm:
                     String iamHexString = service.getUnprocessedHexString();
                     configuration = buildIamRequest(iamHexString);
+                    */
                 default:
                     log.trace("I do not know how to parse this service: {}", service);
             }
