@@ -1,9 +1,11 @@
 package no.entra.bacnet.json.services;
 
+import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.objects.PduType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +39,24 @@ class ServiceParserTest {
     }
 
     @Test
+    void verifyUnconfirmedRequest() {
+        //See page 984
+        String unconfirmedRequest = "8104001e0a3f0010bac001080961010b1001c40200000bc403c000007100";
+        BvlcResult bvlcResult = BvlcParser.parse(unconfirmedRequest);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        String unprocessedHexString = npduResult.getUnprocessedHexString();
+//        assertEquals("1001c40200000bc403c000007100", unprocessedHexString);
+        unprocessedHexString = "1001c40200000bc403c000007100";
+        Service service = ServiceParser.fromApduHexString(unprocessedHexString);
+        assertNotNull(service);
+        assertEquals(PduType.UnconfirmedRequest, service.getPduType());
+        assertEquals(UnconfirmedServiceChoice.IHave, service.getServiceChoice());
+        //I have device, 11
+        ConfigurationRequest request = UnconfirmedService.tryToUnderstandUnconfirmedRequest(service);
+        assertNotNull(request);
+    }
+
+    @Test
     void verifyConfirmedServiceTest() {
         String unknownPduType = "8104001e0a3f0010bac001080961010f1001c40200000fc403c00000710045003000350035002d004e00430045003300300031002f00500072006f006700720061006d006d0069006e0067002e0045006e0065007200670069002e003400330033003300300031002e002d004f0045003000300034005f004d004f004d0072006d006500200031002000650074006700670067005f0046004600310031002e0044006100670042007600690031002d00310031002e004400610067004200760076007600760000000";
         BvlcResult bvlcResult = BvlcParser.parse(unknownPduType);
@@ -44,5 +64,7 @@ class ServiceParserTest {
         Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
         assertNotNull(service);
         assertTrue(service instanceof ConfirmedService);
+        ConfigurationRequest request = ConfirmedService.tryToUnderstandConfirmedRequest(service);
+        assertNotNull(request);
     }
 }

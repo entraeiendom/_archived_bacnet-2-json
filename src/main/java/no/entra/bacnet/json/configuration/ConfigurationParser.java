@@ -2,8 +2,7 @@ package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
-import no.entra.bacnet.json.objects.ObjectType;
-import no.entra.bacnet.json.objects.Segmentation;
+import no.entra.bacnet.json.objects.*;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
@@ -14,6 +13,7 @@ import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
+import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigurationParser {
@@ -38,13 +38,13 @@ public class ConfigurationParser {
         if (lowerLimitOctet.getFirstNibble() == LOWER_LIMIT_KEY) {
             int numberOfOctets = mapWhoIsLength(lowerLimitOctet.getSecondNibble());
             String lowerLimitHex = whoHasReader.next(numberOfOctets);
-            rangeLowLimit = HexUtils.toInt(lowerLimitHex);
+            rangeLowLimit = toInt(lowerLimitHex);
         }
         Octet highLimitOctet = whoHasReader.next();
         if (highLimitOctet.getFirstNibble() == HIGH_LIMIT_KEY) {
             int numberOfOctets = mapWhoIsLength(highLimitOctet.getSecondNibble());
             String highLimitHex = whoHasReader.next(numberOfOctets);
-            rangeHighLimit = HexUtils.toInt(highLimitHex);
+            rangeHighLimit = toInt(highLimitHex);
         }
 
         if (rangeLowLimit != null || rangeHighLimit != null) {
@@ -92,13 +92,13 @@ public class ConfigurationParser {
         OctetReader iamReader = new OctetReader(iamBody);
         Octet objectIdOctet = iamReader.next();
         char idLengthChar = objectIdOctet.getSecondNibble();
-        int idLength = HexUtils.toInt(idLengthChar);
+        int idLength = toInt(idLengthChar);
         Octet objectType = iamReader.next();
         if (objectType.equals(Octet.fromHexString("02"))) {
             configuration.setProperty("ObjectType", ObjectType.Device.name());
         }
         String instanceNumberOctet = iamReader.next(idLength -1);
-        Integer instanceNumber = HexUtils.toInt(instanceNumberOctet);
+        Integer instanceNumber = toInt(instanceNumberOctet);
         if (instanceNumber != null) {
             configuration.setProperty("InstanceNumber", instanceNumber.toString());
         }
@@ -106,9 +106,9 @@ public class ConfigurationParser {
         //MaxADPULengthAccepted
         Octet adpuLengthOctet = iamReader.next();
         char maxPdpuLengthChar = adpuLengthOctet.getSecondNibble();
-        int octetCount = HexUtils.toInt(maxPdpuLengthChar);
+        int octetCount = toInt(maxPdpuLengthChar);
         String maxPduLengthString = iamReader.next(octetCount);
-        Integer maxAdpu = HexUtils.toInt(maxPduLengthString);
+        Integer maxAdpu = toInt(maxPduLengthString);
         if (maxAdpu != null) {
             configuration.setProperty("MaxADPULengthAccepted",maxAdpu.toString());
         }
@@ -116,7 +116,7 @@ public class ConfigurationParser {
         //SegmentationSupported
         Octet acceptSegmentationOctet = iamReader.next();
         char segLengthChar = acceptSegmentationOctet.getSecondNibble();
-        int segLength = HexUtils.toInt(segLengthChar);
+        int segLength = toInt(segLengthChar);
         if (segLength == 1) {
             Octet segmentationOcet = iamReader.next();
             Segmentation segmentation = Segmentation.fromOctet(segmentationOcet);
@@ -128,7 +128,7 @@ public class ConfigurationParser {
         //Vendor
         Octet vendorOctet = iamReader.next();
         char vendorLengthChar = vendorOctet.getSecondNibble();
-        int vendorLength = HexUtils.toInt(vendorLengthChar);
+        int vendorLength = toInt(vendorLengthChar);
         if (vendorLength == 1) {
             Octet vendorId = iamReader.next();
             configuration.setProperty("VendorId", vendorId.toString());
@@ -173,9 +173,9 @@ public class ConfigurationParser {
         if (dateOctet.getFirstNibble() == TIME_SYNC_DATE_KEY) {
             int numberOfOctets = mapTimeSyncLength(dateOctet.getSecondNibble());
             if (numberOfOctets == 4) {
-                int year = 1900 + HexUtils.toInt(timeSyncReader.next());
-                int month = HexUtils.toInt(timeSyncReader.next());
-                int day = HexUtils.toInt(timeSyncReader.next());
+                int year = 1900 + toInt(timeSyncReader.next());
+                int month = toInt(timeSyncReader.next());
+                int day = toInt(timeSyncReader.next());
                 date = LocalDate.of(year,month,day);
                 //Get day of week even if we do not need that one
                 timeSyncReader.next();
@@ -185,10 +185,10 @@ public class ConfigurationParser {
         if (timeOctet.getFirstNibble() == TIME_SYNC_TIME_KEY) {
             int numberOfOctets = mapTimeSyncLength(timeOctet.getSecondNibble());
             if (numberOfOctets == 4) {
-                int hour = HexUtils.toInt(timeSyncReader.next());
-                int min = HexUtils.toInt(timeSyncReader.next());
-                int sec = HexUtils.toInt(timeSyncReader.next());
-                int hundredsOfSec = HexUtils.toInt(timeSyncReader.next());
+                int hour = toInt(timeSyncReader.next());
+                int min = toInt(timeSyncReader.next());
+                int sec = toInt(timeSyncReader.next());
+                int hundredsOfSec = toInt(timeSyncReader.next());
                 time = LocalTime.of(hour, min, sec, tenthToNano(hundredsOfSec));
             }
         }
@@ -228,5 +228,47 @@ public class ConfigurationParser {
                 break;
         }
         return length;
+    }
+
+    public static ConfigurationRequest buildIHaveRequest(String iHaveHexString) {
+        ConfigurationRequest configuration = null;
+        //1. NotificationClass
+        //2. ObjectIdentifier
+        //3. ObjectName
+        OctetReader iHaveReader = new OctetReader(iHaveHexString);
+        Octet applicationOctet = iHaveReader.next();
+        if (applicationOctet.getFirstNibble() == 'c') {
+
+            int length = toInt(applicationOctet.getSecondNibble());
+            Octet objectTypeOctet = iHaveReader.next();
+            Octet[] instanceNumberOctets = iHaveReader.nextOctets(length -1);
+            ObjectId objectId = new ObjectIdBuilder(objectTypeOctet).withInstanceNumberOctet(instanceNumberOctets).build();
+            if (objectId != null) {
+                configuration = new ConfigurationRequest("TODO", null);
+                configuration.setProperty("Request", "IHave");
+                configuration.setProperty(objectId.getObjectType().name(), objectId.getInstanceNumber());
+            }
+            applicationOctet = iHaveReader.next();
+            length = toInt(applicationOctet.getSecondNibble());
+            objectTypeOctet = iHaveReader.next();
+            instanceNumberOctets = iHaveReader.nextOctets(length -1);
+            if (objectId != null) {
+                objectId = new ObjectIdBuilder(objectTypeOctet).withInstanceNumberOctet(instanceNumberOctets).build();
+                configuration.setProperty(objectId.getObjectType().name(), objectId.getInstanceNumber());
+            }
+            //TODO the rest like ObjectName
+        }
+        return configuration;
+    }
+
+    public static ConfigurationRequest buildWritePropertyMultipleRequest(String hexString) {
+        ConfigurationRequest configuration = null;
+        //1. Object Identifier
+        //2. List of bacnet property values
+        ObjectId objectId = ObjectId.buildFromHexString(hexString);
+        log.debug("objectId: {}", objectId);
+        ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(hexString);
+        log.debug("WritePropertyMultiple-accessResult: {}", accessResult);
+        return configuration;
     }
 }
