@@ -31,6 +31,9 @@ public class NpduBuilder {
     public Npdu build() {
         Npdu npdu = new Npdu();
         npdu.setControl(control);
+        if (control.getSecondNibble() == '4') {
+            npdu.expectingResponse(true);
+        }
 
         return npdu;
     }

@@ -13,6 +13,7 @@ public class Npdu {
     private Octet[] destinationNetworkAddress;
     private Octet destinationMacLayerAddress;
     private Octet hopCount;
+    private boolean expectingResponse = false;
 
     public Octet getVersion() {
         return version;
@@ -90,5 +91,16 @@ public class Npdu {
         char higerControl = control.getFirstNibble();
         destinationIsAvailable = HexUtils.isBitSet(higerControl, 1);
         return destinationIsAvailable;
+    }
+
+    public boolean isExpectingResponse() {
+        return expectingResponse;
+    }
+    public void expectingResponse(boolean expectingResponse) {
+        this.expectingResponse = expectingResponse;
+    }
+
+    public boolean getExpectingResponse() {
+        return expectingResponse;
     }
 }

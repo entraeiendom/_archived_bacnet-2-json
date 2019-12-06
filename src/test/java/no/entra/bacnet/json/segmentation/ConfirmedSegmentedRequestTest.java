@@ -1,17 +1,19 @@
 package no.entra.bacnet.json.segmentation;
 
+import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
+import no.entra.bacnet.json.npdu.Npdu;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.services.ConfirmedService;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
 
 import static no.entra.bacnet.json.objects.PduType.ConfirmedRequest;
 import static no.entra.bacnet.json.services.ConfirmedServiceChoice.ReadProperty;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfirmedSegmentedRequestTest {
     //server: Request Confirmed 88f0314123408c1645f7f51208004500002d7f280000801100000a3f17b20a3f0a13bac0bac00019366d810a001101040275010c0c02000457194c
@@ -22,14 +24,21 @@ public class ConfirmedSegmentedRequestTest {
     //server: Segment Ack 88f0314123408c1645f7f5120800450000267f2a0000801100000a3f17b20a3f0a13bac0bac000123666810a000a010040010203
 
     @Test
-    void confirmedRequest() {
-        String requestSomething = "810a001101040275010c0c02000457194c";
-        BvlcResult bvlcResult = BvlcParser.parse(requestSomething);
+    void confirmedRequestReadProperty() {
+        String confirmedReqExpectingReadProperty = "810a001101040275370c0c02000204194c";
+        BvlcResult bvlcResult = BvlcParser.parse(confirmedReqExpectingReadProperty);
         NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        Npdu npdu = npduResult.getNpdu();
+        assertNotNull(npdu);
         Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
         assertNotNull(service);
         assertEquals(ConfirmedRequest, service.getPduType());
         assertEquals(ReadProperty, service.getServiceChoice());
-
+        assertNotNull(service.getMaxAcceptedPduSize());
+        assertEquals(55, service.getInvokeId());
+//        get properties
+        assertTrue(service instanceof ConfirmedService);
+        ConfigurationRequest request = ConfirmedService.tryToUnderstandConfirmedRequest(service);
+        assertNotNull(request);
     }
 }

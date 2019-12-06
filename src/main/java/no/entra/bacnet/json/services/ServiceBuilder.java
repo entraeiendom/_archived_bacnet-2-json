@@ -7,6 +7,11 @@ public class ServiceBuilder {
     private final PduType pduType;
     private Service service;
     private Octet serviceChoice;
+    private boolean isSegmented = false;
+    private boolean hasMoreSegments = false;
+    private boolean willAcceptSegmentedResponse = false;
+    private Integer maxAcceptedPduSize = null;
+    private Integer invokeId = null;
 
     public ServiceBuilder(PduType pduType) {
         if (pduType == null) {
@@ -37,6 +42,38 @@ public class ServiceBuilder {
            default:
                service = null;
        }
+       if (service != null) {
+           service.isSegmented(isSegmented);
+           service.hasMoreSegments(hasMoreSegments);
+           service.willAcceptSegmentedResponse(willAcceptSegmentedResponse);
+          service.setMaxAcceptedPduSize(maxAcceptedPduSize);
+           service.setInvokeId(invokeId);
+       }
        return service;
+    }
+
+    public ServiceBuilder withIsSegmented(boolean segmented) {
+        this.isSegmented = true;
+        return this;
+    }
+
+    public ServiceBuilder withHasMoreSegments(boolean moreSegments) {
+        this.hasMoreSegments = moreSegments;
+        return this;
+    }
+
+    public ServiceBuilder withWillAcceptSegmentedResponse(boolean acceptSegmentedResponse) {
+        this.willAcceptSegmentedResponse = acceptSegmentedResponse;
+        return this;
+    }
+
+    public ServiceBuilder withMaxAPDUSize(int numberOfOctets) {
+        this.maxAcceptedPduSize = numberOfOctets;
+        return  this;
+    }
+
+    public ServiceBuilder withInvodeId(int invokeId) {
+        this.invokeId = invokeId;
+        return this;
     }
 }

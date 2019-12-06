@@ -6,6 +6,8 @@ import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
 
+import static no.entra.bacnet.json.apdu.PduFlags.*;
+import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ServiceParser {
@@ -19,11 +21,32 @@ public class ServiceParser {
         log.debug("PDU Type {} in bits: {}{}", pduTypeOctet,HexUtils.toBitString(pduTypeOctet.getFirstNibble()),HexUtils.toBitString(pduTypeOctet.getSecondNibble()));
         PduType pduType = PduType.fromOctet(pduTypeOctet);
         if (pduType != null) {
-            if (pduTypeOctet.getSecondNibble() != '0') {
-                //TODO need to handle set sender rec error etc.
+            char pduFlags = pduTypeOctet.getSecondNibble();
+
+
+
+            ServiceBuilder serviceBuilder = new ServiceBuilder(pduType);
+            if (isSegmented(pduFlags)) {
+                serviceBuilder = serviceBuilder.withIsSegmented(true);
+            }
+            if (hasMoreSegments(pduFlags)) {
+                serviceBuilder = serviceBuilder.withHasMoreSegments(true);
+            }
+            if (willAcceptSegmentedResponse(pduFlags)) {
+//                serviceReader.next();
+                Octet maxApduOctetsAccepted = serviceReader.next();
+                int numberOfOctets = 9999;
+
+                Octet invokeIdOctet = serviceReader.next();
+                int invokeId = toInt(invokeIdOctet);
+                serviceBuilder = serviceBuilder.withWillAcceptSegmentedResponse(true)
+                .withMaxAPDUSize(numberOfOctets)
+                .withInvodeId(invokeId);
+
             }
             serviceChoiceOctet = serviceReader.next();
-            service = new ServiceBuilder(pduType).withServiceChoice(serviceChoiceOctet).build();
+            serviceBuilder.withServiceChoice(serviceChoiceOctet);
+            service = serviceBuilder.build();
             service.setUnprocessedHexString(serviceReader.unprocessedHexString());
         } else {
             log.debug("Could not find PduType. pduTypeOctet: {}, from apduHexString: {}", pduTypeOctet, apduHexString);
