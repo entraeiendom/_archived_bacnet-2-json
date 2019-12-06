@@ -45,7 +45,7 @@ class ServiceParserTest {
         BvlcResult bvlcResult = BvlcParser.parse(unconfirmedRequest);
         NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
         String unprocessedHexString = npduResult.getUnprocessedHexString();
-//        assertEquals("1001c40200000bc403c000007100", unprocessedHexString);
+        assertEquals("1001c40200000bc403c000007100", unprocessedHexString);
         unprocessedHexString = "1001c40200000bc403c000007100";
         Service service = ServiceParser.fromApduHexString(unprocessedHexString);
         assertNotNull(service);
