@@ -271,4 +271,10 @@ public class ConfigurationParser {
         log.debug("WritePropertyMultiple-accessResult: {}", accessResult);
         return configuration;
     }
+
+    public static ConfigurationRequest buildReadPropertyRequest(String hexString) {
+        ConfigurationRequest configuration = new ConfigurationRequest();
+
+        return configuration;
+    }
 }

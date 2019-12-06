@@ -21,7 +21,7 @@ public class ConfigurationRequest {
     private Map<String, String> properties = new HashMap<>();
     private LocalDateTime observedAt;
 
-    private ConfigurationRequest() {
+    public ConfigurationRequest() {
 
     }
 

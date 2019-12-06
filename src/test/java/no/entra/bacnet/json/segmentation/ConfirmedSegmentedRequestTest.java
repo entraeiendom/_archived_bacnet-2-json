@@ -4,11 +4,12 @@ import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
-import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
 
+import static no.entra.bacnet.json.objects.PduType.ConfirmedRequest;
+import static no.entra.bacnet.json.services.ConfirmedServiceChoice.ReadProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -27,8 +28,8 @@ public class ConfirmedSegmentedRequestTest {
         NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
         Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
         assertNotNull(service);
-        assertEquals(PduType.ConfirmedRequest, service.getPduType());
-//        assertEquals(ReadProperty, service.getServiceChoice());
+        assertEquals(ConfirmedRequest, service.getPduType());
+        assertEquals(ReadProperty, service.getServiceChoice());
 
     }
 }

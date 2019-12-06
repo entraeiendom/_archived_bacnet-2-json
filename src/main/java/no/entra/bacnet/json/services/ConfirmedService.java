@@ -5,6 +5,7 @@ import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.objects.PduType;
 import org.slf4j.Logger;
 
+import static no.entra.bacnet.json.configuration.ConfigurationParser.buildReadPropertyRequest;
 import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWritePropertyMultipleRequest;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -46,6 +47,10 @@ public class ConfirmedService extends Service {
                     String iamHexString = service.getUnprocessedHexString();
                     configuration = buildIamRequest(iamHexString);
                     */
+                case ReadProperty:
+                    log.trace("Is ReadProperty message. hexString: {}", service.getUnprocessedHexString());
+                    String readPropertyHexString = service.getUnprocessedHexString();
+                    configuration = buildReadPropertyRequest(readPropertyHexString);
                 default:
                     log.trace("I do not know how to parse this service: {}", service);
             }
