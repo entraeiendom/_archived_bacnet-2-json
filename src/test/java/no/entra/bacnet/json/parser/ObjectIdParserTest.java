@@ -34,4 +34,13 @@ class ObjectIdParserTest {
         int instanceNumber = ObjectIdParser.findInstanceNumber(objectTypeAsBitString);
         assertEquals(517, instanceNumber);
     }
+
+    @Test
+    void validObjectIdTest() {
+        String objectIdHexString = "0c02000204";
+        ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(objectIdHexString);
+        assertNotNull(objectIdResult);
+        assertEquals("Device", objectIdResult.getParsedObject().getObjectType().toString());
+        assertEquals("516", objectIdResult.getParsedObject().getInstanceNumber());
+    }
 }

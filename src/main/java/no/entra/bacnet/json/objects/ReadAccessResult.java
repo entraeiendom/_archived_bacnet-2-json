@@ -2,6 +2,8 @@ package no.entra.bacnet.json.objects;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.EntraUnknownOperationException;
+import no.entra.bacnet.json.parser.ObjectIdParser;
+import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
@@ -89,7 +91,8 @@ public class ReadAccessResult {
                 if (oidType.equals(new Octet(OBJECT_IDENTIFIER))) {
                     String objectIdString = "0c" + listReader.next(4);
                     log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
-                    ObjectId objectIdentifier = ObjectId.buildFromHexString(objectIdString);
+                    ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(objectIdString);
+                    ObjectId objectIdentifier = objectIdResult.getParsedObject();
                     accessResult = new ReadAccessResult(objectIdentifier);
                 }
 

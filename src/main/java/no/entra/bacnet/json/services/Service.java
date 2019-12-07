@@ -38,15 +38,6 @@ public class Service {
         return unprocessedHexString;
     }
 
-    @Override
-    public String toString() {
-        return "Service{" +
-                "pduType=" + pduType +
-                ", serviceChoice=" + serviceChoice +
-                ", unprocessedHexString='" + unprocessedHexString + '\'' +
-                '}';
-    }
-
     public void isSegmented(boolean isSegmented) {
         this.isSegmented = isSegmented;
     }
@@ -81,5 +72,19 @@ public class Service {
 
     public Integer getMaxAcceptedPduSize() {
         return maxAcceptedPduSize;
+    }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "pduType=" + pduType +
+                ", serviceChoice=" + serviceChoice +
+                ", unprocessedHexString='" + unprocessedHexString + '\'' +
+                ", isSegmented=" + isSegmented +
+                ", hasMoreSegments=" + hasMoreSegments +
+                ", willAcceptSegmentedResponse=" + willAcceptSegmentedResponse +
+                ", maxAcceptedPduSize=" + maxAcceptedPduSize +
+                ", invokeId=" + invokeId +
+                '}';
     }
 }

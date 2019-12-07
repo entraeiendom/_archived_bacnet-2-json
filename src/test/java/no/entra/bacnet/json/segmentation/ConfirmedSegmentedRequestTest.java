@@ -63,7 +63,7 @@ public class ConfirmedSegmentedRequestTest {
         assertEquals(ReadProperty, request.getServiceChoice());
         assertNotNull(request.getMaxAdpuOctetLenghtAccepted());
         assertEquals(55, request.getInvokeId());
-        ObjectId objectId = new ObjectId(ObjectType.Device, "517");
+        ObjectId objectId = new ObjectId(ObjectType.Device, "516");
         assertEquals(objectId, request.getDesiredObjectId());
     }
 }

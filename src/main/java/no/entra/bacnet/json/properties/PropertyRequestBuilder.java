@@ -3,6 +3,8 @@ package no.entra.bacnet.json.properties;
 import no.entra.bacnet.json.objects.ObjectId;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.objects.PropertyIdentifier;
+import no.entra.bacnet.json.parser.ObjectIdParser;
+import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceChoice;
 
@@ -49,6 +51,10 @@ public class PropertyRequestBuilder {
         //We would expect two elements
         //1. Object Id
         //2. Requested Properties
+        ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(unprocessedHexString);
+        desiredObjectId = objectIdResult.getParsedObject();
+        int parsedOctets = objectIdResult.getNumberOfOctetsRead();
+        String requestedPropertiesHexString = unprocessedHexString.substring(parsedOctets * 2);
 
         //FIXME parse
         return this;

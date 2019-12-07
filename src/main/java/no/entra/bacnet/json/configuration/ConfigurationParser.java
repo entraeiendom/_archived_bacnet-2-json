@@ -3,6 +3,8 @@ package no.entra.bacnet.json.configuration;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.objects.*;
+import no.entra.bacnet.json.parser.ObjectIdParser;
+import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
@@ -265,7 +267,8 @@ public class ConfigurationParser {
         ConfigurationRequest configuration = null;
         //1. Object Identifier
         //2. List of bacnet property values
-        ObjectId objectId = ObjectId.buildFromHexString(hexString);
+        ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(hexString);
+        ObjectId objectId = result.getParsedObject();
         log.debug("objectId: {}", objectId);
         ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(hexString);
         log.debug("WritePropertyMultiple-accessResult: {}", accessResult);

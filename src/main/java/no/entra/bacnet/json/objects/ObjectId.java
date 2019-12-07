@@ -1,10 +1,6 @@
 package no.entra.bacnet.json.objects;
 
-import no.entra.bacnet.Octet;
-import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
-
-import java.math.BigInteger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -44,6 +40,7 @@ Application Tag 12 (Object Identifier, L=4) (Device Identifier)
 X'02000008'
 Device, Instance Number=8
      */
+    /*
     @Deprecated
     public static ObjectId buildFromHexString(String hexString) {
         ObjectId ObjectId = null;
@@ -51,7 +48,7 @@ Device, Instance Number=8
         if (idReader != null) {
             Octet objectTypeOctetxx = idReader.next();
             log.debug("ObjectType: {}", objectTypeOctetxx);
-            if (objectTypeOctetxx.equals(new Octet("0c"))) {
+            intif (objectTypeOctetxx.equals(new Octet("0c"))) {
                 if (objectTypeOctetxx.getSecondNibble() == 'c') {
                     int length = 4; //number of octets, as by specification 20.2.14 one is for Object Type 00 = Analog Input
                     Octet objectTypeOctet = idReader.next();
@@ -64,6 +61,7 @@ Device, Instance Number=8
         }
         return ObjectId;
     }
+    */
 
     @Override
     public String toString() {
@@ -71,5 +69,17 @@ Device, Instance Number=8
             return "type-missing " + " " + instanceNumber;
         }
         return objectType.name() + " " + instanceNumber;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if (obj != null && obj instanceof ObjectId) {
+            if (((ObjectId) obj).getObjectType().equals(this.objectType) && ((ObjectId)obj).getInstanceNumber().equals(this.getInstanceNumber())) {
+                isEqual = true;
+            }
+            return isEqual;
+        }
+        return super.equals(obj);
     }
 }

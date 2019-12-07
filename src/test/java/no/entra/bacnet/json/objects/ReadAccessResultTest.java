@@ -2,6 +2,8 @@ package no.entra.bacnet.json.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import no.entra.bacnet.json.parser.ObjectIdParser;
+import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,8 @@ class ReadAccessResultTest {
 
     @BeforeEach
     void setUp() {
-        objectId = ObjectId.buildFromHexString(objectIdString);
+        ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(objectIdString);
+        objectId = result.getParsedObject();
         accessResult = new ReadAccessResult(objectId);
         accessResult.setResultByKey(PresentValue, Double.valueOf(22.567));
         accessResult.setResultByKey(Description, "some short one");
