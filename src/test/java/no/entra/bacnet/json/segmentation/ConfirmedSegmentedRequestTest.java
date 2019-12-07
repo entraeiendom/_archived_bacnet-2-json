@@ -6,6 +6,8 @@ import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.Npdu;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.properties.PropertyRequest;
+import no.entra.bacnet.json.properties.PropertyRequestBuilder;
 import no.entra.bacnet.json.services.ConfirmedService;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
@@ -42,5 +44,22 @@ public class ConfirmedSegmentedRequestTest {
         assertNotNull(request);
         //objectIdentifier, device, 516
         //property-identifier, object-list (76)
+    }
+
+    @Test
+    void buildPropertyRequest() {
+        String confirmedReqExpectingReadProperty = "810a001101040275370c0c02000204194c";
+        BvlcResult bvlcResult = BvlcParser.parse(confirmedReqExpectingReadProperty);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        Npdu npdu = npduResult.getNpdu();
+        assertNotNull(npdu);
+        Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
+        assertNotNull(service);
+        PropertyRequest request = new PropertyRequestBuilder(service, service.getUnprocessedHexString()).build();
+
+        assertEquals(ConfirmedRequest, request.getPduType());
+        assertEquals(ReadProperty, request.getServiceChoice());
+        assertNotNull(request.getMaxAdpuOctetLenghtAccepted());
+        assertEquals(55, request.getInvokeId());
     }
 }

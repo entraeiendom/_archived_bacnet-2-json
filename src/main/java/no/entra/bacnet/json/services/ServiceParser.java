@@ -23,8 +23,6 @@ public class ServiceParser {
         if (pduType != null) {
             char pduFlags = pduTypeOctet.getSecondNibble();
 
-
-
             ServiceBuilder serviceBuilder = new ServiceBuilder(pduType);
             if (isSegmented(pduFlags)) {
                 serviceBuilder = serviceBuilder.withIsSegmented(true);
