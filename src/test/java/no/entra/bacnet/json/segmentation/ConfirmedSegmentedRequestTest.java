@@ -6,6 +6,8 @@ import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.Npdu;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.objects.ObjectId;
+import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.properties.PropertyRequest;
 import no.entra.bacnet.json.properties.PropertyRequestBuilder;
 import no.entra.bacnet.json.services.ConfirmedService;
@@ -61,5 +63,7 @@ public class ConfirmedSegmentedRequestTest {
         assertEquals(ReadProperty, request.getServiceChoice());
         assertNotNull(request.getMaxAdpuOctetLenghtAccepted());
         assertEquals(55, request.getInvokeId());
+        ObjectId objectId = new ObjectId(ObjectType.Device, "517");
+        assertEquals(objectId, request.getDesiredObjectId());
     }
 }

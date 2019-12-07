@@ -46,6 +46,10 @@ public class PropertyRequestBuilder {
 
     public PropertyRequestBuilder withUnprocessedHexString(String unprocessedHexString) {
         this.unprocessedHexString = unprocessedHexString;
+        //We would expect two elements
+        //1. Object Id
+        //2. Requested Properties
+
         //FIXME parse
         return this;
     }

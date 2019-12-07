@@ -109,4 +109,14 @@ public class HexUtils {
         }
         return value;
     }
+
+    public static String toBitString(String hexString) {
+        String bitString = "";
+        char[] chars = hexString.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char nibble = chars[i];
+            bitString += toBitString(nibble);
+        }
+        return bitString;
+    }
 }

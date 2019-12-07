@@ -67,6 +67,15 @@ class HexUtilsTest {
     }
 
     @Test
+    void stringToBitString() {
+        String hexString = "02000205";
+        String expected = "00000010000000000000001000000101";
+        String hexAsBits = HexUtils.toBitString(hexString);
+        assertEquals(expected, hexAsBits);
+        assertEquals(32, hexAsBits.length());
+    }
+
+    @Test
     void octetsToStringTest() {
         Octet[] octets = {Octet.fromHexString("01"), Octet.fromHexString("23")};
         assertEquals("0123", octetsToString(octets));

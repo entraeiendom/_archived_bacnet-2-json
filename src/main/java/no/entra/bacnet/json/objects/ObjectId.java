@@ -44,6 +44,7 @@ Application Tag 12 (Object Identifier, L=4) (Device Identifier)
 X'02000008'
 Device, Instance Number=8
      */
+    @Deprecated
     public static ObjectId buildFromHexString(String hexString) {
         ObjectId ObjectId = null;
         OctetReader idReader = new OctetReader(hexString);
