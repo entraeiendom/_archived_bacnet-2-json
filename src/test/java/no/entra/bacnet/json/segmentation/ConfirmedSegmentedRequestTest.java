@@ -40,5 +40,7 @@ public class ConfirmedSegmentedRequestTest {
         assertTrue(service instanceof ConfirmedService);
         ConfigurationRequest request = ConfirmedService.tryToUnderstandConfirmedRequest(service);
         assertNotNull(request);
+        //objectIdentifier, device, 516
+        //property-identifier, object-list (76)
     }
 }
