@@ -14,6 +14,7 @@ public class PropertyResponseBuilder {
     private Integer sequenceNumber = null;
     private Integer proposedWindowSize = null;
     private ServiceChoice serviceChoice;
+    private String segmentBodyHexString = null;
 
 
     /**
@@ -38,22 +39,8 @@ public class PropertyResponseBuilder {
 
     public PropertyResponseBuilder withUnprocessedHexString(String unprocessedHexString) {
         this.unprocessedHexString = unprocessedHexString;
-        /*
-        //We would expect two elements
-        //1. Object Id
-        //2. Requested Properties
-        ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(unprocessedHexString);
-        desiredObjectId = objectIdResult.getParsedObject();
-        int parsedOctets = objectIdResult.getNumberOfOctetsRead();
-        OctetReader propertyReader = new OctetReader(unprocessedHexString);
-        propertyReader.fastForward(parsedOctets); //Skip the part witch parsed the ObjectId.
-        Octet sdContextTag = propertyReader.next();
-        if (sdContextTag.equals(Octet.fromHexString("19"))) {
-            Octet pIdOctet = propertyReader.next();
-            PropertyIdentifier desiredProperty = PropertyIdentifier.fromOctet(pIdOctet);
-            desiredPropertyIds.add(desiredProperty);
-        }
-        */
+        //We would expect unprocessedHexString to contain only the rest of the valid Bacnet Message
+        this.segmentBodyHexString = unprocessedHexString;
         return this;
     }
 
@@ -81,6 +68,7 @@ public class PropertyResponseBuilder {
         response.setServiceChoice(serviceChoice);
         response.setSequenceNumber(sequenceNumber);
         response.setPropsedWindowSize(proposedWindowSize);
+        response.setSegmentBodyHexString(segmentBodyHexString);
         return response;
     }
 

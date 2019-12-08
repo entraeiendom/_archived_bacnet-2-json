@@ -21,6 +21,7 @@ public class PropertyResponse {
     private ObjectId desiredObjectId;
     private String messageContent;
     private LocalDateTime observedAt;
+    private String segmentBodyHexString;
 
     public PropertyResponse() {
         observedAt = LocalDateTime.now();
@@ -136,5 +137,13 @@ public class PropertyResponse {
 
     public void setObservedAt(LocalDateTime observedAt) {
         this.observedAt = observedAt;
+    }
+
+    public String getSegmentBodyHexString() {
+        return segmentBodyHexString;
+    }
+
+    public void setSegmentBodyHexString(String segmentBodyHexString) {
+        this.segmentBodyHexString = segmentBodyHexString;
     }
 }

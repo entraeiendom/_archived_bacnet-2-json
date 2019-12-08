@@ -99,8 +99,10 @@ public class ConfirmedSegmentedRequestTest {
         assertEquals(0, response.getSequenceNumber());
         assertEquals(4, response.getPropsedWindowSize());
         assertEquals(ReadProperty, response.getServiceChoice());
-//        String segmentBodyHexString = response.getSegmentBodyHexString();
-//        assertNotNull(segmentBodyHexString);
+        String segmentBodyHexString = response.getSegmentBodyHexString();
+        assertNotNull(segmentBodyHexString);
+        assertTrue(segmentBodyHexString.startsWith("0c"));
+        assertTrue(segmentBodyHexString.endsWith("c4"));
 
     }
 }
