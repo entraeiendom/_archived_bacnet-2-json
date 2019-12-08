@@ -12,6 +12,7 @@ public class Service {
     private Integer maxAcceptedPduSize;
     private boolean replyExpected;
     private Integer sequenceNumber;
+    private Integer proposedWindowSize;
 
     public void setInvokeId(Integer invokeId) {
         this.invokeId = invokeId;
@@ -105,5 +106,13 @@ public class Service {
 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    public Integer getProposedWindowSize() {
+        return proposedWindowSize;
+    }
+
+    public void setProposedWindowSize(Integer proposedWindowSize) {
+        this.proposedWindowSize = proposedWindowSize;
     }
 }

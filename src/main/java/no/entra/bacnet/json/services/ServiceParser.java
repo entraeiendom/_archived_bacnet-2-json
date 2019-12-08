@@ -47,6 +47,9 @@ public class ServiceParser {
                 Octet sequenceNumberOctet = serviceReader.next();
                 int sequenceNumber = toInt(sequenceNumberOctet);
                 serviceBuilder = serviceBuilder.withSequenceNumber(sequenceNumber);
+                Octet proposedWindowSizeOctet = serviceReader.next();
+                int proposedWindowSize = toInt(proposedWindowSizeOctet);
+                serviceBuilder = serviceBuilder.withProposedWindowSize(proposedWindowSize);
             }
             serviceChoiceOctet = serviceReader.next();
             serviceBuilder.withServiceChoice(serviceChoiceOctet);

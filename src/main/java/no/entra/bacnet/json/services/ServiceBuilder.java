@@ -13,6 +13,7 @@ public class ServiceBuilder {
     private Integer maxAcceptedPduSize = null;
     private Integer invokeId = null;
     private Integer sequenceNumber = null;
+    private Integer proposedWindowSize = null;
 
     public ServiceBuilder(PduType pduType) {
         if (pduType == null) {
@@ -27,31 +28,32 @@ public class ServiceBuilder {
     }
 
     public Service build() {
-       switch (pduType) {
-           case UnconfirmedRequest:
-               service = new UnconfirmedService(pduType, serviceChoice);
-               break;
-           case ConfirmedRequest:
-               service = new ConfirmedService(pduType, serviceChoice);
-               break;
-           case ComplexAck:
-               service = new ConfirmedService(pduType, serviceChoice);
-               break;
-           case SimpleAck:
-               service = new ConfirmedService(pduType, serviceChoice);
-               break;
-           default:
-               service = null;
-       }
-       if (service != null) {
-           service.isSegmented(isSegmented);
-           service.hasMoreSegments(hasMoreSegments);
-           service.willAcceptSegmentedResponse(willAcceptSegmentedResponse);
-          service.setMaxAcceptedPduSize(maxAcceptedPduSize);
-           service.setInvokeId(invokeId);
-           service.setSequenceNumber(sequenceNumber);
-       }
-       return service;
+        switch (pduType) {
+            case UnconfirmedRequest:
+                service = new UnconfirmedService(pduType, serviceChoice);
+                break;
+            case ConfirmedRequest:
+                service = new ConfirmedService(pduType, serviceChoice);
+                break;
+            case ComplexAck:
+                service = new ConfirmedService(pduType, serviceChoice);
+                break;
+            case SimpleAck:
+                service = new ConfirmedService(pduType, serviceChoice);
+                break;
+            default:
+                service = null;
+        }
+        if (service != null) {
+            service.isSegmented(isSegmented);
+            service.hasMoreSegments(hasMoreSegments);
+            service.willAcceptSegmentedResponse(willAcceptSegmentedResponse);
+            service.setMaxAcceptedPduSize(maxAcceptedPduSize);
+            service.setInvokeId(invokeId);
+            service.setSequenceNumber(sequenceNumber);
+            service.setProposedWindowSize(proposedWindowSize);
+        }
+        return service;
     }
 
     public ServiceBuilder withIsSegmented(boolean segmented) {
@@ -71,7 +73,7 @@ public class ServiceBuilder {
 
     public ServiceBuilder withMaxAPDUSize(int numberOfOctets) {
         this.maxAcceptedPduSize = numberOfOctets;
-        return  this;
+        return this;
     }
 
     public ServiceBuilder withInvokId(int invokeId) {
@@ -81,6 +83,11 @@ public class ServiceBuilder {
 
     public ServiceBuilder withSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+        return this;
+    }
+
+    public ServiceBuilder withProposedWindowSize(int proposedWindowSize) {
+        this.proposedWindowSize = proposedWindowSize;
         return this;
     }
 }

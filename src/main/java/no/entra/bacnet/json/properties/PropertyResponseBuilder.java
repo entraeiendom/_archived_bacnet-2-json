@@ -12,6 +12,7 @@ public class PropertyResponseBuilder {
     private PduType pduType; //eg Confirmed-Req
     private Integer invokeId = null;
     private Integer sequenceNumber = null;
+    private Integer proposedWindowSize = null;
     private ServiceChoice serviceChoice;
 
 
@@ -31,6 +32,7 @@ public class PropertyResponseBuilder {
         this.invokeId = service.getInvokeId();
         this.serviceChoice = service.getServiceChoice();
         this.sequenceNumber = service.getSequenceNumber();
+        this.proposedWindowSize = service.getProposedWindowSize();
         return this;
     }
 
@@ -78,6 +80,7 @@ public class PropertyResponseBuilder {
         response.setInvokeId(invokeId);
         response.setServiceChoice(serviceChoice);
         response.setSequenceNumber(sequenceNumber);
+        response.setPropsedWindowSize(proposedWindowSize);
         return response;
     }
 

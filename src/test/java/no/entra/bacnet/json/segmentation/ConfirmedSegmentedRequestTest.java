@@ -90,11 +90,13 @@ public class ConfirmedSegmentedRequestTest {
 //        assertEquals(ServiceChoice, service.getServiceChoice());
         assertEquals(31, service.getInvokeId());
         assertEquals(0, service.getSequenceNumber());
+        assertEquals(4, service.getProposedWindowSize());
 
         PropertyResponse response = new PropertyResponseBuilder(service, service.getUnprocessedHexString()).build();
         assertNotNull(response);
         assertEquals(31, response.getInvokeId());
         assertEquals(0, response.getSequenceNumber());
+        assertEquals(4, response.getPropsedWindowSize());
 
     }
 }
