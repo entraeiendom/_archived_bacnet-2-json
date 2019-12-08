@@ -12,6 +12,7 @@ public class ServiceBuilder {
     private boolean willAcceptSegmentedResponse = false;
     private Integer maxAcceptedPduSize = null;
     private Integer invokeId = null;
+    private Integer sequenceNumber = null;
 
     public ServiceBuilder(PduType pduType) {
         if (pduType == null) {
@@ -48,6 +49,7 @@ public class ServiceBuilder {
            service.willAcceptSegmentedResponse(willAcceptSegmentedResponse);
           service.setMaxAcceptedPduSize(maxAcceptedPduSize);
            service.setInvokeId(invokeId);
+           service.setSequenceNumber(sequenceNumber);
        }
        return service;
     }
@@ -72,8 +74,13 @@ public class ServiceBuilder {
         return  this;
     }
 
-    public ServiceBuilder withInvodeId(int invokeId) {
+    public ServiceBuilder withInvokId(int invokeId) {
         this.invokeId = invokeId;
+        return this;
+    }
+
+    public ServiceBuilder withSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
         return this;
     }
 }

@@ -11,6 +11,7 @@ public class Service {
     private boolean willAcceptSegmentedResponse = false;
     private Integer maxAcceptedPduSize;
     private boolean replyExpected;
+    private Integer sequenceNumber;
 
     public void setInvokeId(Integer invokeId) {
         this.invokeId = invokeId;
@@ -96,5 +97,13 @@ public class Service {
                 ", replyExpected=" + replyExpected +
                 ", invokeId=" + invokeId +
                 '}';
+    }
+
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 }

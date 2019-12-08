@@ -11,7 +11,9 @@ public class PropertyResponseBuilder {
     private String destination;
     private PduType pduType; //eg Confirmed-Req
     private Integer invokeId = null;
+    private Integer sequenceNumber = null;
     private ServiceChoice serviceChoice;
+
 
     /**
      *
@@ -28,6 +30,7 @@ public class PropertyResponseBuilder {
         this.pduType = service.getPduType();
         this.invokeId = service.getInvokeId();
         this.serviceChoice = service.getServiceChoice();
+        this.sequenceNumber = service.getSequenceNumber();
         return this;
     }
 
@@ -74,6 +77,7 @@ public class PropertyResponseBuilder {
         response.setPduType(pduType);
         response.setInvokeId(invokeId);
         response.setServiceChoice(serviceChoice);
+        response.setSequenceNumber(sequenceNumber);
         return response;
     }
 

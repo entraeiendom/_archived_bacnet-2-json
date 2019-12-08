@@ -39,11 +39,14 @@ public class ServiceParser {
                 int invokeId = toInt(invokeIdOctet);
                 serviceBuilder = serviceBuilder.withWillAcceptSegmentedResponse(true)
                 .withMaxAPDUSize(numberOfOctets)
-                .withInvodeId(invokeId);
+                .withInvokId(invokeId);
             } else if (isSegmented(pduFlags)) {
                 Octet invokeIdOctet = serviceReader.next();
                 int invokeId = toInt(invokeIdOctet);
-                serviceBuilder = serviceBuilder.withInvodeId(invokeId);
+                serviceBuilder = serviceBuilder.withInvokId(invokeId);
+                Octet sequenceNumberOctet = serviceReader.next();
+                int sequenceNumber = toInt(sequenceNumberOctet);
+                serviceBuilder = serviceBuilder.withSequenceNumber(sequenceNumber);
             }
             serviceChoiceOctet = serviceReader.next();
             serviceBuilder.withServiceChoice(serviceChoiceOctet);
