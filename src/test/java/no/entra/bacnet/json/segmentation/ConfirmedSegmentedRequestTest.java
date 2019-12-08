@@ -87,7 +87,6 @@ public class ConfirmedSegmentedRequestTest {
         assertTrue(service.isSegmented());
         assertTrue(service.isHasMoreSegments());
         assertEquals(PduType.ComplexAck,service.getPduType());
-//        assertEquals(ServiceChoice, service.getServiceChoice());
         assertEquals(31, service.getInvokeId());
         assertEquals(0, service.getSequenceNumber());
         assertEquals(4, service.getProposedWindowSize());
@@ -103,6 +102,40 @@ public class ConfirmedSegmentedRequestTest {
         assertNotNull(segmentBodyHexString);
         assertTrue(segmentBodyHexString.startsWith("0c"));
         assertTrue(segmentBodyHexString.endsWith("c4"));
+        assertEquals(2038, segmentBodyHexString.length());
 
+    }
+
+    @Test
+    void buildLastSegmentedMessage() {
+        String reassembled = "810a02010104381f03040c0cc404edcc0dc404edcc0ec404edcc0fc404edcc10c404edcc12c404edcc16c404edcc17c404edcc18c404edcc1ec404edcc20c404edcd00c4052dc6c5c4052dcc4bc4052dcc4cc4052dcc4dc4052dcc4ec4052dcc4fc4052dcc50c4052dcc51c4052dcc52c4052dcc53c4052dcc54c4052dcc55c4052dcc56c4052dcc57c4052dcc58c4052dcc59c4052dcc5ac4052dcc5bc4052dcc5cc4052dcc5dc4052dcc5ec4052dcc5fc4052dcc60c4052dcc61c4052dcc62c4052dcc63c4052dcc64c4052dcc65c4052dcc66c4052dcc67c4052dcc68c4052dcc69c4052dcc6ac4052dcc6bc4052dcc6cc4052dcc6dc4052dcc6ec4052dcc6fc4052dcc70c4052dcc71c4052dcc72c4052dcc73c4052dcc74c4052dcc75c4052dcc76c4052dcc77c4052dcc78c4052dcc79c4052dcc7ac4052dcc7bc4052dcc7cc4052dcc7dc4052dcc7ec4052dcc7fc4052dcc80c4052dcc81c4052dcc82c4052dcc83c4052dcc84c4052dcc85c4052dcc86c4052dcc87c4052dcc88c4052dcc89c4052dcc8ac4052dcc8bc4052dcc8cc4052dcc8dc4052dcc8ec4052dcc8fc4052dcc90c4052dcc91c4052dcc93c4052dcc94c4052dcc95c4052dcc96c4052dcc97c4052dcc98c4052dcc99c4052dcc9ac4052dcc9bc4052dcc9cc4052dcc9dc4052dcc9ec4052dcc9fc4052dcca0c4052dccb9c4052dccbac4052dcd013f";
+        BvlcResult bvlcResult = BvlcParser.parse(reassembled);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        Npdu npdu = npduResult.getNpdu();
+        assertNotNull(npdu);
+        assertFalse(npdu.isDestinationAvailable());
+        assertTrue(npdu.isExpectingResponse());
+        Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
+        assertNotNull(service);
+        assertFalse(service.isWillAcceptSegmentedResponse());
+        assertTrue(service.isSegmented());
+        assertFalse(service.isHasMoreSegments());
+        assertEquals(PduType.ComplexAck,service.getPduType());
+        assertEquals(31, service.getInvokeId());
+        assertEquals(3, service.getSequenceNumber());
+        assertEquals(4, service.getProposedWindowSize());
+        assertEquals(ReadProperty, service.getServiceChoice());
+
+        PropertyResponse response = new PropertyResponseBuilder(service, service.getUnprocessedHexString()).build();
+        assertNotNull(response);
+        assertEquals(31, response.getInvokeId());
+        assertEquals(3, response.getSequenceNumber());
+        assertEquals(4, response.getPropsedWindowSize());
+        assertEquals(ReadProperty, response.getServiceChoice());
+        String segmentBodyHexString = response.getSegmentBodyHexString();
+        assertNotNull(segmentBodyHexString);
+        assertTrue(segmentBodyHexString.startsWith("0c"));
+        assertTrue(segmentBodyHexString.endsWith("3f"));
+        assertEquals(1004, segmentBodyHexString.length());
     }
 }
