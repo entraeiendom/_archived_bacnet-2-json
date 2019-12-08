@@ -10,6 +10,7 @@ public class Service {
     private boolean hasMoreSegments = false;
     private boolean willAcceptSegmentedResponse = false;
     private Integer maxAcceptedPduSize;
+    private boolean replyExpected;
 
     public void setInvokeId(Integer invokeId) {
         this.invokeId = invokeId;
@@ -74,6 +75,14 @@ public class Service {
         return maxAcceptedPduSize;
     }
 
+    public boolean isReplyExpected() {
+        return replyExpected;
+    }
+
+    public void setReplyExpected(boolean replyExpected) {
+        this.replyExpected = replyExpected;
+    }
+
     @Override
     public String toString() {
         return "Service{" +
@@ -84,6 +93,7 @@ public class Service {
                 ", hasMoreSegments=" + hasMoreSegments +
                 ", willAcceptSegmentedResponse=" + willAcceptSegmentedResponse +
                 ", maxAcceptedPduSize=" + maxAcceptedPduSize +
+                ", replyExpected=" + replyExpected +
                 ", invokeId=" + invokeId +
                 '}';
     }

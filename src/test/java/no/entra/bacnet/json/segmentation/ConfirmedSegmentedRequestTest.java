@@ -8,9 +8,12 @@ import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.ObjectId;
 import no.entra.bacnet.json.objects.ObjectType;
+import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.properties.PropertyRequest;
 import no.entra.bacnet.json.properties.PropertyRequestBuilder;
+import no.entra.bacnet.json.properties.PropertyResponse;
+import no.entra.bacnet.json.properties.PropertyResponseBuilder;
 import no.entra.bacnet.json.services.ConfirmedService;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
@@ -67,5 +70,25 @@ public class ConfirmedSegmentedRequestTest {
         ObjectId objectId = new ObjectId(ObjectType.Device, "516");
         assertEquals(objectId, request.getDesiredObjectId());
         assertEquals(PropertyIdentifier.ObjectList, request.getDesiredPropertyIds().get(0));
+    }
+
+    @Test
+    void buildFirstPropertyResponse() {
+        String firstSegmentHexString = "810a040601043c1f00040c0c02000205194c3ec402000205c4002dcaa6c4002dcaa7c4002dcbb4c4002dcbb5c4002dcbe9c4002dcbeac4002dcbebc4002dcbecc4002dcbf0c4002dcbf1c4002dcc27c4002dcc28c4002dcc32c4002dcc33c4002dcc34c4002dcc35c4002dcc36c4006dcaa2c4006dcaa3c4006dcaa4c4006dcbb0c4006dcbb1c4006dcbb2c4006dcc2fc4006dcc30c4006dcc31c4006dcc38c4006dcc39c400adca70c400adca71c400adca72c400adca73c400adca74c400adca75c400adca76c400adca77c400adca78c400adca79c400adca7ac400adca7bc400adca7cc400adca7dc400adca7ec400adca7fc400adca80c400adca81c400adca82c400adca83c400adca84c400adca85c400adca86c400adca87c400adca88c400adca89c400adca8ac400adca8bc400adca8cc400adca8dc400adca8ec400adca8fc400adca90c400adca91c400adca92c400adca93c400adca94c400adca95c400adca96c400adca97c400adca98c400adca99c400adca9ac400adca9bc400adca9cc400adca9dc400adca9ec400adca9fc400adcaa0c400adcb7ec400adcb7fc400adcb80c400adcb81c400adcb82c400adcb83c400adcb84c400adcb85c400adcb86c400adcb87c400adcb88c400adcb89c400adcb8ac400adcb8bc400adcb8cc400adcb8dc400adcb8ec400adcb8fc400adcb90c400adcb91c400adcb92c400adcb93c400adcb94c400adcb95c400adcb96c400adcb97c400adcb98c400adcb99c400adcb9ac400adcb9bc400adcb9cc400adcb9dc400adcb9ec400adcb9fc400adcba0c400adcba1c400adcba2c400adcba3c400adcba4c400adcba5c400adcba6c400adcba7c400adcba8c400adcba9c400adcbaac400adcbabc400adcbacc400adcbadc400adcbaec400adcbf4c400adcbf5c400adcbf6c400adcbf7c400adcbf9c400adcbfbc400adcbfcc400adcbfdc400adcbfec400adcbffc400adcc00c400adcc01c400adcc02c400adcc04c400adcc05c400adcc06c400adcc07c400adcc08c400adcc09c400adcc14c400adcc19c400adcc1ac400adcc1bc400adcc1cc400adcc23c400adcc24c400adcc25c400adcc26c400adccbbc400edca62c400edca63c400edca64c400edca65c400edca66c400edca67c400edca68c400edca69c400edca6ac400edca6bc400edca6cc400edca6dc400edca6ec400edcb70c400edcb71c400edcb72c400edcb73c400edcb74c400edcb75c400edcb76c400edcb77c400edcb78c400edcb79c400edcb7ac400edcb7bc400edcb7cc400edcbe6c400edcbe7c400edcbe8c400edcbedc400edcbeec400edcc2bc400edcc2cc400edcc2dc400edcc37c400edcc3ac400edcc3bc4012dca4fc4012dca50c4012dca51c4012dca52c4012dca53c4012dca54c4012dca55c4012dca56c4012dca57c4";
+        BvlcResult bvlcResult = BvlcParser.parse(firstSegmentHexString);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        Npdu npdu = npduResult.getNpdu();
+        assertNotNull(npdu);
+        assertFalse(npdu.isDestinationAvailable());
+        assertTrue(npdu.isExpectingResponse());
+        Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
+        assertNotNull(service);
+        assertFalse(service.isWillAcceptSegmentedResponse());
+        assertTrue(service.isSegmented());
+        assertTrue(service.isHasMoreSegments());
+        assertEquals(PduType.ComplexAck,service.getPduType());
+//        assertEquals(ServiceChoice, service.getServiceChoice());
+        PropertyResponse response = new PropertyResponseBuilder(service, service.getUnprocessedHexString()).build();
+        assertNotNull(response);
     }
 }
