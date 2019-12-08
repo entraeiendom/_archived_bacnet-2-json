@@ -88,7 +88,10 @@ public class ConfirmedSegmentedRequestTest {
         assertTrue(service.isHasMoreSegments());
         assertEquals(PduType.ComplexAck,service.getPduType());
 //        assertEquals(ServiceChoice, service.getServiceChoice());
+
         PropertyResponse response = new PropertyResponseBuilder(service, service.getUnprocessedHexString()).build();
         assertNotNull(response);
+        assertEquals(31, response.getInvokeId());
+
     }
 }

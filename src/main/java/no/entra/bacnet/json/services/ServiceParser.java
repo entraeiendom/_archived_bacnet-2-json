@@ -30,7 +30,7 @@ public class ServiceParser {
             if (hasMoreSegments(pduFlags)) {
                 serviceBuilder = serviceBuilder.withHasMoreSegments(true);
             }
-            if (willAcceptSegmentedResponse(pduFlags)) {
+            if (willAcceptSegmentedResponse(pduFlags) ) {
 //                serviceReader.next();
                 Octet maxApduOctetsAccepted = serviceReader.next();
                 int numberOfOctets = 9999;
@@ -40,7 +40,10 @@ public class ServiceParser {
                 serviceBuilder = serviceBuilder.withWillAcceptSegmentedResponse(true)
                 .withMaxAPDUSize(numberOfOctets)
                 .withInvodeId(invokeId);
-
+            } else if (isSegmented(pduFlags)) {
+                Octet invokeIdOctet = serviceReader.next();
+                int invokeId = toInt(invokeIdOctet);
+                serviceBuilder = serviceBuilder.withInvodeId(invokeId);
             }
             serviceChoiceOctet = serviceReader.next();
             serviceBuilder.withServiceChoice(serviceChoiceOctet);
