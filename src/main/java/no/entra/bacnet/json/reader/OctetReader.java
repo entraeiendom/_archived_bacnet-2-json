@@ -85,4 +85,8 @@ public class OctetReader {
     public String unprocessedHexString() {
         return hexString.substring(currentPos);
     }
+
+    public void fastForward(int numberOfOctets) {
+        nextOctets(numberOfOctets); //Ignore the returned octets
+    }
 }

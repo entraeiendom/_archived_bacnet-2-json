@@ -1,10 +1,12 @@
 package no.entra.bacnet.json.properties;
 
+import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.objects.ObjectId;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.parser.ObjectIdParser;
 import no.entra.bacnet.json.parser.ObjectIdParserResult;
+import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceChoice;
 
@@ -54,9 +56,14 @@ public class PropertyRequestBuilder {
         ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(unprocessedHexString);
         desiredObjectId = objectIdResult.getParsedObject();
         int parsedOctets = objectIdResult.getNumberOfOctetsRead();
-        String requestedPropertiesHexString = unprocessedHexString.substring(parsedOctets * 2);
-
-        //FIXME parse
+        OctetReader propertyReader = new OctetReader(unprocessedHexString);
+        propertyReader.fastForward(parsedOctets); //Skip the part witch parsed the ObjectId.
+        Octet sdContextTag = propertyReader.next();
+        if (sdContextTag.equals(Octet.fromHexString("19"))) {
+            Octet pIdOctet = propertyReader.next();
+            PropertyIdentifier desiredProperty = PropertyIdentifier.fromOctet(pIdOctet);
+            desiredPropertyIds.add(desiredProperty);
+        }
         return this;
     }
 
