@@ -2,7 +2,7 @@
 Parse BacnetUDP and convert to Json. Must be GPLv3 due to bacnet4j dependency
 
 
-## Json "shcema"
+## Json "schema"
 
 ```
 {"observation": {
@@ -17,3 +17,11 @@ Parse BacnetUDP and convert to Json. Must be GPLv3 due to bacnet4j dependency
 }
 ```
 
+## How To
+
+String bacnetMessage -> You need to find the HexString from an Datagram Packet. [Baelung's UDP example](https://www.baeldung.com/udp-in-java)
+
+```
+import no.entra.bacnet.json.Bacnet2Json
+String json = Bacnet2Json.hexStringToJson(backentMessage);
+```
