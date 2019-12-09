@@ -24,7 +24,7 @@ public class Bacnet2Json {
 
 
     public static final String SENDER = "sender";
-    public static final String OBSERVATION = "observataion";
+    public static final String OBSERVATION = "observation";
     public static final String OBSERVED_AT = "observedAt";
     public static final String CONFIGURATION_REQUEST = "configurationRequest";
     public static final String CONFIGURATION = "configuration";
