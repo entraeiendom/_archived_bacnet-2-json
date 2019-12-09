@@ -1,5 +1,6 @@
 package no.entra.bacnet.json;
 
+import no.entra.bacnet.json.parser.BacNetParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

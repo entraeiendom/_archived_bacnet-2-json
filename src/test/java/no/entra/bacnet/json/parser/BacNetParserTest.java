@@ -1,5 +1,6 @@
-package no.entra.bacnet.json;
+package no.entra.bacnet.json.parser;
 
+import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;

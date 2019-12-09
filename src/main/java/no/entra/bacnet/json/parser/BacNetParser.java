@@ -1,8 +1,10 @@
-package no.entra.bacnet.json;
+package no.entra.bacnet.json.parser;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import no.entra.bacnet.Octet;
+import no.entra.bacnet.json.Observation;
+import no.entra.bacnet.json.Source;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;

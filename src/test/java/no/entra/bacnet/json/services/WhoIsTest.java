@@ -1,7 +1,7 @@
 package no.entra.bacnet.json.services;
 
-import no.entra.bacnet.json.BacNetParser;
 import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.parser.BacNetParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

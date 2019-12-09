@@ -7,6 +7,7 @@ import no.entra.bacnet.json.npdu.Npdu;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.parser.BacNetParser;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.json.JSONObject;
