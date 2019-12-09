@@ -90,6 +90,9 @@ public class BacnetMessagesValidator {
                                             log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, service.getUnprocessedHexString());
                                         }
                                         break;
+                                    case SegmentACK:
+                                        validApdu++;
+                                        break;
                                     default:
                                         log.debug("Do not know how to handle PduType: {}. ApduHexString: {}", pduType, apduHexString);
 
