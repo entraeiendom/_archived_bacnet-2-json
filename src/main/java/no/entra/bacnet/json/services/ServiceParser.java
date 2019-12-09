@@ -38,9 +38,9 @@ public class ServiceParser {
                 Octet invokeIdOctet = serviceReader.next();
                 int invokeId = toInt(invokeIdOctet);
                 serviceBuilder = serviceBuilder.withWillAcceptSegmentedResponse(true)
-                .withMaxAPDUSize(numberOfOctets)
-                .withInvokId(invokeId);
-            } else if (isSegmented(pduFlags)) {
+                        .withMaxAPDUSize(numberOfOctets)
+                        .withInvokId(invokeId);
+            } else if (isSegmented(pduFlags) || pduType == PduType.SegmentACK) {
                 Octet invokeIdOctet = serviceReader.next();
                 int invokeId = toInt(invokeIdOctet);
                 serviceBuilder = serviceBuilder.withInvokId(invokeId);
@@ -51,13 +51,28 @@ public class ServiceParser {
                 int proposedWindowSize = toInt(proposedWindowSizeOctet);
                 serviceBuilder = serviceBuilder.withProposedWindowSize(proposedWindowSize);
             }
-            serviceChoiceOctet = serviceReader.next();
-            serviceBuilder.withServiceChoice(serviceChoiceOctet);
+            if (hasServiceChoice(pduType)) {
+                serviceChoiceOctet = serviceReader.next();
+                serviceBuilder.withServiceChoice(serviceChoiceOctet);
+            }
             service = serviceBuilder.build();
             service.setUnprocessedHexString(serviceReader.unprocessedHexString());
         } else {
             log.debug("Could not find PduType. pduTypeOctet: {}, from apduHexString: {}", pduTypeOctet, apduHexString);
         }
         return service;
+    }
+
+    private static boolean hasServiceChoice(PduType pduType) {
+        boolean hasServiceChoice = true;
+        switch (pduType) {
+            case SegmentACK:
+                hasServiceChoice = false;
+                break;
+            default:
+                hasServiceChoice = true;
+
+        }
+        return hasServiceChoice;
     }
 }

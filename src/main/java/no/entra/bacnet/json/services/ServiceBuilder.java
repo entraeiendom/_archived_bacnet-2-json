@@ -41,6 +41,9 @@ public class ServiceBuilder {
             case SimpleAck:
                 service = new ConfirmedService(pduType, serviceChoice);
                 break;
+            case SegmentACK:
+                service = new ConfirmedService(pduType, null);
+                break;
             default:
                 service = null;
         }

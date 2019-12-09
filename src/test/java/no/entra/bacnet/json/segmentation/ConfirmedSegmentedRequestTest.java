@@ -138,4 +138,23 @@ public class ConfirmedSegmentedRequestTest {
         assertTrue(segmentBodyHexString.endsWith("3f"));
         assertEquals(1004, segmentBodyHexString.length());
     }
+
+    @Test
+    void buildSegmentAck() {
+        String reassembled = "810a000a0100401f0304";
+        BvlcResult bvlcResult = BvlcParser.parse(reassembled);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        Npdu npdu = npduResult.getNpdu();
+        assertNotNull(npdu);
+        assertFalse(npdu.isDestinationAvailable());
+        Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
+        assertNotNull(service);
+        SegmentResponse response = new SegmentResponseBuilder(service, service.getUnprocessedHexString()).build();
+        assertNotNull(response);
+        assertEquals(31, response.getInvokeId());
+        assertEquals(3, response.getSequenceNumber());
+        assertEquals(4, response.getPropsedWindowSize());
+    }
+
+
 }

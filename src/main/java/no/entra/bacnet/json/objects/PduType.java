@@ -27,18 +27,7 @@ public enum PduType {
         if (pduTypeOctet == null) {
             return null;
         }
-        switch (pduTypeOctet.getFirstNibble()) {
-            case '0':
-                return ConfirmedRequest;
-            case '1':
-                return UnconfirmedRequest;
-            case '2':
-                return SimpleAck;
-            case '3':
-                return ComplexAck;
-            default:
-                return null;
-        }
+        return fromPduTypeChar(pduTypeOctet.getFirstNibble());
     }
 
 
