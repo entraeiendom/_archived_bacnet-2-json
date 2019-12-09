@@ -5,6 +5,7 @@ import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.Npdu;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.json.JSONObject;
@@ -19,6 +20,7 @@ public class Bacnet2Json {
     public static final String SENDER = "sender";
     public static final String OBSERVATION = "observataion";
     public static final String OBSERVED_AT = "observedAt";
+    private static final String CONFIGURATION_REQUEST = "configurationRequest";
 
     public static String hexStringToJson(String hexString) {
         String bacnetMessage = null;
@@ -43,9 +45,19 @@ public class Bacnet2Json {
     }
 
     static JSONObject addServiceInfo(JSONObject bacnetJson, Service service) {
+        if (service == null) {
+            return null;
+        }
+        if (bacnetJson == null) {
+            bacnetJson = new JSONObject();
+        }
         Map<String, String> observationMap = new HashMap<>();
         observationMap.put(OBSERVED_AT, LocalDateTime.now().toString());
         JSONObject observationJson = new JSONObject(observationMap);
+        PduType pduType = service.getPduType();
+        if (pduType == PduType.ConfirmedRequest || pduType == PduType.UnconfirmedRequest ) {
+            bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
+        }
         return bacnetJson.put(OBSERVATION, observationJson);
     }
 
