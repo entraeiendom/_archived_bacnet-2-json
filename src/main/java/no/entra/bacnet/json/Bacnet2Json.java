@@ -92,20 +92,11 @@ public class Bacnet2Json {
             return null;
         }
 
-        JSONObject json = new JSONObject();
+        JSONObject json = message.asJsonObject();
 
         if (npdu != null && npdu.isSourceAvailable()) {
             String source = npdu.getSourceNetworkAddress().toString();
             json.put(SOURCE, source);
-        }
-        if (message instanceof Observation) {
-            json.put(OBSERVATION, message.asJsonObject());
-        } else if (message instanceof ConfigurationRequest) {
-            json.put(CONFIGURATION_REQUEST, message.asJsonObject());
-        } else if (message instanceof Configuration) {
-            json.put(CONFIGURATION, message.asJsonObject());
-        } else {
-            json.put("message", message.asJsonObject());
         }
 
         return json;
