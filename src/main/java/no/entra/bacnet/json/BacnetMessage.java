@@ -1,5 +1,7 @@
 package no.entra.bacnet.json;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public interface BacnetMessage extends Serializable {
@@ -16,4 +18,6 @@ public interface BacnetMessage extends Serializable {
      * @return
      */
     String toJson();
+
+    JSONObject asJsonObject();
 }

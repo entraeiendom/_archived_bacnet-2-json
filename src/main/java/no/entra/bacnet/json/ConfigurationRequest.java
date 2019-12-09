@@ -82,12 +82,18 @@ public class ConfigurationRequest implements BacnetMessage {
 
     @Override
     public String toJson() {
+
+
+        return asJsonObject().toString();
+    }
+
+    @Override
+    public JSONObject asJsonObject() {
         JSONObject json = new JSONObject();
         json.put(ID, id);
         json.put(SOURCE, source);
         json.put(PROPERTIES, properties);
         json.put(OBSERVED_AT, observedAt);
-
-        return json.toString();
+        return json;
     }
 }

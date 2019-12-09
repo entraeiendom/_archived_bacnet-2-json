@@ -132,4 +132,17 @@ public class Observation implements BacnetMessage {
 
         return json.toString();
     }
+
+    @Override
+    public JSONObject asJsonObject() {
+        JSONObject json = new JSONObject();
+        json.put(ID, getId());
+        json.put(SOURCE, getSource());
+        json.put(VALUE, getValue());
+        json.put(UNIT, getUnit());
+        json.put(NAME, getName());
+        json.put(DESCRIPTION, getDescription());
+        json.put(OBSERVED_AT, getObservedAt());
+        return json;
+    }
 }
