@@ -1,5 +1,7 @@
 package no.entra.bacnet.json;
 
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.Map;
  * }",
  * "observedAt"
  */
-public class Configuration {
+public class Configuration implements BacnetMessage {
     private String id;
     private Source source;
     private Map<String, String> properties = new HashMap<>();
@@ -76,5 +78,16 @@ public class Configuration {
                 ", properties=" + properties +
                 ", observedAt=" + observedAt +
                 '}';
+    }
+
+    @Override
+    public String toJson() {
+        JSONObject json = new JSONObject();
+        json.put(ID, id);
+        json.put(SOURCE, source);
+        json.put(PROPERTIES, properties);
+        json.put(OBSERVED_AT, observedAt);
+
+        return json.toString();
     }
 }
