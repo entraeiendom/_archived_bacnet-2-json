@@ -1,5 +1,8 @@
 package no.entra.bacnet.json;
 
+import org.json.JSONObject;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -13,7 +16,14 @@ import java.time.LocalDateTime;
  *    "description": any string",
  *    "observedAt"
  */
-public class Observation {
+public class Observation implements Serializable {
+    public static final String ID = "id";
+    public static final String SOURCE = "source";
+    public static final String VALUE = "value";
+    public static final String UNIT = "unit";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String OBSERVED_AT = "observedAt";
     private String id;
     private Source source;
     private Object value;
@@ -115,5 +125,18 @@ public class Observation {
                 ", description='" + description + '\'' +
                 ", observedAt=" + observedAt +
                 '}';
+    }
+
+    public String toJson() {
+        JSONObject json = new JSONObject();
+        json.put(ID, id);
+        json.put(SOURCE, source);
+        json.put(VALUE,value);
+        json.put(UNIT, unit);
+        json.put(NAME, name);
+        json.put(DESCRIPTION, description);
+        json.put(OBSERVED_AT, observedAt);
+
+        return json.toString();
     }
 }

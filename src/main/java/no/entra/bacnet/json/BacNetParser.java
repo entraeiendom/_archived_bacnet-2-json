@@ -61,7 +61,7 @@ import static org.slf4j.LoggerFactory.getLogger;
     }
 
 
-    public Observation buildObservation(String hexString) {
+    public static Observation buildObservation(String hexString) {
         OctetReader apduReader = new OctetReader(hexString);
         Octet pduTypeKey = apduReader.next();
         PduType pduType = PduType.fromOctet(pduTypeKey);
@@ -92,7 +92,7 @@ import static org.slf4j.LoggerFactory.getLogger;
         return observation;
     }
 
-    String findListResultHexString(String hexString) {
+    static String findListResultHexString(String hexString) {
         int listStartPos = hexString.indexOf(OBJECT_IDENTIFIER);
         int listEndPos = hexString.indexOf(LIST_END_HEX);
         String listResulHexString = null;

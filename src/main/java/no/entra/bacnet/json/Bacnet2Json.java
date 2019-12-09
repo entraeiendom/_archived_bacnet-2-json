@@ -1,5 +1,6 @@
 package no.entra.bacnet.json;
 
+import no.entra.bacnet.json.bvlc.Bvlc;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.Npdu;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.entra.bacnet.json.Observation.*;
+
 public class Bacnet2Json {
 
 
@@ -27,13 +30,14 @@ public class Bacnet2Json {
         JSONObject bacnetJson = new JSONObject();
         BvlcResult bvlcResult = BvlcParser.parse(hexString);
         if (bvlcResult != null) {
+            Bvlc bvlc = bvlcResult.getBvlc();
             NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
             if (npduResult != null) {
                 Npdu npdu = npduResult.getNpdu();
                 bacnetJson = addNetworkInfo(npdu);
                 Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
                 if (service != null) {
-                    bacnetJson = addServiceInfo(bacnetJson, service);
+                    bacnetJson = addServiceInfo(bacnetJson, bvlc, npdu, service);
                 }
             }
         }
@@ -44,7 +48,7 @@ public class Bacnet2Json {
         return bacnetMessage;
     }
 
-    static JSONObject addServiceInfo(JSONObject bacnetJson, Service service) {
+    static JSONObject addServiceInfo(JSONObject bacnetJson, Bvlc bvlc, Npdu npdu, Service service) {
         if (service == null) {
             return null;
         }
@@ -55,10 +59,44 @@ public class Bacnet2Json {
         observationMap.put(OBSERVED_AT, LocalDateTime.now().toString());
         JSONObject observationJson = new JSONObject(observationMap);
         PduType pduType = service.getPduType();
-        if (pduType == PduType.ConfirmedRequest || pduType == PduType.UnconfirmedRequest ) {
-            bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
+
+        switch (pduType) {
+            case ComplexAck:
+                Observation observation = BacNetParser.buildObservation(service.getUnprocessedHexString());
+                observationJson = buildObservationJson(bvlc, npdu, observation);
+                bacnetJson.put(OBSERVATION, observationJson);
+                break;
+            case ConfirmedRequest:
+                bacnetJson.put(CONFIGURATION_REQUEST, "{}");
+                break;
+            case UnconfirmedRequest:
+                bacnetJson.put(CONFIGURATION_REQUEST, "{}");
+                break;
+            default:
+                //do nothing
         }
-        return bacnetJson.put(OBSERVATION, observationJson);
+
+        return bacnetJson;
+    }
+
+    static JSONObject buildObservationJson(Bvlc bvlc, Npdu npdu, Observation observation) {
+        if (observation == null) {
+            return null;
+        }
+
+        JSONObject json = new JSONObject();
+        json.put(ID, observation.getId());
+        if (npdu != null && npdu.isSourceAvailable()) {
+            String source = npdu.getSourceNetworkAddress().toString();
+            json.put(SOURCE, source);
+        }
+        json.put(VALUE, observation.getValue());
+        json.put(UNIT, observation.getUnit());
+        json.put(NAME, observation.getName());
+        json.put(DESCRIPTION, observation.getDescription());
+        json.put(OBSERVED_AT, observation.getObservedAt());
+
+        return json;
     }
 
     static JSONObject addNetworkInfo(Npdu npdu) {
