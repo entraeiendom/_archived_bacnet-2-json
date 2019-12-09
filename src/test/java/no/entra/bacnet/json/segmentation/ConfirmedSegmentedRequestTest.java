@@ -141,8 +141,8 @@ public class ConfirmedSegmentedRequestTest {
 
     @Test
     void buildSegmentAck() {
-        String reassembled = "810a000a0100401f0304";
-        BvlcResult bvlcResult = BvlcParser.parse(reassembled);
+        String segmentAckHexString = "810a000a0100401f0304";
+        BvlcResult bvlcResult = BvlcParser.parse(segmentAckHexString);
         NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
         Npdu npdu = npduResult.getNpdu();
         assertNotNull(npdu);
