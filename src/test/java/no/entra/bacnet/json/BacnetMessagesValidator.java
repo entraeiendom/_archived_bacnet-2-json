@@ -6,11 +6,14 @@ import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.services.Service;
+import no.entra.bacnet.json.services.ServiceChoice;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import static no.entra.bacnet.json.services.ConfirmedService.tryToUnderstandConfirmedRequest;
@@ -25,6 +28,7 @@ public class BacnetMessagesValidator {
 
     final File hexStringFile;
     private final BacNetParser bacnetParser;
+    private Map<PduType, Map<ServiceChoice, Integer>> unknowns = new HashMap<>();
 
     public BacnetMessagesValidator(File hexStringFile) {
         if (hexStringFile == null || !hexStringFile.isFile()) {
@@ -71,6 +75,7 @@ public class BacnetMessagesValidator {
                                         if (observation != null) {
                                             validApdu++;
                                         } else {
+                                            addUnknown(service.getPduType(), service.getServiceChoice());
                                             log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, apduHexString);
                                         }
                                         break;
@@ -79,6 +84,7 @@ public class BacnetMessagesValidator {
                                         if (request != null) {
                                             validApdu++;
                                         } else {
+                                            addUnknown(service.getPduType(), service.getServiceChoice());
                                             log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, service.getUnprocessedHexString());
                                         }
                                         break;
@@ -87,6 +93,7 @@ public class BacnetMessagesValidator {
                                         if (confirmedRequest != null) {
                                             validApdu++;
                                         } else {
+                                            addUnknown(service.getPduType(), service.getServiceChoice());
                                             log.trace("I did not understand PDU: {} from service: {}. hex: {}", pduType, service, service.getUnprocessedHexString());
                                         }
                                         break;
@@ -112,10 +119,27 @@ public class BacnetMessagesValidator {
                     log.debug("Failed to parse line number: {}. Reason: {} from: {}", lineNum, e.getMessage(), line);
                 }
             }
-            log.info("Verified BVLC: {}, Unknown BVLC: {}, Verified NPDU: {}, Unknown NPDU: {}, Verified Service: {}, Understood {} APDU's.",
-                    validBvlc, unknownBvlc, validNpdu, unknownNpdu, verifiedService, validApdu);
+            log.info("Verified BVLC: {}, Unknown BVLC: {}, Verified NPDU: {}, Unknown NPDU: {}, Verified Service: {}, Understood {} APDU's. Unknown APDU's {}",
+                    validBvlc, unknownBvlc, validNpdu, unknownNpdu, verifiedService, validApdu, unknowns);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    void addUnknown(PduType pduType, ServiceChoice serviceChoice) {
+        if (pduType != null) {
+            Map<ServiceChoice, Integer> unknown = unknowns.get(pduType);
+            if (unknown == null) {
+                unknown = new HashMap<>();
+            }
+            Integer unknownCount = unknown.get(serviceChoice);
+            if(unknownCount == null) {
+                unknownCount = Integer.valueOf(1);
+            } else {
+                unknownCount++;
+            }
+            unknown.put(serviceChoice, unknownCount);
+            unknowns.put(pduType, unknown);
         }
     }
 
