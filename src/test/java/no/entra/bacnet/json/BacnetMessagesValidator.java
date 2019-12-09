@@ -35,6 +35,7 @@ public class BacnetMessagesValidator {
             throw new IllegalArgumentException("File is not readable: " + hexStringFile);
         }
         this.hexStringFile = hexStringFile;
+        log.info("Validating {}", hexStringFile);
         bacnetParser = new BacNetParser();
     }
 
@@ -81,6 +82,7 @@ public class BacnetMessagesValidator {
                                         break;
                                     case UnconfirmedRequest:
                                         Object request = tryToUnderstandUnconfirmedRequest(service);
+                                        log.trace("UnconfirmedRequest: {}", request);
                                         if (request != null) {
                                             validApdu++;
                                         } else {
@@ -90,6 +92,7 @@ public class BacnetMessagesValidator {
                                         break;
                                     case ConfirmedRequest:
                                         Object confirmedRequest = tryToUnderstandConfirmedRequest(service);
+                                        log.trace("ConfirmedRequest: {}", confirmedRequest);
                                         if (confirmedRequest != null) {
                                             validApdu++;
                                         } else {

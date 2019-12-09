@@ -67,4 +67,14 @@ public class ConfigurationRequest {
         String property = properties.get(key);
         return property;
     }
+
+    @Override
+    public String toString() {
+        return "ConfigurationRequest{" +
+                "id='" + id + '\'' +
+                ", source=" + source +
+                ", properties=" + properties +
+                ", observedAt=" + observedAt +
+                '}';
+    }
 }
