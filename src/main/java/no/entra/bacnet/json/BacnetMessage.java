@@ -7,6 +7,8 @@ import java.io.Serializable;
 public interface BacnetMessage extends Serializable {
    String ID = "id";
    String SOURCE = "source";
+    String SOURCE_DEVICE_ID = "deviceId";
+   String SOURCE_OBJECT_ID = "objectId";
    String VALUE = "value";
    String UNIT = "unit";
    String NAME = "name";
