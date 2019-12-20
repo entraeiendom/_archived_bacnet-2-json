@@ -1,6 +1,6 @@
 package no.entra.bacnet.json.observation;
 
-import no.entra.bacnet.json.Observation;
+import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
@@ -10,6 +10,7 @@ import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
 
 import static no.entra.bacnet.json.observation.ObservationParser.buildChangeOfValueObservation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ObservationParserTest {
@@ -24,8 +25,9 @@ class ObservationParserTest {
         String apduHexString = npduResult.getUnprocessedHexString();
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String covHexString = service.getUnprocessedHexString();
-        Observation observation = buildChangeOfValueObservation(covHexString);
-        assertNotNull(observation);
+        ObservationList observations = buildChangeOfValueObservation(covHexString);
+        assertNotNull(observations);
+        assertEquals(2, observations.getObservations().size());
     }
 
 }

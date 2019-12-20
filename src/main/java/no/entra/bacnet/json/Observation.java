@@ -51,6 +51,11 @@ public class Observation implements BacnetMessage {
         observedAt = LocalDateTime.now();
     }
 
+    public Observation(String id, Source source, Object value, String name) {
+        this(id,source,value);
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

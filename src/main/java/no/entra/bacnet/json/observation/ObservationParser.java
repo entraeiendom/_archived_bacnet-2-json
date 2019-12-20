@@ -2,21 +2,27 @@ package no.entra.bacnet.json.observation;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.Observation;
+import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.Source;
 import no.entra.bacnet.json.objects.PropertyIdentifier;
-import no.entra.bacnet.json.objects.ReadAccessResult;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static no.entra.bacnet.json.objects.ReadAccessResult.PD_CLOSING_TAG_4;
 import static no.entra.bacnet.json.objects.ReadAccessResult.PD_OPENING_TAG_4;
+import static no.entra.bacnet.json.utils.HexUtils.octetsToString;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ObservationParser {
     private static final Logger log = getLogger(ObservationParser.class);
 
-    public static Observation buildChangeOfValueObservation(String changeOfValueHexString) {
+    public static ObservationList buildChangeOfValueObservation(String changeOfValueHexString) {
 
         /*
         1. Subscriber Process Identifier (SD Context Tag 0, Length 1)
@@ -25,6 +31,8 @@ public class ObservationParser {
         4. Time remaining (SD Context Tag 3, Length 1)
         5. List of values
          */
+        List<Observation> observations = new ArrayList<>();
+        Map<String, Object> properties = new HashMap<>();
 
         OctetReader covReader = new OctetReader(changeOfValueHexString);
         Octet subscriberProcessKey = covReader.next();
@@ -37,48 +45,47 @@ public class ObservationParser {
         Octet timeRemainingKey = covReader.next();
         Octet timeRemainingValue = covReader.next();
 
-        Observation observation = null;
-
         String resultListHexString = covReader.unprocessedHexString();
         resultListHexString = filterResultList(resultListHexString);
         try {
             Octet startList = covReader.next();
-            Octet contextTagKey = covReader.next();
-            PropertyIdentifier propertyId = null;
-            if (contextTagKey.equals(new Octet("09"))) {
-                Octet contextTagValue = covReader.next();
-                propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
-            }
-            if (propertyId != null) {
-                Octet valueTagKey = covReader.next();
-                Octet propertyIdKey = covReader.next();
-                char lengthChar = propertyIdKey.getSecondNibble();
-                int length = toInt(lengthChar);
-                String xxx = covReader.next(length);
-                log.trace("dddd");
-                Octet valueTagEndKey = covReader.next();
-
-            }
-            ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(resultListHexString);
-            if (accessResult != null) {
-                log.info("ReadAccessResult: {}", accessResult);
-
-                String objectId = null;
-                if (accessResult.getObjectId() != null) {
-                    objectId = accessResult.getObjectId().toString();
-                    Source source = new Source(devicdId, objectId);
-                    Object presentValue = accessResult.getResultByKey(PropertyIdentifier.PresentValue);
-                    observation = new Observation(source, presentValue);
-                    observation.setName((String)accessResult.getResultByKey(PropertyIdentifier.ObjectName));
-                    observation.setDescription((String) accessResult.getResultByKey(PropertyIdentifier.Description));
-                    observation.setUnit((String) accessResult.getResultByKey(PropertyIdentifier.Units));
+            while (resultListHexString != null && resultListHexString.length() >= 2) {
+                Octet contextTagKey = covReader.next();
+                PropertyIdentifier propertyId = null;
+                if (contextTagKey != null && contextTagKey.equals(new Octet("09"))) {
+                    Octet contextTagValue = covReader.next();
+                    propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
                 }
+                if (propertyId != null) {
+                    Octet valueTagKey = covReader.next();
+                    Octet propertyIdKey = covReader.next();
+                    char lengthChar = propertyIdKey.getSecondNibble();
+                    int length = toInt(lengthChar);
+                    String value = covReader.next(length);
+                    Octet valueTagEndKey = covReader.next();
+                    properties.put(propertyId.name(), value);
+                }
+                resultListHexString = covReader.unprocessedHexString();
+                log.trace("unprocessed: {}", resultListHexString);
             }
+
         } catch (Exception e) {
             log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
         }
 
-        return observation;
+        if (properties != null && properties.size() > 0) {
+            for (String key : properties.keySet()) {
+                Object value = properties.get(key);
+                String observationId = null;
+                Source source = new Source(devicdId, octetsToString(monitoredDeviceIdValue));
+                Observation observation = new Observation(observationId, source, value, key);
+                observation.setName(key);
+                observations.add(observation);
+            }
+        }
+
+
+        return new ObservationList(observations);
     }
 
     static String filterResultList(String hexString) {

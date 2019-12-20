@@ -126,7 +126,7 @@ public class ReadAccessResult {
         return accessResult;
     }
 
-    static PropertyResult parseProperty(String unprocessedHexString) {
+    public static PropertyResult parseProperty(String unprocessedHexString) {
         PropertyResult propertyResult = null;
         OctetReader propertyReader = new OctetReader(unprocessedHexString);
         Octet contextTag = propertyReader.next();
