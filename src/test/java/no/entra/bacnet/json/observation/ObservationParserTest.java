@@ -30,4 +30,20 @@ class ObservationParserTest {
         assertEquals(2, observations.getObservations().size());
     }
 
+    @Test
+    void validateRestartTime() {
+        String line = "810b00340100100209001c020007d22c020007d239004e09702e91002f09cb2e2ea4770c0b03b40a341d402f2f09c42e91002f4f000";
+        BvlcResult bvlcResult = BvlcParser.parse(line);
+        assertNotNull(bvlcResult);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        assertNotNull(npduResult);
+        String apduHexString = npduResult.getUnprocessedHexString();
+        Service service = ServiceParser.fromApduHexString(apduHexString);
+        String covHexString = service.getUnprocessedHexString();
+        ObservationList observations = buildChangeOfValueObservation(covHexString);
+        assertNotNull(observations);
+        assertEquals(2, observations.getObservations().size());
+        //#13 Fix test to fail, then succed
+    }
+
 }
