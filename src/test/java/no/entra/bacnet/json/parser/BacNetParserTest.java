@@ -99,4 +99,5 @@ public class BacNetParserTest {
         NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
         assertNotNull(npduResult);
     }
+
 }

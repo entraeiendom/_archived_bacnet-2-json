@@ -1,11 +1,12 @@
 package no.entra.bacnet.json.services;
 
 import no.entra.bacnet.Octet;
-import no.entra.bacnet.json.ConfigurationRequest;
+import no.entra.bacnet.json.BacnetMessage;
 import no.entra.bacnet.json.objects.PduType;
 import org.slf4j.Logger;
 
 import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
+import static no.entra.bacnet.json.observation.ObservationParser.buildChangeOfValueObservation;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UnconfirmedService extends Service {
@@ -14,8 +15,8 @@ public class UnconfirmedService extends Service {
         super(pduType, UnconfirmedServiceChoice.fromOctet(serviceChoice));
     }
 
-    public static ConfigurationRequest tryToUnderstandUnconfirmedRequest(Service service) {
-        ConfigurationRequest configuration = null;
+    public static BacnetMessage tryToUnderstandUnconfirmedRequest(Service service) {
+        BacnetMessage bacnetMessage = null;
         if (service == null) {
             return null;
         }
@@ -26,29 +27,33 @@ public class UnconfirmedService extends Service {
                 case WhoIs:
                     log.trace("Is WhoIsMessage. hexString: {}", service.getUnprocessedHexString());
                     String whoIsBody = service.getUnprocessedHexString();
-                    configuration = buildWhoIsRequest(whoIsBody);
+                    bacnetMessage = buildWhoIsRequest(whoIsBody);
                     break;
                 case WhoHas:
                     log.trace("Is WhoHasMessage");
-                    configuration = buildWhoHasRequest(service.getUnprocessedHexString());
+                    bacnetMessage = buildWhoHasRequest(service.getUnprocessedHexString());
                     break;
                 case TimeSynchronization:
                     String timeSyncHexString = service.getUnprocessedHexString();
-                    configuration = buildTimeSynchronizationRequest(timeSyncHexString);
+                    bacnetMessage = buildTimeSynchronizationRequest(timeSyncHexString);
                     break;
                 case IAm:
                     String iamHexString = service.getUnprocessedHexString();
-                    configuration = buildIamRequest(iamHexString);
+                    bacnetMessage = buildIamRequest(iamHexString);
                     break;
                 case IHave:
                     String ihaveHexString = service.getUnprocessedHexString();
-                    configuration = buildIHaveRequest(ihaveHexString);
+                    bacnetMessage = buildIHaveRequest(ihaveHexString);
+                    break;
+                case UnconfirmedCovNotification:
+                    String changeOfValueHexString = service.getUnprocessedHexString();
+                    bacnetMessage = buildChangeOfValueObservation(changeOfValueHexString);
                     break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);
             }
         }
-        return configuration;
+        return bacnetMessage;
     }
 
 

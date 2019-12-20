@@ -76,8 +76,8 @@ public class Bacnet2Json {
                 bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
                 break;
             case UnconfirmedRequest:
-                ConfigurationRequest unconfirmedRequest = tryToUnderstandUnconfirmedRequest(service);
-                observationJson = buildObservationJson(bvlc, npdu, unconfirmedRequest);
+                BacnetMessage bacnetMessage = tryToUnderstandUnconfirmedRequest(service);
+                observationJson = buildObservationJson(bvlc, npdu, bacnetMessage);
                 bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
                 break;
             default:

@@ -78,7 +78,7 @@ public class ReadAccessResult {
      * @param resultListHexString must start with "0c" and end with "1f"
      * @return A Bacnet message parsed into ReadAccessResult.
      */
-    public static ReadAccessResult buildFromResultList(String resultListHexString) {
+    public static ReadAccessResult  buildFromResultList(String resultListHexString) {
         ReadAccessResult accessResult = null;
         try {
             if (resultListHexString != null) { //&& resultListHexString.startsWith(LIST_START_HEX) && resultListHexString.endsWith(LIST_END_HEX)) {
@@ -88,6 +88,9 @@ public class ReadAccessResult {
                 //Expect Object Identifier
                 Octet oidType = listReader.next();
                 log.debug("oid: {}", oidType);
+                if (oidType.equals(new Octet(PD_OPENING_TAG_4))) {
+                    oidType = listReader.next();
+                }
                 if (oidType.equals(new Octet(OBJECT_IDENTIFIER))) {
                     String objectIdString = "0c" + listReader.next(4);
                     log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());

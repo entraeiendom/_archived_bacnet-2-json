@@ -32,7 +32,7 @@ public class PropertyRequestBuilder {
      * @param service already built APDU service info
      * @param unprocessedHexString identify ObjectId and PropertyIdentifier
      */
-    public PropertyRequestBuilder(Service service, String unprocessedHexString) {
+    public  PropertyRequestBuilder(Service service, String unprocessedHexString) {
         desiredPropertyIds = new ArrayList<>();
         withService(service);
         withUnprocessedHexString(unprocessedHexString);
