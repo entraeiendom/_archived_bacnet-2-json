@@ -9,12 +9,12 @@ sudo: true
 jdk: openjdk11
 script:
 - mvn clean compile package install
-deploy:
-  provider: script
-  script: mvn deploy --settings deploy/maven-settings.xml
-  on:
-    branch: master
-    tags: false
-env:
-  global:
-    secure: wRUkifq2CKofpFsNQP4YrfWKJ+Jl2yGvzJ3rQgB5mMr4aUhD1pb6CCdSrjMicAGUjCMiIWciYVWwDuUduyCxHovISZobElQdfG7Do50ZAcna+sHkUG0AjRrEZyiXOwALRxw0NMhOipoJNHks8aluhogzztn2OpjipgfVQUS+qQmEgkhDMwvIlIsuT52m3BpGqEtZsnhxi+K5rNtmlqONuOG/8pjgBwc1jOgjnNuxH6YUTmoZArY3xHiKK2NOtqpZjraIMSwIeThEco1KIAqjiEmzTD4N9hus/7hRKoHelsqRfFt1lqls0bYDCVr3InE0C+IJ5JkEAvms31TtIk3Nzn+qlr54nmlF4H8vEAxIPJC/tT4SAqnCUSb0SBLqLGCracdoVY2pYRH9F7h1ouOWE5duvOLQXE2qptObW1K4sqohOW91Dv5UGrMn+Metf7yffQnUewx0q1ivBEOi2qg2Q68YdeL/Ifv+4gDgFfQ5qoVV6ytNsfLIunMipq246z4p0t0iJfypp2hIti5OnuqAfXuKVinSJzqJi/D8mlMM9Np0HsPat/vhAGjxBlJf1jwxHYuDp36iG8/zD5OD1wtBWT+ViZ1bcRLMH6MviFTcm4H5hY+EgUBHUSX5EQR1smLdRJel519aXXu3/d51HcqRWPQ+ygblPK2nM12RJ2VeTJs=
+#deploy:
+#  provider: script
+#  script: mvn deploy --settings deploy/maven-settings.xml
+#  on:
+#    branch: master
+#    tags: false
+#env:
+#  global:
+#    secure: wRUkifq2CKofpFsNQP4YrfWKJ+Jl2yGvzJ3rQgB5mMr4aUhD1pb6CCdSrjMicAGUjCMiIWciYVWwDuUduyCxHovISZobElQdfG7Do50ZAcna+sHkUG0AjRrEZyiXOwALRxw0NMhOipoJNHks8aluhogzztn2OpjipgfVQUS+qQmEgkhDMwvIlIsuT52m3BpGqEtZsnhxi+K5rNtmlqONuOG/8pjgBwc1jOgjnNuxH6YUTmoZArY3xHiKK2NOtqpZjraIMSwIeThEco1KIAqjiEmzTD4N9hus/7hRKoHelsqRfFt1lqls0bYDCVr3InE0C+IJ5JkEAvms31TtIk3Nzn+qlr54nmlF4H8vEAxIPJC/tT4SAqnCUSb0SBLqLGCracdoVY2pYRH9F7h1ouOWE5duvOLQXE2qptObW1K4sqohOW91Dv5UGrMn+Metf7yffQnUewx0q1ivBEOi2qg2Q68YdeL/Ifv+4gDgFfQ5qoVV6ytNsfLIunMipq246z4p0t0iJfypp2hIti5OnuqAfXuKVinSJzqJi/D8mlMM9Np0HsPat/vhAGjxBlJf1jwxHYuDp36iG8/zD5OD1wtBWT+ViZ1bcRLMH6MviFTcm4H5hY+EgUBHUSX5EQR1smLdRJel519aXXu3/d51HcqRWPQ+ygblPK2nM12RJ2VeTJs=
