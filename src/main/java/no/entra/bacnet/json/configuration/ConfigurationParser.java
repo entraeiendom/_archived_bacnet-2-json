@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
+import static no.entra.bacnet.json.Constants.ENCODING_UCS_2;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -22,6 +23,7 @@ public class ConfigurationParser {
     private static final Logger log = getLogger(ConfigurationParser.class);
 
     private static final char WHO_HAS_EXTENDED_VALUE = 'd';
+    private static final char WHO_HAS_VALUE = 'b';
     private static final char LOWER_LIMIT_KEY = '0';
     private static final char HIGH_LIMIT_KEY = '1';
     private static final char TIME_SYNC_DATE_KEY = 'a';
@@ -154,6 +156,13 @@ public class ConfigurationParser {
             int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
             Octet encoding = whoHasReader.next();
             String objectNameHex = whoHasReader.next(valueOctetLength - 1);
+            log.debug("WhoHas-ObjectNameHex: {}", objectNameHex);
+            objectName = HexUtils.parseExtendedValue(encoding, objectNameHex);
+        } else if (namedTag == WHO_HAS_VALUE) {
+            //TODO not propper handling of WHO HAS
+            Octet encoding = ENCODING_UCS_2;
+            whoHasReader.next(4);
+            String objectNameHex = whoHasReader.unprocessedHexString();
             log.debug("WhoHas-ObjectNameHex: {}", objectNameHex);
             objectName = HexUtils.parseExtendedValue(encoding, objectNameHex);
         }
