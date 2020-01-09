@@ -9,7 +9,7 @@ public class Npdu {
     public static final Octet version = Octet.fromHexString("01");
     private Octet control;
     private Octet[] sourceNetworkAddress;
-    private Octet sourceMacLayerAddress;
+    private Octet[] sourceMacLayerAddress;
     private Octet[] destinationNetworkAddress;
     private Octet destinationMacLayerAddress;
     private Octet hopCount;
@@ -35,11 +35,11 @@ public class Npdu {
         this.sourceNetworkAddress = sourceNetworkAddress;
     }
 
-    public Octet getSourceMacLayerAddress() {
+    public Octet[] getSourceMacLayerAddress() {
         return sourceMacLayerAddress;
     }
 
-    public void setSourceMacLayerAddress(Octet sourceMacLayerAddress) {
+    public void setSourceMacLayerAddress(Octet[] sourceMacLayerAddress) {
         this.sourceMacLayerAddress = sourceMacLayerAddress;
     }
 

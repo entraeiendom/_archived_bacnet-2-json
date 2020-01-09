@@ -2,6 +2,7 @@ package no.entra.bacnet.json.npdu;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.reader.OctetReader;
+import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -47,7 +48,9 @@ public class NpduParser {
         NpduResult result = null;
         Octet[] sourceNetworkAddress = npduReader.nextOctets(2);
         npdu.setSourceNetworkAddress(sourceNetworkAddress);
-        Octet sourceMacLayerAddress = npduReader.next();
+        Octet sourceMacLayerAddressNumberOfOctets = npduReader.next();
+        int readOctetLength = HexUtils.toInt(sourceMacLayerAddressNumberOfOctets);
+        Octet[] sourceMacLayerAddress = npduReader.nextOctets(readOctetLength);
         npdu.setSourceMacLayerAddress(sourceMacLayerAddress);
 //        Octet hopCount = npduReader.next();
 //        npdu.setHopCount(hopCount);

@@ -25,4 +25,5 @@ class NpduTest {
         npdu.setControl(Octet.fromHexString("00"));
         assertFalse(npdu.isDestinationAvailable());
     }
+
 }

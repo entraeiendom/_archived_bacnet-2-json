@@ -289,4 +289,34 @@ public class ConfigurationParser {
 
         return configuration;
     }
+
+    public static ConfigurationRequest buildConfirmedEventNotification(String confirmedEventHexString) {
+        ConfigurationRequest configuration = null;
+        String objectName = null;
+        OctetReader confirmedEventReader = new OctetReader(confirmedEventHexString);
+        Octet contextTagOctet = confirmedEventReader.next();
+        char contextTag = contextTagOctet.getFirstNibble();
+        char namedTag = contextTagOctet.getSecondNibble();
+        if (namedTag == WHO_HAS_EXTENDED_VALUE) {
+            Octet valueLength = confirmedEventReader.next();
+            int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
+            Octet encoding = confirmedEventReader.next();
+            String objectNameHex = confirmedEventReader.next(valueOctetLength - 1);
+            log.debug("WhoHas-ObjectNameHex: {}", objectNameHex);
+            objectName = HexUtils.parseExtendedValue(encoding, objectNameHex);
+        } else if (namedTag == WHO_HAS_VALUE) {
+            //TODO not propper handling of WHO HAS
+            Octet encoding = ENCODING_UCS_2;
+            confirmedEventReader.next(4);
+            String objectNameHex = confirmedEventReader.unprocessedHexString();
+            log.debug("WhoHas-ObjectNameHex: {}", objectNameHex);
+            objectName = HexUtils.parseExtendedValue(encoding, objectNameHex);
+        }
+        if (objectName != null) {
+            configuration = new ConfigurationRequest("TODO", null);
+            configuration.setProperty("ObjectName", objectName);
+        }
+
+        return configuration;
+    }
 }

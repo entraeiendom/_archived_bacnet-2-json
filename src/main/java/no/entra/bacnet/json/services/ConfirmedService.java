@@ -5,8 +5,7 @@ import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.objects.PduType;
 import org.slf4j.Logger;
 
-import static no.entra.bacnet.json.configuration.ConfigurationParser.buildReadPropertyRequest;
-import static no.entra.bacnet.json.configuration.ConfigurationParser.buildWritePropertyMultipleRequest;
+import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfirmedService extends Service {
@@ -53,7 +52,9 @@ public class ConfirmedService extends Service {
                     configuration = buildReadPropertyRequest(readPropertyHexString);
                     break;
                 case ConfirmedEventNotification:
-                    log.trace("TODO {}",confirmedServiceChoice);
+                    log.trace("Is ConfirmedEventNotification message. hexString: {}", service.getUnprocessedHexString());
+                    String confirmedEventHexString = service.getUnprocessedHexString();
+                    configuration = buildConfirmedEventNotification(confirmedEventHexString);
                     break;
                 case AtomicReadFile:
                     log.trace("Ignoring for now: {}", confirmedServiceChoice);
