@@ -23,6 +23,13 @@ class HexUtilsTest {
     }
 
     @Test
+    void parseUtf16() {
+        String utf16Hex = "0031002f00500072006f006700720061006d006d0069006e0067002e0045006e0065007200670069002e00420065007200650067006e0069006e006700650072002e0045006e006500720067006900420065007200650067006e0069006e006700650072003400330033003300300031002e0044006100670042007600690031002d00310031002e004400610067004200760076";
+        String plainText = HexUtils.parseUTF16(utf16Hex);
+        assertEquals("1/Programming.Energi.Beregninger.EnergiBeregninger433301.DagBvi1-11.DagBvv", plainText);
+    }
+
+    @Test
     void toBitStringTest() {
         char nibble = '8';
         assertEquals("1000", toBitString(nibble));

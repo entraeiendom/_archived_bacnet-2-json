@@ -17,7 +17,7 @@ public class HexUtils {
         return parseUTF16(hexString);
     }
 
-    private static String parseUTF16(String hexString) {
+    public static String parseUTF16(String hexString) {
         return parseExtendedValue(ENCODING_UCS_2, hexString);
     }
 

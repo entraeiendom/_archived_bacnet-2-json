@@ -44,6 +44,13 @@ class ConfigurationParserTest {
         assertNotNull(configuration);
         assertEquals("SOMS2-NAEX", configuration.getProperty("ObjectName"));
     }
+    @Test
+    void buildAnotherWhoHasRequest() {
+        String whoHasBody = "3b0061764400330045003000350035002d004e00430045003300300031002f00500072006f006700720061006d006d0069006e0067002e0045006e0065007200670069002e00420065007200650067006e0069006e006700650072002e0045006e006500720067006900420065007200650067006e0069006e006700650072003400330033003300300031002e0044006100670042007600690031002d00310031002e0044006100670042007600760000";
+        ConfigurationRequest configuration = ConfigurationParser.buildWhoHasRequest(whoHasBody);
+        assertNotNull(configuration);
+        assertEquals("SOMS2-NAEX", configuration.getProperty("ObjectName"));
+    }
 
     @Test
     void buildTimeSynchronizationRequestTest() {
@@ -85,4 +92,5 @@ class ConfigurationParserTest {
         ConfigurationRequest configuration = ConfigurationParser.buildIHaveRequest(iHaveApdu);
         assertNotNull(configuration);
     }
+
 }
