@@ -1,4 +1,6 @@
 # bacnet-2-json
+![BuildStatus](https://travis-ci.com/entraeiendom/bacnet-2-json.svg?branch=master)
+
 Parse BacnetUDP and convert to Json. 
 
 ## Json "schema"
