@@ -3,7 +3,7 @@ package no.entra.bacnet.json.npdu;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.utils.HexUtils;
 
-import java.util.Arrays;
+import static no.entra.bacnet.json.utils.HexUtils.octetsToString;
 
 public class Npdu {
     public static final Octet version = Octet.fromHexString("01");
@@ -67,18 +67,6 @@ public class Npdu {
         this.hopCount = hopCount;
     }
 
-    @Override
-    public String toString() {
-        return "Npdu{" +
-                "control=" + control +
-                ", sourceNetworkAddress=" + Arrays.toString(sourceNetworkAddress) +
-                ", sourceMacLayerAddress=" + sourceMacLayerAddress +
-                ", destinationNetworkAddress=" + Arrays.toString(destinationNetworkAddress) +
-                ", destinationMacLayerAddress=" + destinationMacLayerAddress +
-                ", hopCount=" + hopCount +
-                '}';
-    }
-
     public boolean isSourceAvailable() {
         boolean sourceIsAvailable = false;
         char lowerControl = control.getSecondNibble();
@@ -102,5 +90,17 @@ public class Npdu {
 
     public boolean getExpectingResponse() {
         return expectingResponse;
+    }
+
+    @Override
+    public String toString() {
+        return "Npdu{" +
+                "control=" + control +
+                ", sourceNetworkAddress=" + octetsToString(sourceNetworkAddress) +
+                ", sourceMacLayerAddress=" + octetsToString(sourceMacLayerAddress) +
+                ", destinationNetworkAddress=" + octetsToString(destinationNetworkAddress) +
+                ", destinationMacLayerAddress=" + destinationMacLayerAddress +
+                ", hopCount=" + hopCount +
+                '}';
     }
 }

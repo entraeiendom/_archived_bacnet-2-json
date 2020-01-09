@@ -19,6 +19,7 @@ import java.util.Map;
 import static no.entra.bacnet.json.Observation.SOURCE;
 import static no.entra.bacnet.json.services.ConfirmedService.tryToUnderstandConfirmedRequest;
 import static no.entra.bacnet.json.services.UnconfirmedService.tryToUnderstandUnconfirmedRequest;
+import static no.entra.bacnet.json.utils.HexUtils.octetsToString;
 
 public class Bacnet2Json {
 
@@ -95,7 +96,7 @@ public class Bacnet2Json {
         JSONObject json = message.asJsonObject();
 
         if (npdu != null && npdu.isSourceAvailable()) {
-            String source = npdu.getSourceNetworkAddress().toString();
+            String source = octetsToString(npdu.getSourceNetworkAddress());
             json.put(SOURCE, source);
         }
 
@@ -104,7 +105,7 @@ public class Bacnet2Json {
 
     static JSONObject addNetworkInfo(Npdu npdu) {
         if (npdu != null && npdu.isSourceAvailable()) {
-            return new JSONObject().put(SENDER, npdu.getSourceNetworkAddress().toString());
+            return new JSONObject().put(SENDER, octetsToString(npdu.getSourceNetworkAddress()));
         } else {
             return new JSONObject().put(SENDER, "unknown");
         }
