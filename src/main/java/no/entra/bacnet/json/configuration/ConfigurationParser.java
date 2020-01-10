@@ -226,7 +226,7 @@ public class ConfigurationParser {
     }
 
     static int tenthToNano(int hudredsOfSec) {
-       long nanos =  TimeUnit.SECONDS.convert(hudredsOfSec / 100, TimeUnit.MILLISECONDS);
+        long nanos =  TimeUnit.SECONDS.convert(hudredsOfSec / 100, TimeUnit.MILLISECONDS);
         int hundredsInNano = (int) nanos;
         return hundredsInNano;
     }
@@ -245,45 +245,26 @@ public class ConfigurationParser {
     }
 
     public static ConfigurationRequest buildIHaveRequest(String iHaveHexString) {
-        //FIXME bli validate use bits, not octets.
-        ConfigurationRequest configuration = null;
+        ConfigurationRequest configuration = new ConfigurationRequest("TODO", null);
+        configuration.setProperty("Request", "IHave");
         //1. NotificationClass
         //2. List<ObjectIdentifier>, every hex c4 + 4 octets
         //3. ObjectName
         OctetReader iHaveReader = new OctetReader(iHaveHexString);
-        Octet applicationOctet = iHaveReader.next();
-        if (applicationOctet.getFirstNibble() == 'c') {
+        Octet applicationTagOctet = iHaveReader.next();
+        while (applicationTagOctet != null && applicationTagOctet.getFirstNibble() == 'c') {
 
-            int length = toInt(applicationOctet.getSecondNibble());
+            int length = toInt(applicationTagOctet.getSecondNibble());
             Octet[] objectIdentifierOctets = iHaveReader.nextOctets(length);
             ObjectId objectIdentifier = ObjectIdParser.decode4Octets(objectIdentifierOctets);
             if (objectIdentifier != null) {
-                if (configuration == null) {
-                    configuration = new ConfigurationRequest("TODO", null);
-                    configuration.setProperty("Request", "IHave");
-                }
                 configuration.setProperty(objectIdentifier.getObjectType().name(), objectIdentifier.getInstanceNumber());
             }
-            /*
-            Octet objectTypeOctet = iHaveReader.next();
-            Octet[] instanceNumberOctets = iHaveReader.nextOctets(length -1);
-            ObjectId objectId = new ObjectIdBuilder(objectTypeOctet).withInstanceNumberOctet(instanceNumberOctets).build();
-            if (objectId != null) {
-                configuration = new ConfigurationRequest("TODO", null);
-                configuration.setProperty("Request", "IHave");
-                configuration.setProperty(objectId.getObjectType().name(), objectId.getInstanceNumber());
-            }
-            applicationOctet = iHaveReader.next();
-            length = toInt(applicationOctet.getSecondNibble());
-            objectTypeOctet = iHaveReader.next();
-            instanceNumberOctets = iHaveReader.nextOctets(length -1);
-            if (objectId != null) {
-                objectId = new ObjectIdBuilder(objectTypeOctet).withInstanceNumberOctet(instanceNumberOctets).build();
-                configuration.setProperty(objectId.getObjectType().name(), objectId.getInstanceNumber());
-            }*/
-
-            //TODO the rest like ObjectName
+            applicationTagOctet = iHaveReader.next();
         }
+
+
+        //TODO the rest like ObjectName
         return configuration;
     }
 

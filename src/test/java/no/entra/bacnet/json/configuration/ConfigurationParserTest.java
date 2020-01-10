@@ -1,6 +1,7 @@
 package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.json.ConfigurationRequest;
+import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.objects.Segmentation;
 import org.junit.jupiter.api.Test;
 
@@ -90,8 +91,9 @@ class ConfigurationParserTest {
         String iHaveApdu = "c40200000bc403c000007100";
         ConfigurationRequest configuration = ConfigurationParser.buildIHaveRequest(iHaveApdu);
         assertNotNull(configuration);
-        String deviceId = configuration.getProperty("Device");
+        String deviceId = configuration.getProperty(ObjectType.Device.name());
         assertEquals("11", deviceId);
+        assertEquals("0", configuration.getProperty(ObjectType.NotificationClass.name()));
     }
 
 
