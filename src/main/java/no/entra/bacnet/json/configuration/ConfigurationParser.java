@@ -2,10 +2,7 @@ package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
-import no.entra.bacnet.json.objects.ObjectId;
-import no.entra.bacnet.json.objects.ObjectType;
-import no.entra.bacnet.json.objects.ReadAccessResult;
-import no.entra.bacnet.json.objects.Segmentation;
+import no.entra.bacnet.json.objects.*;
 import no.entra.bacnet.json.parser.ObjectIdParser;
 import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import no.entra.bacnet.json.reader.OctetReader;
@@ -262,10 +259,16 @@ public class ConfigurationParser {
             }
             applicationTagOctet = iHaveReader.next();
         }
+        String objectName = findObjectName(applicationTagOctet, iHaveReader.unprocessedHexString());
+        configuration.setProperty(PropertyIdentifier.ObjectName.name(), objectName);
 
 
         //TODO the rest like ObjectName
         return configuration;
+    }
+
+    private static String findObjectName(Octet applicationTagOctet, String unprocessedHexString) {
+        return null;
     }
 
     public static ConfigurationRequest buildWritePropertyMultipleRequest(String hexString) {
