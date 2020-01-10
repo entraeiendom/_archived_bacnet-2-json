@@ -40,7 +40,7 @@ public class HexUtils {
     }
 
     public static int toInt(String hexString) throws IllegalArgumentException {
-        if (hexString == null) {
+        if (hexString == null || hexString.isEmpty()) {
             throw new IllegalArgumentException("hexString may not be null.");
         }
         return Integer.parseInt(hexString, 16);
@@ -50,7 +50,7 @@ public class HexUtils {
         if (octet == null) {
             throw new IllegalArgumentException("octet may not be null.");
         }
-        return Integer.parseInt(octet.toString(), 16);
+        return toInt(octet.toString());
     }
 
     public static String toBitString(char nibble) {

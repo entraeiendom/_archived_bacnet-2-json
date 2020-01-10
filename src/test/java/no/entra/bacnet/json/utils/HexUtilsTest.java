@@ -87,4 +87,12 @@ class HexUtilsTest {
         Octet[] octets = {Octet.fromHexString("01"), Octet.fromHexString("23")};
         assertEquals("0123", octetsToString(octets));
     }
+
+    @Test
+    void toIntTest() {
+        assertThrows(IllegalArgumentException.class, () -> toInt(""));
+        String isnull = null;
+        assertThrows(IllegalArgumentException.class, () -> toInt(isnull));
+        assertEquals(12, toInt("0c"));
+    }
 }

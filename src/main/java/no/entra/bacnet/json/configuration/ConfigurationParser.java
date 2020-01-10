@@ -18,6 +18,7 @@ import static java.lang.Integer.parseInt;
 import static no.entra.bacnet.json.Constants.ENCODING_UCS_2;
 import static no.entra.bacnet.json.parser.CharacterStringParser.decodeCharacterHexString;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
+import static no.entra.bacnet.json.utils.StringUtils.hasValue;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigurationParser {
@@ -43,13 +44,17 @@ public class ConfigurationParser {
         if (lowerLimitOctet.getFirstNibble() == LOWER_LIMIT_KEY) {
             int numberOfOctets = mapWhoIsLength(lowerLimitOctet.getSecondNibble());
             String lowerLimitHex = whoHasReader.next(numberOfOctets);
-            rangeLowLimit = toInt(lowerLimitHex);
+            if (hasValue(lowerLimitHex)) {
+                rangeLowLimit = toInt(lowerLimitHex);
+            }
         }
         Octet highLimitOctet = whoHasReader.next();
         if (highLimitOctet.getFirstNibble() == HIGH_LIMIT_KEY) {
             int numberOfOctets = mapWhoIsLength(highLimitOctet.getSecondNibble());
             String highLimitHex = whoHasReader.next(numberOfOctets);
-            rangeHighLimit = toInt(highLimitHex);
+            if (hasValue(highLimitHex)) {
+                rangeHighLimit = toInt(highLimitHex);
+            }
         }
 
         if (rangeLowLimit != null || rangeHighLimit != null) {

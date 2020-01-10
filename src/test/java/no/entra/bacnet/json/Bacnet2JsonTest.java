@@ -54,6 +54,13 @@ class Bacnet2JsonTest {
     }
 
     @Test
+    void fixNumberFormatError() {
+        String hexString = "810b000c0120ffff00ff10080007d22c020007d239004e09702e91002f09cb2e2ea4770c0b03b40d2129252f2f09c42e91002f4f";
+        String json = Bacnet2Json.hexStringToJson(hexString);
+        assertNotNull(json);
+    }
+
+    @Test
     void addServiceInfo() {
     }
 
