@@ -166,7 +166,9 @@ public class BacnetMessagesValidator {
 
     public static void main(String[] args) {
         String pathname = "testdata/recordedHexString";
-        pathname = "/home/baardl/sources/entraeiendom/bacnet-ip-agent/bacnet-hexstring-recording.log.kjørbo.priv.log";
+        if (!System.getProperty("hexFile").isEmpty()) {
+            pathname = System.getProperty("hexFile");
+        }
         File testDataFile = new File(pathname);
         BacnetMessagesValidator validator = new BacnetMessagesValidator(testDataFile);
         validator.validateTestdata();
