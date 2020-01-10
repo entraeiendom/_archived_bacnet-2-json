@@ -2,6 +2,7 @@ package no.entra.bacnet.json.parser;
 
 import no.entra.bacnet.json.objects.ObjectId;
 import no.entra.bacnet.json.objects.ObjectType;
+import no.entra.bacnet.json.reader.OctetReader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,5 +43,15 @@ class ObjectIdParserTest {
         assertNotNull(objectIdResult);
         assertEquals("Device", objectIdResult.getParsedObject().getObjectType().toString());
         assertEquals("516", objectIdResult.getParsedObject().getInstanceNumber());
+    }
+
+    @Test
+    void decode4OctetsTest() {
+        String objectIdentifierTypeAndInstance = "0200000c";
+        OctetReader objectIdReader = new OctetReader(objectIdentifierTypeAndInstance);
+        ObjectId objectId = ObjectIdParser.decode4Octets(objectIdReader.nextOctets(4));
+        assertNotNull(objectId);
+        assertEquals("Device", objectId.getObjectType().toString());
+        assertEquals("12", objectId.getInstanceNumber());
     }
 }
