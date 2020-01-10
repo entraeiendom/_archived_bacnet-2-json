@@ -2,6 +2,7 @@ package no.entra.bacnet.json.parser;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.reader.OctetReader;
+import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
 
 import java.nio.charset.Charset;
@@ -34,30 +35,18 @@ public class CharacterStringParser {
         } else if (encodingOctet == UTF_16_ENCODING) {
             encoding = StandardCharsets.UTF_16;
         }
-
-        String encodedHexText = encodedStringReader.unprocessedHexString();
-        byte[] bytes = hexStringToByteArray(encodedHexText);
-        String text = new String(bytes, encoding);
-        /*
-        if (applicationTag.getSecondNibble() == ExtendedValue) {
-            log.debug("Expecting extended value");
-            Octet valueLength = propertyReader.next();
-            int valueOctetLength = parseInt(String.valueOf(valueLength), 16);
-            Octet encoding = propertyReader.next();
-            String objectNameHex = propertyReader.next(valueOctetLength - 1);
-            log.debug("ObjectNameHex: {}", objectNameHex);
-            objectName = HexUtils.parseExtendedValue(encoding,objectNameHex);
-            log.debug("The rest: {}", propertyReader.unprocessedHexString());
+        String text = null;
+        if (encodedStringReader.hasNext()) {
+            Octet lengthOctet = encodedStringReader.next();
+            int numberOfOctets = HexUtils.toInt(lengthOctet);
+            String encodedHexText = encodedStringReader.next(numberOfOctets * 2);
+            byte[] bytes = hexStringToByteArray(encodedHexText);
+            text = new String(bytes, encoding);
         } else {
-            log.debug("Do not know what to do....");
-            Octet next;
-            do {
-                next = propertyReader.next();
-                log.debug("next: {}", next);
-            } while (!next.equals(Octet.fromHexString("4f")));
+            text = "";
         }
-        */
-
+        String remainder = encodedStringReader.unprocessedHexString();
+        log.trace(remainder);
         return text;
     }
 }
