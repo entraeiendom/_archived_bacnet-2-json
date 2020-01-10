@@ -94,7 +94,7 @@ class ConfigurationParserTest {
         String deviceId = configuration.getProperty(ObjectType.Device.name());
         assertEquals("11", deviceId);
         assertEquals("0", configuration.getProperty(ObjectType.NotificationClass.name()));
-        assertEquals(null, configuration.getProperty("ObjectName"));
+        assertEquals("", configuration.getProperty("ObjectName"));
     }
 
 

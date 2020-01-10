@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
 import static no.entra.bacnet.json.Constants.ENCODING_UCS_2;
+import static no.entra.bacnet.json.parser.CharacterStringParser.decodeCharacterHexString;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -268,7 +269,8 @@ public class ConfigurationParser {
     }
 
     private static String findObjectName(Octet applicationTagOctet, String unprocessedHexString) {
-        return null;
+        String encodedHexString = applicationTagOctet.toString() + unprocessedHexString;
+        return decodeCharacterHexString(encodedHexString);
     }
 
     public static ConfigurationRequest buildWritePropertyMultipleRequest(String hexString) {
