@@ -51,7 +51,7 @@ class ObjectIdParserTest {
         OctetReader objectIdReader = new OctetReader(objectIdentifierTypeAndInstance);
         ObjectId objectId = ObjectIdParser.decode4Octets(objectIdReader.nextOctets(4));
         assertNotNull(objectId);
-        assertEquals("Device", objectId.getObjectType().toString());
+        assertEquals(ObjectType.Device, objectId.getObjectType());
         assertEquals("12", objectId.getInstanceNumber());
     }
 }

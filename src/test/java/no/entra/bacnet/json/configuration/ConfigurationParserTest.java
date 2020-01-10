@@ -90,6 +90,9 @@ class ConfigurationParserTest {
         String iHaveApdu = "c40200000bc403c000007100";
         ConfigurationRequest configuration = ConfigurationParser.buildIHaveRequest(iHaveApdu);
         assertNotNull(configuration);
+        String deviceId = configuration.getProperty("Device");
+        assertEquals("11", deviceId);
     }
+
 
 }

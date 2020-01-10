@@ -2,7 +2,10 @@ package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
-import no.entra.bacnet.json.objects.*;
+import no.entra.bacnet.json.objects.ObjectId;
+import no.entra.bacnet.json.objects.ObjectType;
+import no.entra.bacnet.json.objects.ReadAccessResult;
+import no.entra.bacnet.json.objects.Segmentation;
 import no.entra.bacnet.json.parser.ObjectIdParser;
 import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import no.entra.bacnet.json.reader.OctetReader;
@@ -242,15 +245,26 @@ public class ConfigurationParser {
     }
 
     public static ConfigurationRequest buildIHaveRequest(String iHaveHexString) {
+        //FIXME bli validate use bits, not octets.
         ConfigurationRequest configuration = null;
         //1. NotificationClass
-        //2. ObjectIdentifier
+        //2. List<ObjectIdentifier>, every hex c4 + 4 octets
         //3. ObjectName
         OctetReader iHaveReader = new OctetReader(iHaveHexString);
         Octet applicationOctet = iHaveReader.next();
         if (applicationOctet.getFirstNibble() == 'c') {
 
             int length = toInt(applicationOctet.getSecondNibble());
+            Octet[] objectIdentifierOctets = iHaveReader.nextOctets(length);
+            ObjectId objectIdentifier = ObjectIdParser.decode4Octets(objectIdentifierOctets);
+            if (objectIdentifier != null) {
+                if (configuration == null) {
+                    configuration = new ConfigurationRequest("TODO", null);
+                    configuration.setProperty("Request", "IHave");
+                }
+                configuration.setProperty(objectIdentifier.getObjectType().name(), objectIdentifier.getInstanceNumber());
+            }
+            /*
             Octet objectTypeOctet = iHaveReader.next();
             Octet[] instanceNumberOctets = iHaveReader.nextOctets(length -1);
             ObjectId objectId = new ObjectIdBuilder(objectTypeOctet).withInstanceNumberOctet(instanceNumberOctets).build();
@@ -266,7 +280,8 @@ public class ConfigurationParser {
             if (objectId != null) {
                 objectId = new ObjectIdBuilder(objectTypeOctet).withInstanceNumberOctet(instanceNumberOctets).build();
                 configuration.setProperty(objectId.getObjectType().name(), objectId.getInstanceNumber());
-            }
+            }*/
+
             //TODO the rest like ObjectName
         }
         return configuration;
