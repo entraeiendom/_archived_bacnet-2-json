@@ -5,6 +5,7 @@ Parse BacnetUDP and convert to Json.
 
 ## Json "schema"
 
+Observation
 ```
 {"observation": {
   "id": "uuid when known",
@@ -15,6 +16,25 @@ Parse BacnetUDP and convert to Json.
    "value": "string or number",
    "name": "eg the Norwegian \"tverrfaglig merkesystem\" aka tfm",
    "description": any string"
+}
+```
+
+ConfigurationRequest
+```
+{
+  "configurationRequest": {
+    "observedAt": "2020-01-10T12:40:15.064620",
+    "id": "TODO",
+    "source": "1234",
+    "properties": {
+      "Request": "IHave",
+      "NotificationClass": "0",
+      "Device": "12",
+      "ObjectName": "eg the Norwegian \"tverrfaglig merkesystem\" aka tfm"
+    }
+  },
+  "sender": "1234",
+  "service": "IHave"
 }
 ```
 

@@ -25,6 +25,7 @@ public class Bacnet2Json {
 
 
     public static final String SENDER = "sender";
+    public static final String SERVICE = "service";
     public static final String OBSERVATION = "observation";
     public static final String OBSERVED_AT = "observedAt";
     public static final String CONFIGURATION_REQUEST = "configurationRequest";
@@ -60,6 +61,7 @@ public class Bacnet2Json {
         if (bacnetJson == null) {
             bacnetJson = new JSONObject();
         }
+        bacnetJson.put(SERVICE, service.getServiceChoice());
         Map<String, String> observationMap = new HashMap<>();
         observationMap.put(OBSERVED_AT, LocalDateTime.now().toString());
         JSONObject observationJson = new JSONObject(observationMap);
