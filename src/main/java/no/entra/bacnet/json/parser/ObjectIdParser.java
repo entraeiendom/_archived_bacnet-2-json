@@ -19,16 +19,23 @@ public class ObjectIdParser {
         ObjectId objectId = null;
         OctetReader idReader = new OctetReader(hexString);
         Octet contextTag0 = idReader.next();
-        String typeAndInstance = idReader.next(4);
+        Octet[] typeAndInstanceOctets = idReader.nextOctets(4);
+        objectId = decode4Octets(typeAndInstanceOctets);
+        ObjectIdParserResult result = new ObjectIdParserResult(objectId, 5);
+
+        return result;
+
+    }
+
+    public static ObjectId decode4Octets(Octet[] typeAndInstanceOctets) {
+        ObjectId objectId;
+        String typeAndInstance = HexUtils.octetsToString(typeAndInstanceOctets);
         String typeAndInstanceBits = HexUtils.toBitString(typeAndInstance);
         int objectTypeInt = findObjectTypeInt(typeAndInstanceBits);
         Integer instanceNumber = findInstanceNumber(typeAndInstanceBits);
         ObjectType objectType = ObjectType.fromObjectTypeInt(objectTypeInt);
         objectId = new ObjectId(objectType,instanceNumber.toString());
-        ObjectIdParserResult result = new ObjectIdParserResult(objectId, 5);
-
-        return result;
-
+        return objectId;
     }
 
     protected static int findInstanceNumber(String typeAndInstanceBits) {
