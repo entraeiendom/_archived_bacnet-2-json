@@ -74,7 +74,7 @@ import static org.slf4j.LoggerFactory.getLogger;
         try {
             ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(resultListHexString);
             if (accessResult != null) {
-                log.info("ReadAccessResult: {}", accessResult);
+                log.trace("ReadAccessResult: {}", accessResult);
 
                 String objectId = null;
                 if (accessResult.getObjectId() != null) {
