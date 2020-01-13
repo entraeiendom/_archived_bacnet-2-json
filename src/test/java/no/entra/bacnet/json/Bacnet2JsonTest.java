@@ -45,8 +45,7 @@ class Bacnet2JsonTest {
     void validateUnconfirmedIHaveDeviceRequest() {
         String confirmedEventHexString = "8104001e0a3f0010bac001080961010c1001c40200000cc403c000007100310036002d004e004100450032002f004600430042002e004c006f00630061006c0020004100700070006c00690063006100740069006f006e002e005500520020006e00610074007400730065006e006b002000670075006c0076007600610072006d00650020003100200065007400670072003400330033003300300031002e0044006100670042007600690031002d00310031002e004400610067004200760076";
 //        confirmedEventHexString = "8104001e0a3f0010bac001080961010c1001c40200000cc403c000007100";
-        String expected = " {\"sender\":\"0961\",\"configurationRequest\":{\"properties\":{\"Request\":\"IHave\", \"Device\":\"12\"," +
-                "\"NotificationClass\":\"0\"},\"source\":\"0961\"}}";
+        String expected = "{\"configurationRequest\":{\"id\":\"TODO\",\"source\":\"0961\",\"properties\":{\"Request\":\"IHave\",\"NotificationClass\":\"0\",\"Device\":\"12\",\"ObjectName\":\"6-NAE2/FCB.Local Application.UR nattsenk gulvvarm\"}},\"sender\":{\"gateway\":{\"deviceId\":12,\"instanceNumber\":2401}},\"service\":\"IHave\"}";
         String configurationRequestJson = Bacnet2Json.hexStringToJson(confirmedEventHexString);
         log.trace("ConfigurationRequest: {}", configurationRequestJson);
         assertNotNull(configurationRequestJson);
@@ -63,8 +62,7 @@ class Bacnet2JsonTest {
     @Test
     void addServiceInfo() {
         String confirmedEventHexString = "8104001e0a3f0010bac001080961010c1001c40200000cc403c000007100310036002d004e004100450032002f004600430042002e004c006f00630061006c0020004100700070006c00690063006100740069006f006e002e005500520020006e00610074007400730065006e006b002000670075006c0076007600610072006d00650020003100200065007400670072003400330033003300300031002e0044006100670042007600690031002d00310031002e004400610067004200760076";
-        String expected = " {\"sender\":\"0961\",\"service\":\"IHave\",\"configurationRequest\":{\"properties\":{\"Request\":\"IHave\", \"Device\":\"12\"," +
-                "\"NotificationClass\":\"0\"},\"source\":\"0961\"}}";
+        String expected = "{\"configurationRequest\":{\"id\":\"TODO\",\"source\":\"0961\",\"properties\":{\"Request\":\"IHave\",\"NotificationClass\":\"0\",\"Device\":\"12\",\"ObjectName\":\"6-NAE2/FCB.Local Application.UR nattsenk gulvvarm\"}},\"sender\":{\"gateway\":{\"instanceNumber\":2401,\"deviceId\":12}},\"service\":\"IHave\"}";
         String configurationRequestJson = Bacnet2Json.hexStringToJson(confirmedEventHexString);
         log.trace("ConfigurationRequest: {}", configurationRequestJson);
         assertNotNull(configurationRequestJson);

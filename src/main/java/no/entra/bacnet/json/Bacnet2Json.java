@@ -1,5 +1,6 @@
 package no.entra.bacnet.json;
 
+import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.bvlc.Bvlc;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
@@ -20,6 +21,7 @@ import static no.entra.bacnet.json.Observation.SOURCE;
 import static no.entra.bacnet.json.services.ConfirmedService.tryToUnderstandConfirmedRequest;
 import static no.entra.bacnet.json.services.UnconfirmedService.tryToUnderstandUnconfirmedRequest;
 import static no.entra.bacnet.json.utils.HexUtils.octetsToString;
+import static no.entra.bacnet.json.utils.HexUtils.toInt;
 
 public class Bacnet2Json {
 
@@ -30,6 +32,9 @@ public class Bacnet2Json {
     public static final String OBSERVED_AT = "observedAt";
     public static final String CONFIGURATION_REQUEST = "configurationRequest";
     public static final String CONFIGURATION = "configuration";
+    public static final String GATEWAY = "gateway";
+    public static final String GATEWAY_DEVICE_ID = "deviceId";
+    public static final String GATEWAY_INSTANCE_NUMBER = "instanceNumber";
 
     public static String hexStringToJson(String hexString) {
         String bacnetMessage = null;
@@ -107,7 +112,20 @@ public class Bacnet2Json {
 
     static JSONObject addNetworkInfo(Npdu npdu) {
         if (npdu != null && npdu.isSourceAvailable()) {
-            return new JSONObject().put(SENDER, octetsToString(npdu.getSourceNetworkAddress()));
+            JSONObject sender = new JSONObject();
+            JSONObject gateway = new JSONObject();
+            Octet[] sourceNetworkAddress = npdu.getSourceNetworkAddress();
+            if (sourceNetworkAddress != null) {
+                int instanceNumber = toInt(sourceNetworkAddress);
+                gateway.put(GATEWAY_INSTANCE_NUMBER, instanceNumber);
+            }
+            Octet[] sourceMacLayerAddress = npdu.getSourceMacLayerAddress();
+            if (sourceMacLayerAddress != null) {
+                int deviceId = toInt(sourceMacLayerAddress);
+                gateway.put(GATEWAY_DEVICE_ID, deviceId);
+            }
+            sender.put(GATEWAY, gateway);
+            return new JSONObject().put(SENDER, sender);
         } else {
             return new JSONObject().put(SENDER, "unknown");
         }

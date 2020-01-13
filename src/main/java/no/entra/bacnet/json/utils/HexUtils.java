@@ -53,6 +53,13 @@ public class HexUtils {
         return toInt(octet.toString());
     }
 
+    public static int toInt(Octet[] octets) throws IllegalArgumentException {
+        if (octets == null) {
+            throw new IllegalArgumentException("octet may not be null.");
+        }
+        return toInt(octetsToString(octets));
+    }
+
     public static String toBitString(char nibble) {
         String bitString = null;
         if (HexMatcher.isValidHexChar(nibble)) {
