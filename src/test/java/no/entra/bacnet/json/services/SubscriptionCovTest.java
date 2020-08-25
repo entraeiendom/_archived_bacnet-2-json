@@ -54,9 +54,16 @@ public class SubscriptionCovTest {
         //  property array index
         //  Presen Value (real): 20,60000003814697
         //Hard to get JSONAssert to ignore observedAt. Hardcoding the test for now.
-        assertEquals("uncknown", JsonPath.read(observedJson, "$.configurationRequest.sender"));
-        assertEquals("SubscribeCov", JsonPath.read(observedJson, "$.configurationRequest.service"));
-        assertEquals("PresentValue", JsonPath.read(observedJson, "$.configurationRequest.observations[0].name"));
-        assertEquals("131109", JsonPath.read(observedJson, "$.configurationRequest.observations[0].source.deviceId"));
+        assertEqualsPath(expectedJson, observedJson, "$.sender");
+        assertEqualsPath(expectedJson, observedJson, "$.service");
+        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].name");
+        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].source.deviceId");
+        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].value");
+    }
+
+    void assertEqualsPath(String expectedJason, String observedJson, String jsonPath) {
+        String expected = JsonPath.read(expectedJason, jsonPath);
+        String observed = JsonPath.read(observedJson, jsonPath);
+        assertEquals(expected, observed, "Unexpected in path: " + jsonPath);
     }
 }
