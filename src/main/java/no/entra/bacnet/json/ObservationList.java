@@ -43,7 +43,7 @@ public class ObservationList implements BacnetMessage {
         JSONObject json = new JSONObject();
         JSONArray observationsJson = new JSONArray();
         for (Observation observation : observations) {
-            observationsJson.put(observation.toJson());
+            observationsJson.put(observation.asJsonObject());
         }
         json.put("observations", observationsJson);
 

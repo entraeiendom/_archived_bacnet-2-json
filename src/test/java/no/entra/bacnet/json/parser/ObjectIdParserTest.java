@@ -23,6 +23,30 @@ class ObjectIdParserTest {
     }
 
     @Test
+    void parseDevice131109() {
+        String device131109 = "1c02020025";
+        ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(device131109);
+        assertNotNull(result);
+        assertNotNull(result.getParsedObject());
+        assertTrue(result.getParsedObject() instanceof ObjectId);
+        assertEquals(5, result.getNumberOfOctetsRead());
+        assertEquals(ObjectType.Device, result.getParsedObject().getObjectType());
+        assertEquals("131109", result.getParsedObject().getInstanceNumber());
+    }
+
+    @Test
+    void parseAnalogInput0() {
+        String device131109 = "2c00000000";
+        ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(device131109);
+        assertNotNull(result);
+        assertNotNull(result.getParsedObject());
+        assertTrue(result.getParsedObject() instanceof ObjectId);
+        assertEquals(5, result.getNumberOfOctetsRead());
+        assertEquals(ObjectType.AnalogInput, result.getParsedObject().getObjectType());
+        assertEquals("0", result.getParsedObject().getInstanceNumber());
+    }
+
+    @Test
     void findObjectTypeIntTest() {
         String objectTypeAsBitString = "00000010000000000000001000000101";
         int objectTypeInt = ObjectIdParser.findObjectTypeInt(objectTypeAsBitString);

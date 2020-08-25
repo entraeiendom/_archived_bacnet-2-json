@@ -1,8 +1,9 @@
 package no.entra.bacnet.json.services;
 
 import no.entra.bacnet.Octet;
-import no.entra.bacnet.json.ConfigurationRequest;
+import no.entra.bacnet.json.BacnetMessage;
 import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.observation.ObservationParser;
 import org.slf4j.Logger;
 
 import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
@@ -14,8 +15,8 @@ public class ConfirmedService extends Service {
         super(pduType, ConfirmedServiceChoice.fromOctet(serviceChoice));
     }
 
-    public static ConfigurationRequest tryToUnderstandConfirmedRequest(Service service) {
-        ConfigurationRequest configuration = null;
+    public static BacnetMessage tryToUnderstandConfirmedRequest(Service service) {
+        BacnetMessage configuration = null;
         if (service == null) {
             return null;
         }
@@ -61,6 +62,11 @@ public class ConfirmedService extends Service {
                     break;
                 case AtomicWriteFile:
                     log.trace("Ignoring for now: {}", confirmedServiceChoice);
+                    break;
+                case SubscribeCov:
+                    log.trace("Is SubscribeCov aka ConfirmedCOVNotification. hexString: {}", service.getUnprocessedHexString());
+                    String covApduHexString = service.getUnprocessedHexString();
+                    configuration = ObservationParser.parseConfirmedCOVNotification(covApduHexString);
                     break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);

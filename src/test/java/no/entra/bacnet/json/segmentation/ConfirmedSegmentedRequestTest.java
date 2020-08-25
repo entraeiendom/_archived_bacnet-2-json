@@ -1,5 +1,6 @@
 package no.entra.bacnet.json.segmentation;
 
+import no.entra.bacnet.json.BacnetMessage;
 import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
@@ -46,8 +47,9 @@ public class ConfirmedSegmentedRequestTest {
         assertEquals(55, service.getInvokeId());
 //        get properties
         assertTrue(service instanceof ConfirmedService);
-        ConfigurationRequest request = ConfirmedService.tryToUnderstandConfirmedRequest(service);
+        BacnetMessage request = ConfirmedService.tryToUnderstandConfirmedRequest(service);
         assertNotNull(request);
+        assertTrue(request instanceof ConfigurationRequest);
         //objectIdentifier, device, 516
         //property-identifier, object-list (76)
     }

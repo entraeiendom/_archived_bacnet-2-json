@@ -79,13 +79,13 @@ public class Bacnet2Json {
                 bacnetJson.put(OBSERVATION, observationJson);
                 break;
             case ConfirmedRequest:
-                ConfigurationRequest confirmedRequest = tryToUnderstandConfirmedRequest(service);
+                BacnetMessage confirmedRequest = tryToUnderstandConfirmedRequest(service);
                 observationJson = buildObservationJson(bvlc, npdu, confirmedRequest);
                 bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
                 break;
             case UnconfirmedRequest:
-                BacnetMessage bacnetMessage = tryToUnderstandUnconfirmedRequest(service);
-                observationJson = buildObservationJson(bvlc, npdu, bacnetMessage);
+                BacnetMessage unconfirmedRequest = tryToUnderstandUnconfirmedRequest(service);
+                observationJson = buildObservationJson(bvlc, npdu, unconfirmedRequest);
                 bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
                 break;
             default:
