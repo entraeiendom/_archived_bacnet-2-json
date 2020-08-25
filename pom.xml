@@ -5,7 +5,7 @@
 
   <groupId>no.entra.bacnet</groupId>
   <artifactId>bacnet2json</artifactId>
-  <version>0.7.0</version>
+  <version>0.7.1-SNAPSHOT</version>
 
   <name>bacnet2json</name>
   <url>https://github.com/entraeiendom/bacnet-2-json/blob/master/README.md</url>
@@ -23,7 +23,7 @@
     <developerConnection>scm:git:ssh://git@github.com/entraeiendom/bacnet-2-json.git</developerConnection>
     <connection>scm:git:https://github.com/entraeiendom/bacnet-2-json.git</connection>
     <url>https://github.com/entraeiendom/bacnet-2-json</url>
-    <tag>bacnet2json-0.7.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
