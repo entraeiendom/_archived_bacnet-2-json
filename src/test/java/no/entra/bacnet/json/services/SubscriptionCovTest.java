@@ -37,7 +37,7 @@ public class SubscriptionCovTest {
                 "        \"deviceId\": \"131109\"," +
                 "        \"objectId\": \"0\"" +
                 "      }," +
-                "      \"value\": \"20\"" +
+                "      \"value\": \"20.6\"" +
                 "    }]" +
                 "  }," +
                 "  \"sender\": \"unknown\"," +
@@ -62,7 +62,7 @@ public class SubscriptionCovTest {
 
     void assertEqualsPath(String expectedJason, String observedJson, String jsonPath) {
         String expected = JsonPath.read(expectedJason, jsonPath);
-        String observed = JsonPath.read(observedJson, jsonPath);
-        assertEquals(expected, observed, "Unexpected in path: " + jsonPath);
+        Object observed = JsonPath.read(observedJson, jsonPath);
+        assertEquals(expected, observed.toString(), "Unexpected in path: " + jsonPath);
     }
 }

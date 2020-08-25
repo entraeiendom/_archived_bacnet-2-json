@@ -19,8 +19,7 @@ import java.util.Map;
 
 import static no.entra.bacnet.json.objects.ReadAccessResult.PD_CLOSING_TAG_4;
 import static no.entra.bacnet.json.objects.ReadAccessResult.PD_OPENING_TAG_4;
-import static no.entra.bacnet.json.utils.HexUtils.octetsToString;
-import static no.entra.bacnet.json.utils.HexUtils.toInt;
+import static no.entra.bacnet.json.utils.HexUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ObservationParser {
@@ -183,18 +182,24 @@ public class ObservationParser {
                         //array start = 2e, end i 2f
                         String arrayContent = findArrayContent(covReader);
                         OctetReader arrayReader = new OctetReader(arrayContent);
-                        if (arrayReader.next().toString().equals("44")) {
-                            String realValueString = arrayReader.next(4);
-
+                        Octet propertyIdKey = arrayReader.next();
+                        if (propertyIdKey.toString().equals("44")) {
+                            char lengthChar = propertyIdKey.getSecondNibble();
+                            int length = toInt(lengthChar);
+                            String realValueString = arrayReader.next(length);
+                            Float realValue = toFloat(realValueString);
+                            properties.put(propertyId.name(), realValue);
                         }
                     }
+                    /*
                     Octet valueTagKey = covReader.next();
                     Octet propertyIdKey = covReader.next();
                     char lengthChar = propertyIdKey.getSecondNibble();
                     int length = toInt(lengthChar);
                     String value = covReader.next(length);
                     Octet valueTagEndKey = covReader.next();
-                    properties.put(propertyId.name(), value);
+                     */
+
                 }
                 resultListHexString = covReader.unprocessedHexString();
                 log.trace("unprocessed: {}", resultListHexString);
