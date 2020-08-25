@@ -146,7 +146,7 @@ public class ObservationParser {
         int timeRemainingSec = 0;
         Octet contextTag = covReader.next();
         if (SDContextTag.fromOctet(contextTag) == SDContextTag.TimeStamp) {
-            if (contextTag.getSecondNibble() == 9) {
+            if (contextTag.getSecondNibble() == '9') {
                 //read one octet
                 Octet timeRemainingOctet = covReader.next();
                 timeRemainingSec = toInt(timeRemainingOctet);
@@ -154,16 +154,7 @@ public class ObservationParser {
         }
 
         //List of values
-
-
-        //Confirmed notifications 2901
-//        String devicdId = "TODO"; //TODO #4 find source device from APDU, NPDU or IP address/port
-//        Octet intiatingDeviceidKey = covReader.next();
-//        Octet[] initiatingDeviceIdValue = covReader.nextOctets(4);
-//        Octet monitoredDeviceIdKey = covReader.next();
-//        Octet[] monitoredDeviceIdValue = covReader.nextOctets(4);
-//        Octet timeRemainingKey = covReader.next();
-//        Octet timeRemainingValue = covReader.next();
+        //4e095519012e4441a4cccd2f4f
 
         String resultListHexString = covReader.unprocessedHexString();
         resultListHexString = filterResultList(resultListHexString);
@@ -174,9 +165,23 @@ public class ObservationParser {
                 PropertyIdentifier propertyId = null;
                 if (contextTagKey != null && contextTagKey.equals(new Octet("09"))) {
                     Octet contextTagValue = covReader.next();
+                    //PresentValue
                     propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
                 }
+                //Property Array Index
+                //1901, 19 = array, 01 = length
+
                 if (propertyId != null) {
+                    Octet valueTypeOctet = covReader.next(); //19
+                    int arraySize = -1;
+                    if (valueTypeOctet.equals(new Octet("19"))) {
+                        Octet sizeOctet = covReader.next();
+                        arraySize = toInt(sizeOctet);
+                    }
+                    if (arraySize > -1) {
+                        //exptect array
+                        //array start = 2e, end i 2f
+                    }
                     Octet valueTagKey = covReader.next();
                     Octet propertyIdKey = covReader.next();
                     char lengthChar = propertyIdKey.getSecondNibble();
@@ -223,5 +228,21 @@ public class ObservationParser {
             listResulHexString = hexString.substring(listStartPos, listEndPos + PD_CLOSING_TAG_4.length());
         }
         return listResulHexString;
+    }
+
+    static String findArrayContent(OctetReader fullReader) {
+        String arrayContent = "";
+        Octet foundOctet = null;
+        do {
+            foundOctet = fullReader.next();
+            if (foundOctet.equals(new Octet("2f"))) {
+                break;
+            }
+            if (!foundOctet.equals(new Octet("2e"))) {
+                arrayContent += foundOctet.toString();
+            }
+
+        } while (fullReader.hasNext());
+        return arrayContent;
     }
 }

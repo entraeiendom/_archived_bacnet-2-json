@@ -5,6 +5,7 @@ import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
@@ -46,4 +47,12 @@ class ObservationParserTest {
         //#13 Fix test to fail, then succed
     }
 
+    @Test
+    void findArray() {
+        String arrayWithMoreHex = "2e4441a4cccd2f4f";
+        OctetReader reader = new OctetReader(arrayWithMoreHex);
+        String arrayContent = ObservationParser.findArrayContent(reader);
+        assertEquals("4441a4cccd", arrayContent);
+        assertEquals("4f", reader.unprocessedHexString());
+    }
 }
