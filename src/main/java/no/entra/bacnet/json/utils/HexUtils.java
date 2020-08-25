@@ -60,6 +60,28 @@ public class HexUtils {
         return toInt(octetsToString(octets));
     }
 
+    public static float toFloat(String hexString) throws IllegalArgumentException {
+        if (hexString == null || hexString.isEmpty()) {
+            throw new IllegalArgumentException("hexString may not be null.");
+        }
+        Long realLong = Long.parseLong(hexString, 16);
+        Float real = Float.intBitsToFloat(realLong.intValue());
+        return real;
+    }
+
+
+
+    public static long toLong(String hexString) {
+        if (hexString == null || hexString.isEmpty()) {
+            throw new IllegalArgumentException("hexString may not be null.");
+        }
+        if (hexString.length() == 16) {
+            return (toLong(hexString.substring(0, 1)) << 60)
+                    | toLong(hexString.substring(1));
+        }
+        return Long.parseLong(hexString, 16);
+    }
+
     public static String toBitString(char nibble) {
         String bitString = null;
         if (HexMatcher.isValidHexChar(nibble)) {

@@ -181,6 +181,12 @@ public class ObservationParser {
                     if (arraySize > -1) {
                         //exptect array
                         //array start = 2e, end i 2f
+                        String arrayContent = findArrayContent(covReader);
+                        OctetReader arrayReader = new OctetReader(arrayContent);
+                        if (arrayReader.next().toString().equals("44")) {
+                            String realValueString = arrayReader.next(4);
+
+                        }
                     }
                     Octet valueTagKey = covReader.next();
                     Octet propertyIdKey = covReader.next();

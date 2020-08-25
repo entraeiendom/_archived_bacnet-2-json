@@ -95,4 +95,14 @@ class HexUtilsTest {
         assertThrows(IllegalArgumentException.class, () -> toInt(isnull));
         assertEquals(12, toInt("0c"));
     }
+
+    @Test
+    void toFloatTest() {
+        assertThrows(IllegalArgumentException.class, () -> toFloat(""));
+        String isnull = null;
+        assertThrows(IllegalArgumentException.class, () -> toFloat(isnull));
+        assertEquals(Float.valueOf("20.6"), toFloat("41a4cccd"));
+    }
+
+
 }
