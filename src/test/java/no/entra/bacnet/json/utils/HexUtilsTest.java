@@ -104,5 +104,11 @@ class HexUtilsTest {
         assertEquals(Float.valueOf("20.6"), toFloat("41a4cccd"));
     }
 
-
+    @Test
+    void binaryToHexTest() {
+        String bitString = "00000010000000000000001000000101";
+        String expected = "02000205";
+        String hexString = binaryToHex(bitString);
+        assertEquals(expected, hexString);
+    }
 }

@@ -5,6 +5,7 @@ import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.junit.jupiter.api.Test;
 
+import static no.entra.bacnet.json.objects.ObjectType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ObjectIdParserTest {
@@ -77,5 +78,47 @@ class ObjectIdParserTest {
         assertNotNull(objectId);
         assertEquals(ObjectType.Device, objectId.getObjectType());
         assertEquals("12", objectId.getInstanceNumber());
+    }
+
+    @Test
+    void fromHexString() {
+        String idHexString = "00000000";
+        ObjectId objectId = ObjectIdParser.fromHexString(idHexString);
+        assertNotNull(objectId);
+        assertEquals(AnalogInput, objectId.getObjectType());
+        assertEquals("0", objectId.getInstanceNumber());
+        assertEquals(AnalogInput + " 0", objectId.toString());
+        idHexString = "05000001";
+        objectId = ObjectIdParser.fromHexString(idHexString);
+        assertNotNull(objectId);
+        assertEquals(TrendLog + " 1", objectId.toString());
+    }
+
+    @Test
+    void toHexString() {
+        ObjectId objectId = new ObjectId(TrendLog,"1");
+        String hexString = ObjectIdParser.toHexString(objectId);
+        //TrendLog = int 20 = bits? = hex?
+        assertEquals("05000001", hexString);
+    }
+
+    @Test
+    void paddedBitStringTest() {
+        String expected = "0000000000001000000101";
+        String padded = ObjectIdParser.paddedInstanceNumberBits(517);
+        assertEquals(expected, padded);
+    }
+
+    @Test
+    void paddedObjectTypeBitsTest() {
+        String expected = "0000001000";
+        String padded = ObjectIdParser.paddedObjectTypeBits(Device);
+        assertEquals(expected,padded);
+        expected = "0000010100";
+        padded = ObjectIdParser.paddedObjectTypeBits(TrendLog);
+        assertEquals(expected,padded);
+        expected = "0000000000";
+        padded = ObjectIdParser.paddedObjectTypeBits(AnalogInput);
+        assertEquals(expected,padded);
     }
 }

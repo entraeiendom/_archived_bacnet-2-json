@@ -44,6 +44,24 @@ public class ObjectIdParser {
         return objectId;
     }
 
+    public static String toHexString(ObjectId objectId) {
+        String hexString = null;
+        if (objectId != null) {
+            String objectTypeBits = paddedObjectTypeBits(objectId.getObjectType());
+            int instanceNumber = Integer.parseInt(objectId.getInstanceNumber());
+            String instanceNumberBits = paddedInstanceNumberBits(instanceNumber);
+            String instanceNumberHex = fillInstanceNumber(objectId);
+            hexString += instanceNumberHex;
+        }
+        return hexString;
+    }
+
+    static String fillInstanceNumber(ObjectId objectId) {
+        String hexNumber = objectId.getInstanceNumber();
+        int lenght = 6;
+        return String.format("%1$" + lenght + "s", hexNumber).replace(' ', '0');
+    }
+
     public static ObjectId decode4Octets(Octet[] typeAndInstanceOctets) {
         ObjectId objectId;
         String typeAndInstance = HexUtils.octetsToString(typeAndInstanceOctets);
@@ -56,12 +74,23 @@ public class ObjectIdParser {
     }
 
     protected static int findInstanceNumber(String typeAndInstanceBits) {
-        String instanceNuberBits = typeAndInstanceBits.substring(10,32);
-        return Integer.parseInt(instanceNuberBits,2);
+        String instanceNumberBits = typeAndInstanceBits.substring(10,32);
+        return Integer.parseInt(instanceNumberBits,2);
     }
 
     protected static int findObjectTypeInt(String typeAndInstanceBits) {
         String objectTypeBits = typeAndInstanceBits.substring(0,10);
         return Integer.parseInt(objectTypeBits, 2);
+    }
+
+    protected static String paddedInstanceNumberBits(int instanceNumber) {
+        String bitString = Integer.toBinaryString(instanceNumber);
+        int lenght = 22;
+        return String.format("%1$" + lenght + "s", bitString).replace(' ', '0');
+    }
+    protected static String paddedObjectTypeBits(ObjectType objectType) {
+        String bitString = Integer.toBinaryString(objectType.getObjectTypeInt());
+        int lenght = 10;
+        return String.format("%1$" + lenght + "s", bitString).replace(' ', '0');
     }
 }

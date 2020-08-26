@@ -35,4 +35,11 @@ class ObjectIdTest {
         assertNotNull(objectId);
         assertEquals(TrendLog + " 1", objectId.toString());
     }
+
+    @Test
+    void toHexString() {
+        ObjectId objectId = new ObjectId(AnalogInput,"0");
+        String hexString = ObjectIdParser.toHexString(objectId);
+        assertEquals("00000000", hexString);
+    }
 }

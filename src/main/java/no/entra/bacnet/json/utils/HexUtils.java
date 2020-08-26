@@ -148,4 +148,11 @@ public class HexUtils {
         }
         return bitString;
     }
+
+    public static String binaryToHex(String bitString) {
+        int decimal = Integer.parseInt(bitString,2);
+        String hexStr = Integer.toString(decimal,16);
+        int lenght = 8;
+        return String.format("%1$" + lenght + "s", hexStr).replace(' ', '0');
+    }
 }
