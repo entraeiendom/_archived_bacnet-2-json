@@ -89,4 +89,8 @@ public class OctetReader {
     public void fastForward(int numberOfOctets) {
         nextOctets(numberOfOctets); //Ignore the returned octets
     }
+
+    public int countOctets() {
+        return hexString.length()/2;
+    }
 }

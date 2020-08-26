@@ -12,19 +12,36 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ObjectIdParser {
     private static final Logger log = getLogger(ObjectIdParser.class);
 
-    //4 octets
+    //4 or 5 octets
     //10 bits for ObjectType
     //22 bits for Instance Number
+
+    /**
+     * @param hexString 4 or 5 octets
+     * @return ObjectId and count octets read
+     */
     public static ObjectIdParserResult<ObjectId> parse(String hexString) {
         ObjectId objectId = null;
         OctetReader idReader = new OctetReader(hexString);
-        Octet contextTag0 = idReader.next();
+        if (idReader.countOctets() == 5) {
+            Octet contextTag0 = idReader.next();
+        }
         Octet[] typeAndInstanceOctets = idReader.nextOctets(4);
         objectId = decode4Octets(typeAndInstanceOctets);
         ObjectIdParserResult result = new ObjectIdParserResult(objectId, 5);
 
         return result;
+    }
 
+    public static ObjectId fromHexString(String hexString) {
+        ObjectId objectId = null;
+        OctetReader idReader = new OctetReader(hexString);
+        if (idReader.countOctets() == 4) {
+            Octet[] typeAndInstanceOctets = idReader.nextOctets(4);
+            objectId = decode4Octets(typeAndInstanceOctets);
+        }
+
+        return objectId;
     }
 
     public static ObjectId decode4Octets(Octet[] typeAndInstanceOctets) {
