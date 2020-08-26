@@ -202,7 +202,7 @@ public class ObservationParser {
 
                 }
                 resultListHexString = covReader.unprocessedHexString();
-                log.trace("unprocessed: {}", resultListHexString);
+//                log.trace("unprocessed: {}", resultListHexString);
             }
 
         } catch (Exception e) {
