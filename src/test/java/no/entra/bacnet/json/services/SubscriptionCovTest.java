@@ -35,7 +35,7 @@ public class SubscriptionCovTest {
                 "      \"name\": \"PresentValue\"," +
                 "      \"source\": {" +
                 "        \"deviceId\": \"131109\"," +
-                "        \"objectId\": \"0\"" +
+                "        \"objectId\": \"AnalogInput_0\"" +
                 "      }," +
                 "      \"value\": \"20.6\"" +
                 "    }]" +
@@ -57,6 +57,7 @@ public class SubscriptionCovTest {
         assertEqualsPath(expectedJson, observedJson, "$.service");
         assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].name");
         assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].source.deviceId");
+        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].source.objectId");
         assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].value");
     }
 

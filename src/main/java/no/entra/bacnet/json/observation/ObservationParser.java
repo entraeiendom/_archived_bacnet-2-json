@@ -220,7 +220,8 @@ public class ObservationParser {
                 } else {
                     sourceInstanceNumber = "TODO";
                 }
-                source = new Source(deviceId.getInstanceNumber(), objectIdentifier.getInstanceNumber());
+                String objectId = objectIdentifier.getObjectType() + "_" + objectIdentifier.getInstanceNumber();
+                source = new Source(deviceId.getInstanceNumber(), objectId);
                 Observation observation = new Observation(observationId, source, value, key);
                 observation.setName(key);
                 observations.add(observation);
