@@ -50,8 +50,7 @@ public class ObjectIdParser {
             String objectTypeBits = paddedObjectTypeBits(objectId.getObjectType());
             int instanceNumber = Integer.parseInt(objectId.getInstanceNumber());
             String instanceNumberBits = paddedInstanceNumberBits(instanceNumber);
-            String instanceNumberHex = fillInstanceNumber(objectId);
-            hexString += instanceNumberHex;
+            hexString = HexUtils.binaryToHex(objectTypeBits + instanceNumberBits);
         }
         return hexString;
     }
