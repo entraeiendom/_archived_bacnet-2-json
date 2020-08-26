@@ -12,7 +12,7 @@ public enum PduType {
     Reject('6'),
     Abort('7');
 
-    private char pduTypeChar;
+    private final char pduTypeChar;
 
     public static PduType fromPduTypeChar(char pduTypeChar) {
         for (PduType type : values()) {
@@ -36,7 +36,7 @@ public enum PduType {
     }
 
     // enum constructor - cannot be public or protected
-    private PduType(char pduTypeChar) {
+    PduType(char pduTypeChar) {
         this.pduTypeChar = pduTypeChar;
     }
 
