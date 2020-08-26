@@ -21,5 +21,13 @@ class SDContextTagTest {
 
     @Test
     void findLength() {
+        SDContextTag tag = new SDContextTag(Octet.fromHexString("09"));
+        assertEquals(1, tag.findLength());
+        tag = new SDContextTag(Octet.fromHexString("0a"));
+        assertEquals(2, tag.findLength());
+        tag = new SDContextTag(Octet.fromHexString("0b"));
+        assertEquals(3, tag.findLength());
+        tag = new SDContextTag(Octet.fromHexString("0c"));
+        assertEquals(4, tag.findLength());
     }
 }

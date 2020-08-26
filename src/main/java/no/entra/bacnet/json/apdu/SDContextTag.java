@@ -28,10 +28,21 @@ public class SDContextTag {
     public int findLength() {
         int length = -1;
         char nibble = contextTag.getSecondNibble();
-        try {
-            length = Character.getNumericValue(nibble);
-        } catch (NumberFormatException e) {
-            log.trace("Could not find integer from {}. Expected 0-9", nibble);
+        switch (nibble) {
+            case '9':
+                length = 1;
+                break;
+            case 'a':
+                length = 2;
+                break;
+            case 'b':
+                length = 3;
+                break;
+            case 'c':
+                length = 4;
+                break;
+            default:
+                length = -1;
         }
         return length;
     }
