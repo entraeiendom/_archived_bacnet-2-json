@@ -23,9 +23,7 @@ public class ObjectIdParser {
     public static ObjectIdParserResult<ObjectId> parse(String hexString) {
         ObjectId objectId = null;
         OctetReader idReader = new OctetReader(hexString);
-        if (idReader.countOctets() == 5) {
-            Octet contextTag0 = idReader.next();
-        }
+        Octet contextTag0 = idReader.next();
         Octet[] typeAndInstanceOctets = idReader.nextOctets(4);
         objectId = decode4Octets(typeAndInstanceOctets);
         ObjectIdParserResult result = new ObjectIdParserResult(objectId, 5);
