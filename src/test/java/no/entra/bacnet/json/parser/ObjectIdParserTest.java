@@ -1,6 +1,8 @@
 package no.entra.bacnet.json.parser;
 
 import no.entra.bacnet.json.objects.ObjectId;
+import no.entra.bacnet.json.objects.ObjectIdParser;
+import no.entra.bacnet.json.objects.ObjectIdParserResult;
 import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.junit.jupiter.api.Test;

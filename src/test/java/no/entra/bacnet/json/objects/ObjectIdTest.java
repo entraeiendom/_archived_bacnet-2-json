@@ -1,7 +1,5 @@
 package no.entra.bacnet.json.objects;
 
-import no.entra.bacnet.json.parser.ObjectIdParser;
-import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import org.junit.jupiter.api.Test;
 
 import static no.entra.bacnet.json.objects.ObjectType.AnalogInput;

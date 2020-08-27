@@ -1,8 +1,6 @@
-package no.entra.bacnet.json.parser;
+package no.entra.bacnet.json.objects;
 
 import no.entra.bacnet.Octet;
-import no.entra.bacnet.json.objects.ObjectId;
-import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;

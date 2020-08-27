@@ -3,8 +3,6 @@ package no.entra.bacnet.json.configuration;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.ConfigurationRequest;
 import no.entra.bacnet.json.objects.*;
-import no.entra.bacnet.json.parser.ObjectIdParser;
-import no.entra.bacnet.json.parser.ObjectIdParserResult;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;

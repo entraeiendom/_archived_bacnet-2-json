@@ -4,11 +4,7 @@ import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.Source;
-import no.entra.bacnet.json.objects.ObjectId;
-import no.entra.bacnet.json.objects.PropertyIdentifier;
-import no.entra.bacnet.json.objects.SDContextTag;
-import no.entra.bacnet.json.parser.ObjectIdParser;
-import no.entra.bacnet.json.parser.ObjectIdParserResult;
+import no.entra.bacnet.json.objects.*;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 

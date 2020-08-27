@@ -1,11 +1,7 @@
 package no.entra.bacnet.json.properties;
 
 import no.entra.bacnet.Octet;
-import no.entra.bacnet.json.objects.ObjectId;
-import no.entra.bacnet.json.objects.PduType;
-import no.entra.bacnet.json.objects.PropertyIdentifier;
-import no.entra.bacnet.json.parser.ObjectIdParser;
-import no.entra.bacnet.json.parser.ObjectIdParserResult;
+import no.entra.bacnet.json.objects.*;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceChoice;

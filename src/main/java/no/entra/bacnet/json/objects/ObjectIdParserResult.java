@@ -1,4 +1,4 @@
-package no.entra.bacnet.json.parser;
+package no.entra.bacnet.json.objects;
 
 public class ObjectIdParserResult<T> {
 
