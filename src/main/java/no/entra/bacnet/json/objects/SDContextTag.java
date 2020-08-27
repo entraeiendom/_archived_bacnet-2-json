@@ -2,6 +2,10 @@ package no.entra.bacnet.json.objects;
 
 import no.entra.bacnet.Octet;
 
+/*
+Sequence base on a spesific case.
+@deprecated Need rewritten to either more generic or more specialized.
+ */
 public enum SDContextTag {
     PropertyIdentifier('0'),
     SequenceNumber('1'),
