@@ -10,6 +10,23 @@ public class SDContextTag {
 
     private final Octet contextTag;
 
+    public static final String TAG0LENGTH1 = "09";
+    public static final String TAG0LENGTH2 = "0a";
+    public static final String TAG0LENGTH3 = "0b";
+    public static final String TAG0LENGTH4 = "0c";
+    public static final String TAG1LENGTH1 = "19";
+    public static final String TAG1LENGTH2 = "1a";
+    public static final String TAG1LENGTH3 = "1b";
+    public static final String TAG1LENGTH4 = "1c";
+    public static final String TAG2LENGTH1 = "29";
+    public static final String TAG2LENGTH2 = "2a";
+    public static final String TAG2LENGTH3 = "2b";
+    public static final String TAG2LENGTH4 = "2c";
+    public static final String TAG3LENGTH1 = "39";
+    public static final String TAG3LENGTH2 = "3a";
+    public static final String TAG3LENGTH3 = "3b";
+    public static final String TAG3LENGTH4 = "3c";
+
     public SDContextTag(Octet contextTag) {
         this.contextTag = contextTag;
     }
