@@ -1,16 +1,12 @@
-package no.entra.bacnet.json.parser;
+package no.entra.bacnet.json.objects;
 
-import no.entra.bacnet.json.objects.ObjectId;
-import no.entra.bacnet.json.objects.ObjectIdMapper;
-import no.entra.bacnet.json.objects.ObjectIdMapperResult;
-import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.junit.jupiter.api.Test;
 
 import static no.entra.bacnet.json.objects.ObjectType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ObjectIdParserTest {
+class ObjectIdMapperTest {
 
     @Test
     void parseDevice517() {
