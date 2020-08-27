@@ -118,7 +118,7 @@ public class ObservationParser {
         ObjectId deviceId = null;
         if (deviceIdLengthKey.toString().equals("1c")) {
             String objectIdHex = "1c" + covReader.next(4);
-            ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(objectIdHex);
+            ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(objectIdHex);
             deviceId = result.getParsedObject();
         } else {
             //TODO find DeviceIdentifier
@@ -130,7 +130,7 @@ public class ObservationParser {
         if (objectIdLengthKey.toString().equals("2c")) {
             //length is 4
             String objectIdHex = "2c" + covReader.next(4);
-            ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(objectIdHex);
+            ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(objectIdHex);
             objectIdentifier = result.getParsedObject();
         } else {
             //TODO find ObjcetIdentifier

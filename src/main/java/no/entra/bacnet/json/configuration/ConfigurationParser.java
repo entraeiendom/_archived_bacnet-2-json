@@ -257,7 +257,7 @@ public class ConfigurationParser {
 
             int length = toInt(applicationTagOctet.getSecondNibble());
             Octet[] objectIdentifierOctets = iHaveReader.nextOctets(length);
-            ObjectId objectIdentifier = ObjectIdParser.decode4Octets(objectIdentifierOctets);
+            ObjectId objectIdentifier = ObjectIdMapper.decode4Octets(objectIdentifierOctets);
             if (objectIdentifier != null) {
                 configuration.setProperty(objectIdentifier.getObjectType().name(), objectIdentifier.getInstanceNumber());
             }
@@ -280,7 +280,7 @@ public class ConfigurationParser {
         ConfigurationRequest configuration = null;
         //1. Object Identifier
         //2. List of bacnet property values
-        ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(hexString);
+        ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(hexString);
         ObjectId objectId = result.getParsedObject();
         log.debug("objectId: {}", objectId);
         ReadAccessResult accessResult = ReadAccessResult.buildFromResultList(hexString);

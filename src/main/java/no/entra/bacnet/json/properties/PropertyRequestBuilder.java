@@ -49,7 +49,7 @@ public class PropertyRequestBuilder {
         //We would expect two elements
         //1. Object Id
         //2. Requested Properties
-        ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(unprocessedHexString);
+        ObjectIdMapperResult<ObjectId> objectIdResult = ObjectIdMapper.parse(unprocessedHexString);
         desiredObjectId = objectIdResult.getParsedObject();
         int parsedOctets = objectIdResult.getNumberOfOctetsRead();
         OctetReader propertyReader = new OctetReader(unprocessedHexString);

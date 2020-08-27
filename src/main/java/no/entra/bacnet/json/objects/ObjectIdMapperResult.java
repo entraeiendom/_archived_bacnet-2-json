@@ -1,11 +1,11 @@
 package no.entra.bacnet.json.objects;
 
-public class ObjectIdParserResult<T> {
+public class ObjectIdMapperResult<T> {
 
     private final T parsedObject;
     private final int numberOfOctetsRead;
 
-    public ObjectIdParserResult(T parsedObject, int numberOfOctetsRead) {
+    public ObjectIdMapperResult(T parsedObject, int numberOfOctetsRead) {
         this.parsedObject = parsedObject;
         this.numberOfOctetsRead = numberOfOctetsRead;
     }

@@ -19,7 +19,7 @@ class ReadAccessResultTest {
 
     @BeforeEach
     void setUp() {
-        ObjectIdParserResult<ObjectId> result = ObjectIdParser.parse(objectIdString);
+        ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(objectIdString);
         objectId = result.getParsedObject();
         accessResult = new ReadAccessResult(objectId);
         accessResult.setResultByKey(PresentValue, Double.valueOf(22.567));

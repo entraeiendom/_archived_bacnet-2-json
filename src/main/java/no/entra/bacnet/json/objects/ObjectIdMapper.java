@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class ObjectIdParser {
-    private static final Logger log = getLogger(ObjectIdParser.class);
+public class ObjectIdMapper {
+    private static final Logger log = getLogger(ObjectIdMapper.class);
 
     //4 or 5 octets
     //10 bits for ObjectType
@@ -18,13 +18,13 @@ public class ObjectIdParser {
      * @param hexString 4 or 5 octets
      * @return ObjectId and count octets read
      */
-    public static ObjectIdParserResult<ObjectId> parse(String hexString) {
+    public static ObjectIdMapperResult<ObjectId> parse(String hexString) {
         ObjectId objectId = null;
         OctetReader idReader = new OctetReader(hexString);
         Octet contextTag0 = idReader.next();
         Octet[] typeAndInstanceOctets = idReader.nextOctets(4);
         objectId = decode4Octets(typeAndInstanceOctets);
-        ObjectIdParserResult result = new ObjectIdParserResult(objectId, 5);
+        ObjectIdMapperResult result = new ObjectIdMapperResult(objectId, 5);
 
         return result;
     }

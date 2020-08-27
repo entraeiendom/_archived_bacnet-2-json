@@ -92,7 +92,7 @@ public class ReadAccessResult {
                 if (oidType.equals(new Octet(OBJECT_IDENTIFIER))) {
                     String objectIdString = "0c" + listReader.next(4);
                     log.debug("unprocessed before ObjectIdentifier {}", listReader.unprocessedHexString());
-                    ObjectIdParserResult<ObjectId> objectIdResult = ObjectIdParser.parse(objectIdString);
+                    ObjectIdMapperResult<ObjectId> objectIdResult = ObjectIdMapper.parse(objectIdString);
                     ObjectId objectIdentifier = objectIdResult.getParsedObject();
                     accessResult = new ReadAccessResult(objectIdentifier);
                 }
