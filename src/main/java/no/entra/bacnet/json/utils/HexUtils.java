@@ -31,8 +31,13 @@ public class HexUtils {
         return value;
     }
 
-    public static String fromInt(int num) {
-        return Integer.toHexString(num);
+    public static Octet octetFromInt(int num) {
+        String intHex =  Integer.toHexString(num);
+        if (intHex.length() == 1) {
+            return new Octet("0" + intHex);
+        } else {
+            return new Octet(intHex);
+        }
     }
 
     public static int toInt(char length) throws IllegalArgumentException {
