@@ -31,6 +31,10 @@ public class HexUtils {
         return value;
     }
 
+    public static String fromInt(int num) {
+        return Integer.toHexString(num);
+    }
+
     public static int toInt(char length) throws IllegalArgumentException {
         try {
             return Integer.parseInt(String.valueOf(length),16);
