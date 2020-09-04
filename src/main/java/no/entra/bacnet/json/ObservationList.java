@@ -12,6 +12,7 @@ import java.util.List;
 public class ObservationList implements BacnetMessage {
 
     private List<Observation> observations = new ArrayList<>();
+    private Integer subscriptionRemainingSeconds = null;
 
     public ObservationList() {
     }
@@ -32,6 +33,14 @@ public class ObservationList implements BacnetMessage {
         observations.add(observation);
     }
 
+    public Integer getSubscriptionRemainingSeconds() {
+        return subscriptionRemainingSeconds;
+    }
+
+    public void setSubscriptionRemainingSeconds(Integer subscriptionRemainingSeconds) {
+        this.subscriptionRemainingSeconds = subscriptionRemainingSeconds;
+    }
+
     @Override
     public String toJson() {
         return asJsonObject().toString();
@@ -46,6 +55,9 @@ public class ObservationList implements BacnetMessage {
             observationsJson.put(observation.asJsonObject());
         }
         json.put("observations", observationsJson);
+        if (subscriptionRemainingSeconds != null) {
+            json.put("subscriptionRemainingSeconds", subscriptionRemainingSeconds);
+        }
 
         return json;
     }

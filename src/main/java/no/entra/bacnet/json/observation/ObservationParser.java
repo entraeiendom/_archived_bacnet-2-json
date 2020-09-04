@@ -28,7 +28,7 @@ public class ObservationParser {
         060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f
         1. Subscriber Process Identifier (SD Context Tag 0, Length 1)
         2. Initating Device Identifier (SD Context Tag 1, Length 4)
-        3. Monitored Object Idenfiter (SD Context Tag 2, Length 4)
+        3. Monitored Object Idenfiter (SD Context Tag 2, Length 1-4)
         4. Time remaining (SD Context Tag 3, Length 1)
         5. List of values
          */
@@ -43,11 +43,13 @@ public class ObservationParser {
         Octet contextTag1 = covReader.next(); //1c
         Octet[] initiatingDeviceIdValue = covReader.nextOctets(4); //020003e9
         ObjectId deviceId = ObjectIdMapper.decode4Octets(initiatingDeviceIdValue);
-        Octet contextTag2 = covReader.next();
-        Octet[] monitoredDeviceIdValue = covReader.nextOctets(4);
+        Octet contextTag2 = covReader.next(); //2c
+        Octet[] monitoredDeviceIdValue = covReader.nextOctets(4); //00800001
         ObjectId monitoredObjectId = ObjectIdMapper.decode4Octets(monitoredDeviceIdValue);
-        Octet timeRemainingKey = covReader.next();
-        Octet timeRemainingValue = covReader.next();
+        no.entra.bacnet.json.apdu.SDContextTag contextTag3 = new no.entra.bacnet.json.apdu.SDContextTag(covReader.next());
+        int numTimeRemainingOctets = contextTag3.findLength();
+        Octet[] timeRemainingOctets = covReader.nextOctets(numTimeRemainingOctets);
+        int timeRemainingSec = toInt(timeRemainingOctets);
 
         String resultListHexString = covReader.unprocessedHexString();
         resultListHexString = filterResultList(resultListHexString);
@@ -97,7 +99,9 @@ public class ObservationParser {
         }
 
 
-        return new ObservationList(observations);
+        ObservationList observationList = new ObservationList(observations);
+        observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
+        return observationList;
     }
 
     public static ObservationList parseConfirmedCOVNotification(String changeOfValueHexString) {

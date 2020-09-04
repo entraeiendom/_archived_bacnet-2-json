@@ -45,7 +45,6 @@ class ObservationParserTest {
         String covHexString = service.getUnprocessedHexString();
         ObservationList observations = buildChangeOfValueObservation(covHexString);
         assertNotNull(observations);
-        //#14 FIXME
         Source source = observations.getObservations().get(0).getSource();
         assertEquals("1001", source.getDeviceId());
         assertEquals("AnalogValue 1", source.getObjectId());
@@ -60,10 +59,11 @@ class ObservationParserTest {
         observation = observations.getObservations().get(1);
         assertEquals("PresentValue", observation.getName());
         assertEquals("00000000", observation.getValue());
-//        assertEquals(senorAnalogValue1, observedObject);
-//        assertEquals(expectedTimeRemaining 0.04.59, timeRemaing);
-//        int presentvalueExpected = 0;
-//        assertEquals(presentvalueExpected, presentvalue);
+
+        //TimeRemaining
+        int expectedTimeRemaingSeconds = 299;
+        int timeRemaing = observations.getSubscriptionRemainingSeconds();
+        assertEquals(expectedTimeRemaingSeconds, timeRemaing);
     }
 
     @Test
