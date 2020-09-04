@@ -40,7 +40,7 @@ public class ObjectId {
         if (objectType == null) {
             return "type-missing " + " " + instanceNumber;
         }
-        return objectType.name() + " " + instanceNumber;
+        return objectType.name() + "_" + instanceNumber;
     }
 
     @Override

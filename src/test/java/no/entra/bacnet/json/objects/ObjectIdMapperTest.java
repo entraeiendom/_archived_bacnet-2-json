@@ -97,11 +97,11 @@ class ObjectIdMapperTest {
         assertNotNull(objectId);
         assertEquals(AnalogInput, objectId.getObjectType());
         assertEquals("0", objectId.getInstanceNumber());
-        assertEquals(AnalogInput + " 0", objectId.toString());
+        assertEquals(AnalogInput + "_0", objectId.toString());
         idHexString = "05000001";
         objectId = ObjectIdMapper.fromHexString(idHexString);
         assertNotNull(objectId);
-        assertEquals(TrendLog + " 1", objectId.toString());
+        assertEquals(TrendLog + "_1", objectId.toString());
     }
 
     @Test

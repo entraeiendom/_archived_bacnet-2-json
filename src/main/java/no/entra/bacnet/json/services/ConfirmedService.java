@@ -3,10 +3,10 @@ package no.entra.bacnet.json.services;
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.BacnetMessage;
 import no.entra.bacnet.json.objects.PduType;
-import no.entra.bacnet.json.observation.ObservationParser;
 import org.slf4j.Logger;
 
 import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
+import static no.entra.bacnet.json.observation.ObservationParser.parseConfirmedCOVNotification;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfirmedService extends Service {
@@ -65,8 +65,8 @@ public class ConfirmedService extends Service {
                     break;
                 case SubscribeCov:
                     log.trace("Is SubscribeCov aka ConfirmedCOVNotification. hexString: {}", service.getUnprocessedHexString());
-                    String covApduHexString = service.getUnprocessedHexString();
-                    configuration = ObservationParser.parseConfirmedCOVNotification(covApduHexString);
+                    String changeOfValueHexString = service.getUnprocessedHexString();
+                    configuration = parseConfirmedCOVNotification(changeOfValueHexString);
                     break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);

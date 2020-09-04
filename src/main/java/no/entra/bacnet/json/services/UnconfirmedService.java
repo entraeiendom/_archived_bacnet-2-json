@@ -47,7 +47,7 @@ public class UnconfirmedService extends Service {
                     break;
                 case UnconfirmedCovNotification:
                     String changeOfValueHexString = service.getUnprocessedHexString();
-                    bacnetMessage = buildChangeOfValueObservation(changeOfValueHexString);
+                    bacnetMessage = buildChangeOfValueObservation(service, changeOfValueHexString);
                     break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);

@@ -1,4 +1,4 @@
-package no.entra.bacnet.json.objects;
+package no.entra.bacnet.json.objects.deprecated;
 
 import no.entra.bacnet.Octet;
 

@@ -51,7 +51,7 @@ public class SubscriptionCovTest {
         //List of values:
         //  Property Identifier: present-value (85)
         //  property array index
-        //  Presen Value (real): 20,60000003814697
+        //  Present Value (real): 20,60000003814697
         //Hard to get JSONAssert to ignore observedAt. Hardcoding the test for now.
         assertEqualsPath(expectedJson, observedJson, "$.sender");
         assertEqualsPath(expectedJson, observedJson, "$.service");

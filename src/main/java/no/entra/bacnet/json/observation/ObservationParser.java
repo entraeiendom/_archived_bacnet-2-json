@@ -4,8 +4,10 @@ import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.Source;
+import no.entra.bacnet.json.apdu.SDContextTag;
 import no.entra.bacnet.json.objects.*;
 import no.entra.bacnet.json.reader.OctetReader;
+import no.entra.bacnet.json.services.Service;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ObservationParser {
     private static final Logger log = getLogger(ObservationParser.class);
 
-    public static ObservationList buildChangeOfValueObservation(String changeOfValueHexString) {
+    public static ObservationList buildChangeOfValueObservation(Service service, String changeOfValueHexString) {
 
         /*
         060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f
@@ -36,17 +38,19 @@ public class ObservationParser {
         Map<String, Object> properties = new HashMap<>();
 
         OctetReader covReader = new OctetReader(changeOfValueHexString);
-        Octet invokeId = covReader.next(); //06
-        Octet serviceChoice = covReader.next();//01
+        if (service.getPduType() == PduType.ConfirmedRequest) {
+            Octet invokeId = covReader.next(); //06
+            Octet serviceChoice = covReader.next();//01
+        }
         Octet contextTag0 = covReader.next(); //09
         Octet subscriberProcess = covReader.next(); //12
-        Octet contextTag1 = covReader.next(); //1c
-        Octet[] initiatingDeviceIdValue = covReader.nextOctets(4); //020003e9
+        SDContextTag contextTag1 = new SDContextTag(covReader.next()); //1c
+        Octet[] initiatingDeviceIdValue = covReader.nextOctets(contextTag1.findLength()); //020003e9
         ObjectId deviceId = ObjectIdMapper.decode4Octets(initiatingDeviceIdValue);
         Octet contextTag2 = covReader.next(); //2c
         Octet[] monitoredDeviceIdValue = covReader.nextOctets(4); //00800001
         ObjectId monitoredObjectId = ObjectIdMapper.decode4Octets(monitoredDeviceIdValue);
-        no.entra.bacnet.json.apdu.SDContextTag contextTag3 = new no.entra.bacnet.json.apdu.SDContextTag(covReader.next());
+        SDContextTag contextTag3 = new SDContextTag(covReader.next());
         int numTimeRemainingOctets = contextTag3.findLength();
         Octet[] timeRemainingOctets = covReader.nextOctets(numTimeRemainingOctets);
         int timeRemainingSec = toInt(timeRemainingOctets);
@@ -104,6 +108,7 @@ public class ObservationParser {
         return observationList;
     }
 
+
     public static ObservationList parseConfirmedCOVNotification(String changeOfValueHexString) {
 
         /*
@@ -114,6 +119,7 @@ public class ObservationParser {
         5. List of values
         Example hex: 0f0109121c020200252c0000000039004e095519012e4441a4cccd2f4f
          */
+
         List<Observation> observations = new ArrayList<>();
         Map<String, Object> properties = new HashMap<>();
 
@@ -155,15 +161,10 @@ public class ObservationParser {
         }
 
         //Time remaining
-        int timeRemainingSec = 0;
-        Octet contextTag = covReader.next();
-        if (SDContextTag.fromOctet(contextTag) == SDContextTag.TimeStamp) {
-            if (contextTag.getSecondNibble() == '9') {
-                //read one octet
-                Octet timeRemainingOctet = covReader.next();
-                timeRemainingSec = toInt(timeRemainingOctet);
-            }
-        }
+        SDContextTag contextTag3 = new SDContextTag(covReader.next());
+        int numTimeRemainingOctets = contextTag3.findLength();
+        Octet[] timeRemainingOctets = covReader.nextOctets(numTimeRemainingOctets);
+        int timeRemainingSec = toInt(timeRemainingOctets);
 
         //List of values
         //4e095519012e4441a4cccd2f4f
@@ -204,14 +205,6 @@ public class ObservationParser {
                             properties.put(propertyId.name(), realValue);
                         }
                     }
-                    /*
-                    Octet valueTagKey = covReader.next();
-                    Octet propertyIdKey = covReader.next();
-                    char lengthChar = propertyIdKey.getSecondNibble();
-                    int length = toInt(lengthChar);
-                    String value = covReader.next(length);
-                    Octet valueTagEndKey = covReader.next();
-                     */
 
                 }
                 resultListHexString = covReader.unprocessedHexString();
@@ -242,7 +235,9 @@ public class ObservationParser {
         }
 
 
-        return new ObservationList(observations);
+        ObservationList observationList = new ObservationList(observations);
+        observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
+        return observationList;
     }
 
     static String filterResultList(String hexString) {
