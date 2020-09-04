@@ -32,6 +32,17 @@ class ObservationParserTest {
     }
 
     @Test
+    void buildObservationFromConfirmedCovNotificationTest() {
+        String line = "810a002b01040005060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f";
+        BvlcResult bvlcResult = BvlcParser.parse(line);
+        assertNotNull(bvlcResult);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        assertNotNull(npduResult);
+//        String apduHexString = npduResult.getUnprocessedHexString();
+//        Service service = ServiceParser.fromApduHexString(apduHexString);
+    }
+
+    @Test
     void validateRestartTime() {
         String line = "810b00340100100209001c020007d22c020007d239004e09702e91002f09cb2e2ea4770c0b03b40a341d402f2f09c42e91002f4f000";
         BvlcResult bvlcResult = BvlcParser.parse(line);
