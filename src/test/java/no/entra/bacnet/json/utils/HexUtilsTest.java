@@ -111,4 +111,16 @@ class HexUtilsTest {
         String hexString = binaryToHex(bitString);
         assertEquals(expected, hexString);
     }
+
+    @Test
+    void intToHexStringTest() {
+        assertEquals("00", intToHexString(0, 2));
+        assertEquals("00000000", intToHexString(0, 8));
+        assertEquals("ff", intToHexString(255, 2));
+        assertEquals("100", intToHexString(256, 2));
+        int minSupportedHours8 = 8 * 60 * 60;
+        assertEquals("00007080", intToHexString(minSupportedHours8, 8));
+        int oneDay = 24 * 60 * 60;
+        assertEquals("00015180", intToHexString(oneDay, 8));
+    }
 }

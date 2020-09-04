@@ -31,6 +31,21 @@ public class HexUtils {
         return value;
     }
 
+    /**
+     * Generate hexString from a integer. Prefix with 0's to reach desired minimal length
+     * @param value integer value
+     * @param minHexLength result will be at least this length
+     * @return hexString from the value. If hex is longer than minHexLength the full hexString is returned.
+     */
+    public static String intToHexString(int value, int minHexLength) throws IllegalArgumentException{
+        String hexNumber = Integer.toHexString(value);
+        if (hexNumber.length() < minHexLength) {
+            return String.format("%1$" + minHexLength + "s", hexNumber).replace(' ', '0');
+        } else {
+            return hexNumber;
+        }
+    }
+
     public static Octet octetFromInt(int num) {
         String intHex =  Integer.toHexString(num);
         if (intHex.length() == 1) {
