@@ -7,16 +7,21 @@ import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
+import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 
 import static no.entra.bacnet.json.observation.ObservationParser.buildChangeOfValueObservation;
+import static no.entra.bacnet.json.observation.ObservationParser.parseConfirmedCOVNotification;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.slf4j.LoggerFactory.getLogger;
 
 class ObservationParserTest {
+    private static final Logger log = getLogger(ObservationParserTest.class);
 
     @Test
     void validateUnConfirmedCovNotificationTest() {
@@ -52,7 +57,7 @@ class ObservationParserTest {
     }
 
     @Test
-    void buildObservationFromUnconfirmedCovNotificationTest() {
+    void buildObservationFromUnConfirmedCovNotificationTest() {
         String line = "810b00340100100209001c020007d22c020007d239004e09702e91002f09cb2e2ea4770c0b03b40a341d402f2f09c42e91002f4f000";
         BvlcResult bvlcResult = BvlcParser.parse(line);
         assertNotNull(bvlcResult);
@@ -97,6 +102,19 @@ class ObservationParserTest {
         int expectedTimeRemaingSeconds = 299;
         int timeRemaing = observations.getSubscriptionRemainingSeconds();
         assertEquals(expectedTimeRemaingSeconds, timeRemaing);
+    }
+
+    @Test
+    void validateConfirmedCovNotificationWithPresenValue() {
+        String covHexString = "0f0109121c020200252c0000000039004e095519012e4441a4cccd2f4f";
+        Service service = new Service(PduType.ConfirmedRequest, null);
+        ObservationList observations = buildChangeOfValueObservation(service, covHexString);
+        log.info("hexString {}", covHexString);
+        observations = parseConfirmedCOVNotification(covHexString);
+        Observation observation = observations.getObservations().get(0);
+        assertEquals("PresentValue", observation.getName());
+        assertEquals(20.6f, observation.getValue());
+
     }
 
     @Test
