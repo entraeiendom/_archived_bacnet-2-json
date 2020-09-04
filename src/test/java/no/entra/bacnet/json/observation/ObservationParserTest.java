@@ -1,5 +1,6 @@
 package no.entra.bacnet.json.observation;
 
+import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.Source;
 import no.entra.bacnet.json.bvlc.BvlcParser;
@@ -51,6 +52,14 @@ class ObservationParserTest {
         source = observations.getObservations().get(0).getSource();
         assertEquals("1001", source.getDeviceId());
         assertEquals("AnalogValue 1", source.getObjectId());
+
+        //Verify value
+        Observation observation = observations.getObservations().get(0);
+        assertEquals("StatusFlags", observation.getName());
+        assertEquals("0400", observation.getValue());
+        observation = observations.getObservations().get(1);
+        assertEquals("PresentValue", observation.getName());
+        assertEquals("00000000", observation.getValue());
 //        assertEquals(senorAnalogValue1, observedObject);
 //        assertEquals(expectedTimeRemaining 0.04.59, timeRemaing);
 //        int presentvalueExpected = 0;
