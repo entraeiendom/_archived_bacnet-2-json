@@ -24,6 +24,7 @@ public class ObservationParser {
     public static ObservationList buildChangeOfValueObservation(String changeOfValueHexString) {
 
         /*
+        060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f
         1. Subscriber Process Identifier (SD Context Tag 0, Length 1)
         2. Initating Device Identifier (SD Context Tag 1, Length 4)
         3. Monitored Object Idenfiter (SD Context Tag 2, Length 4)
@@ -34,11 +35,13 @@ public class ObservationParser {
         Map<String, Object> properties = new HashMap<>();
 
         OctetReader covReader = new OctetReader(changeOfValueHexString);
-        Octet subscriberProcessKey = covReader.next();
-        Octet subscriverProcess = covReader.next();
-        String devicdId = "TODO"; //#4 FIXME find deviceId from hexString.
-        Octet intiatingDeviceidKey = covReader.next();
-        Octet[] initiatingDeviceIdValue = covReader.nextOctets(4);
+        Octet invokeId = covReader.next(); //06
+        Octet serviceChoice = covReader.next();//01
+        Octet contextTag0 = covReader.next(); //09
+        Octet subscriberProcess = covReader.next(); //12
+        Octet contextTag1 = covReader.next(); //1c
+        Octet[] initiatingDeviceIdValue = covReader.nextOctets(4); //020003e9
+        ObjectId deviceId = ObjectIdMapper.decode4Octets(initiatingDeviceIdValue);
         Octet monitoredDeviceIdKey = covReader.next();
         Octet[] monitoredDeviceIdValue = covReader.nextOctets(4);
         Octet timeRemainingKey = covReader.next();
@@ -76,7 +79,10 @@ public class ObservationParser {
             for (String key : properties.keySet()) {
                 Object value = properties.get(key);
                 String observationId = null;
-                Source source = new Source(devicdId, octetsToString(monitoredDeviceIdValue));
+                Source source = null;
+                if (deviceId != null) {
+                    source = new Source(deviceId.getInstanceNumber(), octetsToString(monitoredDeviceIdValue));
+                }
                 Observation observation = new Observation(observationId, source, value, key);
                 observation.setName(key);
                 observations.add(observation);

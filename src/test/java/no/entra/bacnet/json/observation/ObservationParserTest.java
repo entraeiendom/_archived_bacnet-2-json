@@ -38,8 +38,20 @@ class ObservationParserTest {
         assertNotNull(bvlcResult);
         NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
         assertNotNull(npduResult);
-//        String apduHexString = npduResult.getUnprocessedHexString();
-//        Service service = ServiceParser.fromApduHexString(apduHexString);
+        String apduHexString = npduResult.getUnprocessedHexString();
+        Service service = ServiceParser.fromApduHexString(apduHexString);
+        String covHexString = service.getUnprocessedHexString();
+        ObservationList observations = buildChangeOfValueObservation(covHexString);
+        assertNotNull(observations);
+        //#14 FIXME
+        String foundDevice = observations.getObservations().get(0).getSource().getDeviceId();
+        assertEquals("1001", foundDevice);
+        foundDevice = observations.getObservations().get(1).getSource().getDeviceId();
+        assertEquals("1001", foundDevice);
+//        assertEquals(senorAnalogValue1, observedObject);
+//        assertEquals(expectedTimeRemaining 0.04.59, timeRemaing);
+//        int presentvalueExpected = 0;
+//        assertEquals(presentvalueExpected, presentvalue);
     }
 
     @Test

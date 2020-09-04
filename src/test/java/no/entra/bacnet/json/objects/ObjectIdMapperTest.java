@@ -34,6 +34,18 @@ class ObjectIdMapperTest {
     }
 
     @Test
+    void parseDevice1001() {
+        String device1001 = "1c020003e9";
+        ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(device1001);
+        assertNotNull(result);
+        assertNotNull(result.getParsedObject());
+        assertTrue(result.getParsedObject() instanceof ObjectId);
+        assertEquals(5, result.getNumberOfOctetsRead());
+        assertEquals(ObjectType.Device, result.getParsedObject().getObjectType());
+        assertEquals("1001", result.getParsedObject().getInstanceNumber());
+    }
+
+    @Test
     void parseAnalogInput0() {
         String device131109 = "2c00000000";
         ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(device131109);
