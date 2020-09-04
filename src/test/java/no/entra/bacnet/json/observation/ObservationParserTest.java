@@ -1,6 +1,7 @@
 package no.entra.bacnet.json.observation;
 
 import no.entra.bacnet.json.ObservationList;
+import no.entra.bacnet.json.Source;
 import no.entra.bacnet.json.bvlc.BvlcParser;
 import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
@@ -44,10 +45,12 @@ class ObservationParserTest {
         ObservationList observations = buildChangeOfValueObservation(covHexString);
         assertNotNull(observations);
         //#14 FIXME
-        String foundDevice = observations.getObservations().get(0).getSource().getDeviceId();
-        assertEquals("1001", foundDevice);
-        foundDevice = observations.getObservations().get(1).getSource().getDeviceId();
-        assertEquals("1001", foundDevice);
+        Source source = observations.getObservations().get(0).getSource();
+        assertEquals("1001", source.getDeviceId());
+        assertEquals("AnalogValue 1", source.getObjectId());
+        source = observations.getObservations().get(0).getSource();
+        assertEquals("1001", source.getDeviceId());
+        assertEquals("AnalogValue 1", source.getObjectId());
 //        assertEquals(senorAnalogValue1, observedObject);
 //        assertEquals(expectedTimeRemaining 0.04.59, timeRemaing);
 //        int presentvalueExpected = 0;

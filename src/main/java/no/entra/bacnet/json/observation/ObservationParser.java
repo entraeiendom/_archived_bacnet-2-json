@@ -15,7 +15,8 @@ import java.util.Map;
 
 import static no.entra.bacnet.json.objects.ReadAccessResult.PD_CLOSING_TAG_4;
 import static no.entra.bacnet.json.objects.ReadAccessResult.PD_OPENING_TAG_4;
-import static no.entra.bacnet.json.utils.HexUtils.*;
+import static no.entra.bacnet.json.utils.HexUtils.toFloat;
+import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ObservationParser {
@@ -42,8 +43,9 @@ public class ObservationParser {
         Octet contextTag1 = covReader.next(); //1c
         Octet[] initiatingDeviceIdValue = covReader.nextOctets(4); //020003e9
         ObjectId deviceId = ObjectIdMapper.decode4Octets(initiatingDeviceIdValue);
-        Octet monitoredDeviceIdKey = covReader.next();
+        Octet contextTag2 = covReader.next();
         Octet[] monitoredDeviceIdValue = covReader.nextOctets(4);
+        ObjectId monitoredObjectId = ObjectIdMapper.decode4Octets(monitoredDeviceIdValue);
         Octet timeRemainingKey = covReader.next();
         Octet timeRemainingValue = covReader.next();
 
@@ -79,10 +81,15 @@ public class ObservationParser {
             for (String key : properties.keySet()) {
                 Object value = properties.get(key);
                 String observationId = null;
-                Source source = null;
+                String deviceIdInstance = null;
                 if (deviceId != null) {
-                    source = new Source(deviceId.getInstanceNumber(), octetsToString(monitoredDeviceIdValue));
+                    deviceIdInstance = deviceId.getInstanceNumber();
                 }
+                String sensorId = null;
+                if (monitoredObjectId != null) {
+                    sensorId = monitoredObjectId.toString();
+                }
+                Source source = new Source(deviceIdInstance, sensorId);
                 Observation observation = new Observation(observationId, source, value, key);
                 observation.setName(key);
                 observations.add(observation);
