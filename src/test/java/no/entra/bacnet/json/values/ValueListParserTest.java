@@ -11,7 +11,7 @@ class ValueListParserTest {
 
     @Test
     void parseValuesTest() {
-        String hexString = "09552e44428200002f096f2e8204003f";
+        String hexString = "09552e44428200002f096f2e8204002f";
         ValueParserResult result = parseValue(hexString);
         assertNotNull(result);
         Value expectedValue = new Value(PropertyIdentifier.PresentValue, 65.0f);
