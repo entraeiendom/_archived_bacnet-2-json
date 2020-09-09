@@ -5,23 +5,21 @@ import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class PDTag {
-    private static final Logger log = getLogger(PDTag.class);
+public class ArrayTag {
+    private static final Logger log = getLogger(ArrayTag.class);
 
-    private final Octet pdTag;
+    private final Octet arrayTag;
 
-    public static final Octet PDOpen2 = new Octet("2e");
-    public static final Octet PDClose2 = new Octet("2f");
-    public static final Octet PDOpen4 = new Octet("4e");
-    public static final Octet PDClose4 = new Octet("4f");
+    public static final Octet ARRAYLENGTH1 = new Octet("19");
 
-    public PDTag(Octet pdTag) {
-        this.pdTag = pdTag;
+
+    public ArrayTag(Octet arrayTag) {
+        this.arrayTag = arrayTag;
     }
 
-    public int findEnumeration() {
+    public int findType() {
         int enumeration = -1;
-        char nibble = pdTag.getFirstNibble();
+        char nibble = arrayTag.getFirstNibble();
         try {
            enumeration = Character.getNumericValue(nibble);
         } catch (NumberFormatException e) {
@@ -32,7 +30,7 @@ public class PDTag {
 
     public int findLength() {
         int length = -1;
-        char nibble = pdTag.getSecondNibble();
+        char nibble = arrayTag.getSecondNibble();
         switch (nibble) {
             case '9':
                 length = 1;
@@ -51,6 +49,4 @@ public class PDTag {
         }
         return length;
     }
-
-
 }

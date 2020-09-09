@@ -4,10 +4,14 @@ import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.Source;
+import no.entra.bacnet.json.apdu.PDTag;
 import no.entra.bacnet.json.apdu.SDContextTag;
 import no.entra.bacnet.json.objects.*;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
+import no.entra.bacnet.json.values.Value;
+import no.entra.bacnet.json.values.ValueParser;
+import no.entra.bacnet.json.values.ValueParserResult;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -203,17 +207,30 @@ public class ObservationParser {
         observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
         return observationList;
     }
-    protected static Map<String, Object> findPropertiesFromResultList(String resultListHexString) {
-        //FIXME findPropertiesFromResultList
-        throw new RuntimeException("Not yet implemented");
-        /*
-        Map<String, Object> properties = new HashMap<>();
-        try {
-            OctetReader listReader = new OctetReader(resultListHexString);
-            Octet startList = listReader.next();
-            if (startList == new Octet(PD_OPENING_TAG_4)) {
-
+    protected static List<Value> parseListOfValues(String resultListHexString) {
+        ArrayList<Value> values = new ArrayList<>();
+        OctetReader listReader = new OctetReader(resultListHexString);
+        Octet startList = listReader.next();
+        if (startList.equals(PDTag.PDOpen4)) {
+            String unprocessedHexString = listReader.unprocessedHexString();
+            ValueParserResult valueResult = ValueParser.parseValue(unprocessedHexString);
+            if (valueResult != null && valueResult.getValue() != null) {
+                values.add(valueResult.getValue());
+                unprocessedHexString = valueResult.getUnparsedHexString();
             }
+            while (unprocessedHexString != null && !unprocessedHexString.startsWith(PDTag.PDClose4.toString())) {
+                valueResult = ValueParser.parseValue(unprocessedHexString);
+                if (valueResult != null && valueResult.getValue() != null) {
+                    values.add(valueResult.getValue());
+                    unprocessedHexString = valueResult.getUnparsedHexString();
+                } else {
+                    unprocessedHexString = null;
+                }
+            }
+        }
+        return values;
+            /*
+
             while (resultListHexString != null && resultListHexString.length() >= 2) {
                 Octet contextTagKey = covReader.next();
                 PropertyIdentifier propertyId = null;
@@ -258,7 +275,7 @@ public class ObservationParser {
 
         return properties;
 
-         */
+             */
     }
     protected static Map<String, Object> findProperties(OctetReader covReader, String resultListHexString) {
         Map<String, Object> properties = new HashMap<>();

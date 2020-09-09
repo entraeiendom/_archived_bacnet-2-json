@@ -8,11 +8,15 @@ import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
+import no.entra.bacnet.json.values.Value;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
+
+import java.util.List;
 
 import static no.entra.bacnet.json.observation.ObservationParser.mapToChangeOfValueObservation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -140,5 +144,23 @@ class ObservationParserTest {
         String arrayContent = ObservationParser.findArrayContent(reader);
         assertEquals("4441a4cccd", arrayContent);
         assertEquals("4f", reader.unprocessedHexString());
+    }
+
+    @Test
+    void parseListOfValuesTest() {
+        String resultListHexString = "4e09702e91002f09cb2e2ea4770c0b03b40a341d402f2f09c42e91002f4f000";
+        List<Value> values = ObservationParser.parseListOfValues(resultListHexString);
+        assertNotNull(values);
+
+    }
+
+    @Test
+    void parseSingleValue() {
+        String listOfValuesHex = "4e095519012e4441a4cccd2f4f";
+        List<Value> values = ObservationParser.parseListOfValues(listOfValuesHex);
+        assertNotNull(values);
+        Value analogValue0 = values.get(0);
+        assertEquals(PropertyIdentifier.PresentValue, analogValue0.getPropertyIdentifier());
+        assertEquals(00, analogValue0.getValue());
     }
 }

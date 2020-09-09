@@ -13,6 +13,7 @@ public class ApplicationTag {
     public static final Octet APPTAG4LENGTH4 = new Octet("44");
     public static final Octet APPTAG8LENGTH2 = new Octet("82");
 
+    public static final int INT_VALUE = 1;
     public static final int REAL_VALUE = 4;
 
     public ApplicationTag(Octet appliationTag) {

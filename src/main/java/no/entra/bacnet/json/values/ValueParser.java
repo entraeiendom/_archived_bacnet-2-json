@@ -7,9 +7,15 @@ import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.reader.OctetReader;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static no.entra.bacnet.json.apdu.ApplicationTag.INT_VALUE;
 import static no.entra.bacnet.json.apdu.ApplicationTag.REAL_VALUE;
+import static no.entra.bacnet.json.apdu.ArrayTag.ARRAYLENGTH1;
 import static no.entra.bacnet.json.apdu.SDContextTag.TAG0LENGTH1;
 import static no.entra.bacnet.json.utils.HexUtils.toFloat;
+import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ValueParser {
@@ -33,7 +39,13 @@ public class ValueParser {
                 Octet propertyIdOctet = valueReader.next(); //55
                 propertyId = PropertyIdentifier.fromPropertyIdentifierHex(propertyIdOctet.toString());
 
-                if (valueReader.next().equals(PDTag.PDOpen2)) { //2f
+            Octet arrayOrValue = valueReader.next();
+            if (arrayOrValue.equals(ARRAYLENGTH1)) {
+                Octet lengthOfArrayOctet = valueReader.next();
+                int arrayLength = toInt(lengthOfArrayOctet);
+                arrayOrValue = valueReader.next();
+            }
+            if (arrayOrValue.equals(PDTag.PDOpen2)) { //2f
                     Octet applicationTagOctet = valueReader.next();
                     ApplicationTag applicationTag = new ApplicationTag(applicationTagOctet);
                     int readLength = applicationTag.findLength();
@@ -59,11 +71,46 @@ public class ValueParser {
         return parserResult;
     }
 
+    /**
+     * Parse from eg 4e095519012e4441a4cccd2f4f
+     * @param listOfValuesHexString Should start with 4e and end with 4f
+     * @return List of the values found.
+     */
+    public static List<Value> parseListOfValues(String listOfValuesHexString) {
+        List<Value> values = new ArrayList<>();
+        OctetReader valuesReader = new OctetReader(listOfValuesHexString);
+        if (listOfValuesHexString != null) {
+            if (valuesReader.next().equals(PDTag.PDOpen4)) {
+                String unprocessedHexString = valuesReader.unprocessedHexString();
+                while (unprocessedHexString != null && !unprocessedHexString.startsWith(PDTag.PDClose4.toString())) {
+                    ValueParserResult valueResult = parseValue(unprocessedHexString);
+                    Value value = valueResult.getValue();
+                    if (value != null) {
+                        values.add(value);
+                    } else {
+                        log.info("Failed to parse unprocesedHexString: {}", unprocessedHexString);
+                    }
+                    unprocessedHexString = valueResult.getUnparsedHexString();
+                }
+            }
+        }
+        return values;
+    }
+
     private static Object findValue(ApplicationTag applicationTag, String valueHex) {
         Object value = null;
-        if (applicationTag.findType() == REAL_VALUE) {
-            float floatValue = toFloat(valueHex);
-            value = Float.valueOf(floatValue);
+        int type = applicationTag.findType();
+        switch (type) {
+            case INT_VALUE:
+                int intValue = toInt(valueHex);
+                value = Integer.valueOf(intValue);
+                break;
+            case REAL_VALUE:
+                float floatValue = toFloat(valueHex);
+                value = Float.valueOf(floatValue);
+                break;
+            default:
+                value = null;
         }
         return value;
     }
