@@ -24,10 +24,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ObservationParser {
     private static final Logger log = getLogger(ObservationParser.class);
 
-    public static ObservationList buildChangeOfValueObservation(Service service, String changeOfValueHexString) {
+    public static ObservationList mapToChangeOfValueObservation(Service service, String changeOfValueHexString) {
 
         /*
-        060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f
+        Confirmed COV                       060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f
+        Confirmed COV Multiple Parameters   0f0109121c020200252c0000000039004e095519012e4441a4cccd2f4f
         1. Subscriber Process Identifier (SD Context Tag 0, Length 1)
         2. Initating Device Identifier (SD Context Tag 1, Length 4)
         3. Monitored Object Idenfiter (SD Context Tag 2, Length 1-4)
@@ -47,8 +48,8 @@ public class ObservationParser {
         SDContextTag contextTag1 = new SDContextTag(covReader.next()); //1c
         Octet[] initiatingDeviceIdValue = covReader.nextOctets(contextTag1.findLength()); //020003e9
         ObjectId deviceId = ObjectIdMapper.decode4Octets(initiatingDeviceIdValue);
-        Octet contextTag2 = covReader.next(); //2c
-        Octet[] monitoredDeviceIdValue = covReader.nextOctets(4); //00800001
+        SDContextTag contextTag2 = new SDContextTag(covReader.next()); //2c
+        Octet[] monitoredDeviceIdValue = covReader.nextOctets(contextTag2.findLength()); //00800001
         ObjectId monitoredObjectId = ObjectIdMapper.decode4Octets(monitoredDeviceIdValue);
         SDContextTag contextTag3 = new SDContextTag(covReader.next());
         int numTimeRemainingOctets = contextTag3.findLength();
@@ -57,6 +58,9 @@ public class ObservationParser {
 
         String resultListHexString = covReader.unprocessedHexString();
         resultListHexString = filterResultList(resultListHexString);
+        log.info("*** {}", resultListHexString);
+        properties = findProperties(covReader, resultListHexString);
+        /*
         try {
             Octet startList = covReader.next();
             while (resultListHexString != null && resultListHexString.length() >= 2) {
@@ -82,6 +86,8 @@ public class ObservationParser {
         } catch (Exception e) {
             log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
         }
+
+         */
 
         if (properties != null && properties.size() > 0) {
             for (String key : properties.keySet()) {
@@ -171,6 +177,91 @@ public class ObservationParser {
 
         String resultListHexString = covReader.unprocessedHexString();
         resultListHexString = filterResultList(resultListHexString);
+        properties = findProperties(covReader, resultListHexString);
+
+        if (properties != null && properties.size() > 0) {
+            for (String key : properties.keySet()) {
+                Object value = properties.get(key);
+                String observationId = null;
+                Source source = null;
+                String sourceInstanceNumber = null;
+                if (deviceId != null) {
+                    sourceInstanceNumber = deviceId.getInstanceNumber();
+                } else {
+                    sourceInstanceNumber = "TODO";
+                }
+                String objectId = objectIdentifier.getObjectType() + "_" + objectIdentifier.getInstanceNumber();
+                source = new Source(deviceId.getInstanceNumber(), objectId);
+                Observation observation = new Observation(observationId, source, value, key);
+                observation.setName(key);
+                observations.add(observation);
+            }
+        }
+
+
+        ObservationList observationList = new ObservationList(observations);
+        observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
+        return observationList;
+    }
+    protected static Map<String, Object> findPropertiesFromResultList(String resultListHexString) {
+        //FIXME findPropertiesFromResultList
+        throw new RuntimeException("Not yet implemented");
+        /*
+        Map<String, Object> properties = new HashMap<>();
+        try {
+            OctetReader listReader = new OctetReader(resultListHexString);
+            Octet startList = listReader.next();
+            if (startList == new Octet(PD_OPENING_TAG_4)) {
+
+            }
+            while (resultListHexString != null && resultListHexString.length() >= 2) {
+                Octet contextTagKey = covReader.next();
+                PropertyIdentifier propertyId = null;
+                if (contextTagKey != null && contextTagKey.equals(new Octet("09"))) {
+                    Octet contextTagValue = covReader.next();
+                    //PresentValue
+                    propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
+                }
+                //Property Array Index
+                //1901, 19 = array, 01 = length
+
+                if (propertyId != null) {
+                    Octet valueTypeOctet = covReader.next(); //19
+                    int arraySize = -1;
+                    if (valueTypeOctet.equals(new Octet("19"))) {
+                        Octet sizeOctet = covReader.next();
+                        arraySize = toInt(sizeOctet);
+                    }
+                    if (arraySize > -1) {
+                        //exptect array
+                        //array start = 2e, end i 2f
+                        String arrayContent = findArrayContent(covReader);
+                        OctetReader arrayReader = new OctetReader(arrayContent);
+                        Octet propertyIdKey = arrayReader.next();
+                        if (propertyIdKey.toString().equals("44")) {
+                            char lengthChar = propertyIdKey.getSecondNibble();
+                            int length = toInt(lengthChar);
+                            String realValueString = arrayReader.next(length);
+                            Float realValue = toFloat(realValueString);
+                            properties.put(propertyId.name(), realValue);
+                        }
+                    }
+
+                }
+                resultListHexString = covReader.unprocessedHexString();
+//                log.trace("unprocessed: {}", resultListHexString);
+            }
+
+        } catch (Exception e) {
+            log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
+        }
+
+        return properties;
+
+         */
+    }
+    protected static Map<String, Object> findProperties(OctetReader covReader, String resultListHexString) {
+        Map<String, Object> properties = new HashMap<>();
         try {
             Octet startList = covReader.next();
             while (resultListHexString != null && resultListHexString.length() >= 2) {
@@ -215,29 +306,7 @@ public class ObservationParser {
             log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
         }
 
-        if (properties != null && properties.size() > 0) {
-            for (String key : properties.keySet()) {
-                Object value = properties.get(key);
-                String observationId = null;
-                Source source = null;
-                String sourceInstanceNumber = null;
-                if (deviceId != null) {
-                    sourceInstanceNumber = deviceId.getInstanceNumber();
-                } else {
-                    sourceInstanceNumber = "TODO";
-                }
-                String objectId = objectIdentifier.getObjectType() + "_" + objectIdentifier.getInstanceNumber();
-                source = new Source(deviceId.getInstanceNumber(), objectId);
-                Observation observation = new Observation(observationId, source, value, key);
-                observation.setName(key);
-                observations.add(observation);
-            }
-        }
-
-
-        ObservationList observationList = new ObservationList(observations);
-        observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
-        return observationList;
+        return properties;
     }
 
     static String filterResultList(String hexString) {

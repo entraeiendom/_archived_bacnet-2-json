@@ -30,4 +30,9 @@ class SDContextTagTest {
         tag = new SDContextTag(Octet.fromHexString("0c"));
         assertEquals(4, tag.findLength());
     }
+
+    @Test
+    void equalsTest() {
+        assertEquals(new Octet("09"), SDContextTag.TAG0LENGTH1);
+    }
 }

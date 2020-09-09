@@ -10,22 +10,22 @@ public class SDContextTag {
 
     private final Octet contextTag;
 
-    public static final String TAG0LENGTH1 = "09";
-    public static final String TAG0LENGTH2 = "0a";
-    public static final String TAG0LENGTH3 = "0b";
-    public static final String TAG0LENGTH4 = "0c";
-    public static final String TAG1LENGTH1 = "19";
-    public static final String TAG1LENGTH2 = "1a";
-    public static final String TAG1LENGTH3 = "1b";
-    public static final String TAG1LENGTH4 = "1c";
-    public static final String TAG2LENGTH1 = "29";
-    public static final String TAG2LENGTH2 = "2a";
-    public static final String TAG2LENGTH3 = "2b";
-    public static final String TAG2LENGTH4 = "2c";
-    public static final String TAG3LENGTH1 = "39";
-    public static final String TAG3LENGTH2 = "3a";
-    public static final String TAG3LENGTH3 = "3b";
-    public static final String TAG3LENGTH4 = "3c";
+    public static final Octet TAG0LENGTH1 = new Octet("09");
+    public static final Octet TAG0LENGTH2 = new Octet("0a");
+    public static final Octet TAG0LENGTH3 = new Octet("0b");
+    public static final Octet TAG0LENGTH4 = new Octet("0c");
+    public static final Octet TAG1LENGTH1 = new Octet("19");
+    public static final Octet TAG1LENGTH2 = new Octet("1a");
+    public static final Octet TAG1LENGTH3 = new Octet("1b");
+    public static final Octet TAG1LENGTH4 = new Octet("1c");
+    public static final Octet TAG2LENGTH1 = new Octet("29");
+    public static final Octet TAG2LENGTH2 = new Octet("2a");
+    public static final Octet TAG2LENGTH3 = new Octet("2b");
+    public static final Octet TAG2LENGTH4 = new Octet("2c");
+    public static final Octet TAG3LENGTH1 = new Octet("39");
+    public static final Octet TAG3LENGTH2 = new Octet("3a");
+    public static final Octet TAG3LENGTH3 = new Octet("3b");
+    public static final Octet TAG3LENGTH4 = new Octet("3c");
 
     public SDContextTag(Octet contextTag) {
         this.contextTag = contextTag;
@@ -63,4 +63,6 @@ public class SDContextTag {
         }
         return length;
     }
+
+
 }

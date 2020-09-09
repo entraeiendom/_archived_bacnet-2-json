@@ -70,6 +70,7 @@ public class Octet {
         return String.valueOf(octet);
     }
 
+    /*
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -79,5 +80,20 @@ public class Octet {
             return Arrays.equals(((Octet) obj).octet, this.octet);
         }
         return false;
+    }
+
+     */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Octet octet1 = (Octet) o;
+        return Arrays.equals(getOctet(), octet1.getOctet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(getOctet());
     }
 }
