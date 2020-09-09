@@ -16,6 +16,7 @@ import static no.entra.bacnet.json.apdu.ArrayTag.ARRAYLENGTH1;
 import static no.entra.bacnet.json.apdu.SDContextTag.TAG0LENGTH1;
 import static no.entra.bacnet.json.utils.HexUtils.toFloat;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
+import static no.entra.bacnet.json.utils.StringUtils.hasValue;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ValueParser {
@@ -36,8 +37,8 @@ public class ValueParser {
         if (firstOctet.equals(TAG0LENGTH1)) {  //09
             Value value = null;
             PropertyIdentifier propertyId = null;
-                Octet propertyIdOctet = valueReader.next(); //55
-                propertyId = PropertyIdentifier.fromPropertyIdentifierHex(propertyIdOctet.toString());
+            Octet propertyIdOctet = valueReader.next(); //55
+            propertyId = PropertyIdentifier.fromPropertyIdentifierHex(propertyIdOctet.toString());
 
             Octet arrayOrValue = valueReader.next();
             if (arrayOrValue.equals(ARRAYLENGTH1)) {
@@ -46,27 +47,27 @@ public class ValueParser {
                 arrayOrValue = valueReader.next();
             }
             if (arrayOrValue.equals(PDTag.PDOpen2)) { //2f
-                    Octet applicationTagOctet = valueReader.next();
-                    ApplicationTag applicationTag = new ApplicationTag(applicationTagOctet);
-                    int readLength = applicationTag.findLength();
-                    String valueHex = valueReader.next(readLength);
-                    Object valueObj = findValue(applicationTag, valueHex);
-                    value = new Value(propertyId, valueObj);
-                }
+                Octet applicationTagOctet = valueReader.next();
+                ApplicationTag applicationTag = new ApplicationTag(applicationTagOctet);
+                int readLength = applicationTag.findLength();
+                String valueHex = valueReader.next(readLength);
+                Object valueObj = findValue(applicationTag, valueHex);
+                value = new Value(propertyId, valueObj);
+            }
             String unprocessedHexString = valueReader.unprocessedHexString();
-                Octet nextInString = valueReader.next(); {
-                    if (nextInString.equals(PDTag.PDClose2)) {
-                        // do nothing
-                        unprocessedHexString = valueReader.unprocessedHexString();
-                    } else {
-                        //TODO parse eg 3c 03173400 - Time of Change
-                    }
+            Octet nextInString = valueReader.next(); {
+                if (nextInString.equals(PDTag.PDClose2)) {
+                    // do nothing
+                    unprocessedHexString = valueReader.unprocessedHexString();
+                } else {
+                    //TODO parse eg 3c 03173400 - Time of Change
+                }
             }
             log.trace("unprocessed: {}", unprocessedHexString);
             parserResult = new ValueParserResult(hexString, value);
             parserResult.setUnparsedHexString(unprocessedHexString);
         } else {
-           parserResult = new ValueParserResult(hexString, "HexString not starting with " + TAG0LENGTH1);
+            parserResult = new ValueParserResult(hexString, "HexString not starting with " + TAG0LENGTH1);
         }
         return parserResult;
     }
@@ -79,20 +80,23 @@ public class ValueParser {
     public static List<Value> parseListOfValues(String listOfValuesHexString) {
         List<Value> values = new ArrayList<>();
         OctetReader valuesReader = new OctetReader(listOfValuesHexString);
-        if (listOfValuesHexString != null) {
-            if (valuesReader.next().equals(PDTag.PDOpen4)) {
-                String unprocessedHexString = valuesReader.unprocessedHexString();
-                while (unprocessedHexString != null && !unprocessedHexString.startsWith(PDTag.PDClose4.toString())) {
-                    ValueParserResult valueResult = parseValue(unprocessedHexString);
-                    Value value = valueResult.getValue();
-                    if (value != null) {
-                        values.add(value);
-                    } else {
-                        log.info("Failed to parse unprocesedHexString: {}", unprocessedHexString);
-                    }
-                    unprocessedHexString = valueResult.getUnparsedHexString();
-                }
+        if (listOfValuesHexString == null) {
+            return values;
+        }
+        String unprocessedHexString = listOfValuesHexString;
+
+        if (valuesReader.next().equals(PDTag.PDOpen4)) {
+            unprocessedHexString = valuesReader.unprocessedHexString();
+        }
+        while (hasValue(unprocessedHexString) && !unprocessedHexString.startsWith(PDTag.PDClose4.toString())) {
+            ValueParserResult valueResult = parseValue(unprocessedHexString);
+            Value value = valueResult.getValue();
+            if (value != null) {
+                values.add(value);
+            } else {
+                log.info("Failed to parse unprocesedHexString: {}", unprocessedHexString);
             }
+            unprocessedHexString = valueResult.getUnparsedHexString();
         }
         return values;
     }
