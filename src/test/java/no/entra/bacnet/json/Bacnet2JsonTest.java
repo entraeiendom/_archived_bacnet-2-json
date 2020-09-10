@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -70,6 +71,21 @@ class Bacnet2JsonTest {
     }
 
     @Test
-    void addNetworkInfo() {
+    void confirmedCovNotification() {
+        String confirmedCovHexString = "810a002a01040005020109121c020003e92c0080000139004e09552e44400000002f096f2e8204002f4f";
+        String expected = "{\"configurationRequest\":" +
+                "{\"observations\":[" +
+                "{\"observedAt\":\"2020-09-10T09:16:23.661802\",\"name\":\"PresentValue\",\"source\":{\"deviceId\":\"1001\",\"objectId\":\"AnalogValue_1\"},\"value\":2}," +
+                "{\"observedAt\":\"2020-09-10T09:16:23.661833\",\"name\":\"StatusFlags\",\"source\":{\"deviceId\":\"1001\",\"objectId\":\"AnalogValue_1\"},\"value\":\"#0400\"}" +
+                "]," +
+                "\"subscriptionRemainingSeconds\":0}," +
+                "\"sender\":\"unknown\",\"" +
+                "service\":\"SubscribeCov\"}";
+        String configurationRequestJson = Bacnet2Json.hexStringToJson(confirmedCovHexString);
+        log.trace("ConfigurationRequest: {}", configurationRequestJson);
+        assertNotNull(configurationRequestJson);
+        assertThatJson(configurationRequestJson)
+                .whenIgnoringPaths("configurationRequest.observations[*].observedAt")
+                .isEqualTo(expected);
     }
 }
