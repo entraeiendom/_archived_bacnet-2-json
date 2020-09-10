@@ -29,7 +29,6 @@ public class SubscriptionCovTest {
     void verifyConfirmedCOVNotificationSingleProperty() {
         String observedHex = "810a0025010400050f0109121c020200252c0000000039004e095519012e4441a4cccd2f4f";
         String expectedJson = "{" +
-                "  \"configurationRequest\": {" +
                 "    \"observations\": [{" +
                 "      \"observedAt\": \"2020-08-25T11:49:14.394374\"," +
                 "      \"name\": \"PresentValue\"," +
@@ -38,8 +37,7 @@ public class SubscriptionCovTest {
                 "        \"objectId\": \"AnalogInput_0\"" +
                 "      }," +
                 "      \"value\": \"20.6\"" +
-                "    }]" +
-                "  }," +
+                "    }]," +
                 "  \"sender\": \"unknown\"," +
                 "  \"service\": \"SubscribeCov\"" +
                 "}";
@@ -55,10 +53,10 @@ public class SubscriptionCovTest {
         //Hard to get JSONAssert to ignore observedAt. Hardcoding the test for now.
         assertEqualsPath(expectedJson, observedJson, "$.sender");
         assertEqualsPath(expectedJson, observedJson, "$.service");
-        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].name");
-        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].source.deviceId");
-        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].source.objectId");
-        assertEqualsPath(expectedJson, observedJson, "$.configurationRequest.observations[0].value");
+        assertEqualsPath(expectedJson, observedJson, "$.observations[0].name");
+        assertEqualsPath(expectedJson, observedJson, "$.observations[0].source.deviceId");
+        assertEqualsPath(expectedJson, observedJson, "$.observations[0].source.objectId");
+        assertEqualsPath(expectedJson, observedJson, "$.observations[0].value");
     }
 
     void assertEqualsPath(String expectedJason, String observedJson, String jsonPath) {
