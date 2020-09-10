@@ -55,13 +55,12 @@ public class ValueParser {
                 value = new Value(propertyId, valueObj);
             }
             String unprocessedHexString = valueReader.unprocessedHexString();
-            Octet nextInString = valueReader.next(); {
-                if (nextInString.equals(PDTag.PDClose2)) {
-                    // do nothing
-                    unprocessedHexString = valueReader.unprocessedHexString();
-                } else {
-                    //TODO parse eg 3c 03173400 - Time of Change
-                }
+            Octet nextInString = valueReader.next();
+            if (nextInString.equals(PDTag.PDClose2)) {
+                // do nothing
+                unprocessedHexString = valueReader.unprocessedHexString();
+            } else {
+                //TODO parse eg 3c 03173400 - Time of Change
             }
             log.trace("unprocessed: {}", unprocessedHexString);
             parserResult = new ValueParserResult(hexString, value);
@@ -74,6 +73,7 @@ public class ValueParser {
 
     /**
      * Parse from eg 4e095519012e4441a4cccd2f4f
+     *
      * @param listOfValuesHexString Should start with 4e and end with 4f
      * @return List of the values found.
      */
@@ -114,7 +114,8 @@ public class ValueParser {
                 value = Float.valueOf(floatValue);
                 break;
             default:
-                value = null;
+                value = "#" + valueHex;
+                //value = null;
         }
         return value;
     }
