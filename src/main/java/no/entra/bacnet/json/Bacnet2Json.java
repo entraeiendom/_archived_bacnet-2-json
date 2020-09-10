@@ -9,6 +9,7 @@ import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.parser.BacNetParser;
+import no.entra.bacnet.json.services.ConfirmedServiceChoice;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.json.JSONObject;
@@ -23,12 +24,15 @@ import static no.entra.bacnet.json.services.UnconfirmedService.tryToUnderstandUn
 import static no.entra.bacnet.json.utils.HexUtils.octetsToString;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
 
+/**
+ *
+ */
 public class Bacnet2Json {
-
 
     public static final String SENDER = "sender";
     public static final String SERVICE = "service";
     public static final String OBSERVATION = "observation";
+    public static final String OBSERVATIONS = "observations";
     public static final String OBSERVED_AT = "observedAt";
     public static final String CONFIGURATION_REQUEST = "configurationRequest";
     public static final String CONFIGURATION = "configuration";
@@ -81,7 +85,14 @@ public class Bacnet2Json {
             case ConfirmedRequest:
                 BacnetMessage confirmedRequest = tryToUnderstandConfirmedRequest(service);
                 observationJson = buildObservationJson(bvlc, npdu, confirmedRequest);
-                bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
+               if (service.getServiceChoice() == ConfirmedServiceChoice.SubscribeCov) {
+                   bacnetJson.put(OBSERVATIONS, observationJson.get(OBSERVATIONS));
+                   if (observationJson.has("subscriptionRemainingSeconds")) {
+                        bacnetJson.put("subscriptionRemainingSeconds", observationJson.get("subscriptionRemainingSeconds"));
+                   }
+               } else {
+                   bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
+               }
                 break;
             case UnconfirmedRequest:
                 BacnetMessage unconfirmedRequest = tryToUnderstandUnconfirmedRequest(service);
