@@ -60,10 +60,24 @@ public class ObservationParser {
         Octet[] timeRemainingOctets = covReader.nextOctets(numTimeRemainingOctets);
         int timeRemainingSec = toInt(timeRemainingOctets);
 
+//        String resultListHexString = covReader.unprocessedHexString();
+//        resultListHexString = filterResultList(resultListHexString);
+//        log.info("*** {}", resultListHexString);
+//        properties = findProperties(covReader, resultListHexString);
+
+        String objectId = monitoredObjectId.getObjectType() + "_" + monitoredObjectId.getInstanceNumber();
+        Source source = new Source(deviceId.getInstanceNumber(), objectId);
+
         String resultListHexString = covReader.unprocessedHexString();
-        resultListHexString = filterResultList(resultListHexString);
-        log.info("*** {}", resultListHexString);
-        properties = findProperties(covReader, resultListHexString);
+//        resultListHexString = filterResultList(resultListHexString);
+        List<Value> bacnetValues = parseListOfValues(resultListHexString);
+        for (Value bacnetValue : bacnetValues) {
+            String observationId = null; //TODO how to create unique id for the observation. Is that needed?
+            Object value = bacnetValue.getValue();
+            String name = bacnetValue.getPropertyIdentifier().name();
+            Observation observation = new Observation(observationId, source, value, name);
+            observations.add(observation);
+        }
         /*
         try {
             Octet startList = covReader.next();
@@ -93,6 +107,7 @@ public class ObservationParser {
 
          */
 
+        /*
         if (properties != null && properties.size() > 0) {
             for (String key : properties.keySet()) {
                 Object value = properties.get(key);
@@ -111,6 +126,8 @@ public class ObservationParser {
                 observations.add(observation);
             }
         }
+
+         */
 
 
         ObservationList observationList = new ObservationList(observations);
@@ -179,8 +196,20 @@ public class ObservationParser {
         //List of values
         //4e095519012e4441a4cccd2f4f
 
+        String objectId = objectIdentifier.getObjectType() + "_" + objectIdentifier.getInstanceNumber();
+        Source source = new Source(deviceId.getInstanceNumber(), objectId);
+
         String resultListHexString = covReader.unprocessedHexString();
-        resultListHexString = filterResultList(resultListHexString);
+//        resultListHexString = filterResultList(resultListHexString);
+        List<Value> bacnetValues = parseListOfValues(resultListHexString);
+        for (Value bacnetValue : bacnetValues) {
+            String observationId = null; //TODO how to create unique id for the observation. Is that needed?
+            Object value = bacnetValue.getValue();
+            String name = bacnetValue.getPropertyIdentifier().name();
+            Observation observation = new Observation(observationId, source, value, name);
+            observations.add(observation);
+        }
+        /*
         properties = findProperties(covReader, resultListHexString);
 
         if (properties != null && properties.size() > 0) {
@@ -201,6 +230,7 @@ public class ObservationParser {
                 observations.add(observation);
             }
         }
+        */
 
 
         ObservationList observationList = new ObservationList(observations);

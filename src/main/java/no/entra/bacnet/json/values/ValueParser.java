@@ -101,7 +101,7 @@ public class ValueParser {
         return values;
     }
 
-    private static Object findValue(ApplicationTag applicationTag, String valueHex) {
+    static Object findValue(ApplicationTag applicationTag, String valueHex) {
         Object value = null;
         int type = applicationTag.findType();
         switch (type) {

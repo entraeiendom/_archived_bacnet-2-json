@@ -46,10 +46,10 @@ class ObservationParserTest {
         assertEquals("AnalogValue_1", source.getObjectId());
 
         //Verify value
-        Observation observation = observations.getObservations().get(0);
+        Observation observation = observations.getObservations().get(1);
         assertEquals("StatusFlags", observation.getName());
         assertEquals("0400", observation.getValue());
-        observation = observations.getObservations().get(1);
+        observation = observations.getObservations().get(0);
         assertEquals("PresentValue", observation.getName());
         assertEquals("00000000", observation.getValue());
 
