@@ -54,7 +54,7 @@ class ConfigurationParserTest {
         assertEquals(1, ConfigurationParser.mapWhoIsLength('9'));
         assertEquals(2, ConfigurationParser.mapWhoIsLength('a'));
         assertEquals(3, ConfigurationParser.mapWhoIsLength('b'));
-        assertEquals(0, ConfigurationParser.mapWhoIsLength('c'));
+        assertEquals(4, ConfigurationParser.mapWhoIsLength('c'));
     }
 
     @Test
