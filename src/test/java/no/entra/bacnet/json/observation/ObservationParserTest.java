@@ -51,7 +51,7 @@ class ObservationParserTest {
         assertEquals("#0400", observation.getValue());
         observation = observations.getObservations().get(0);
         assertEquals("PresentValue", observation.getName());
-        assertEquals("0.0", observation.getValue());
+        assertEquals(0.0f, observation.getValue());
 
         //TimeRemaining
         int expectedTimeRemaingSeconds = 0;
@@ -161,6 +161,6 @@ class ObservationParserTest {
         assertNotNull(values);
         Value analogValue0 = values.get(0);
         assertEquals(PropertyIdentifier.PresentValue, analogValue0.getPropertyIdentifier());
-        assertEquals(20.6, analogValue0.getValue());
+        assertEquals(20.6f, analogValue0.getValue());
     }
 }
