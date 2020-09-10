@@ -28,7 +28,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ObservationParser {
     private static final Logger log = getLogger(ObservationParser.class);
 
-    public static ObservationList mapToChangeOfValueObservation(Service service, String changeOfValueHexString) {
+    /**
+     * Transform a BacNet message notification describing values updated. Each message may contain a single update,
+     * or multiple updates from multiple sensors.
+     * @param service detect if the notification is single, multiple, confirmed or unconfirmed.
+     * @param changeOfValueHexString BacNet hex string where the BVLC and NPDU part is previously parsed, and removed.
+     * @return list of individual observations seen in this COV Notification.
+     */
+    public static ObservationList parseChangeOfValueNotification(Service service, String changeOfValueHexString) {
 
         /*
         Confirmed COV                       060109121c020003e92c008000013a012b4e09552e44000000002f096f2e8204002f4f

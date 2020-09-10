@@ -6,7 +6,7 @@ import no.entra.bacnet.json.objects.PduType;
 import org.slf4j.Logger;
 
 import static no.entra.bacnet.json.configuration.ConfigurationParser.*;
-import static no.entra.bacnet.json.observation.ObservationParser.mapToChangeOfValueObservation;
+import static no.entra.bacnet.json.observation.ObservationParser.parseChangeOfValueNotification;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UnconfirmedService extends Service {
@@ -47,7 +47,7 @@ public class UnconfirmedService extends Service {
                     break;
                 case UnconfirmedCovNotification:
                     String changeOfValueHexString = service.getUnprocessedHexString();
-                    bacnetMessage = mapToChangeOfValueObservation(service, changeOfValueHexString);
+                    bacnetMessage = parseChangeOfValueNotification(service, changeOfValueHexString);
                     break;
                 default:
                     log.trace("I do not know how to parse this service: {}", service);

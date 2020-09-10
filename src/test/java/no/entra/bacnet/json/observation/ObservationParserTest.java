@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
-import static no.entra.bacnet.json.observation.ObservationParser.mapToChangeOfValueObservation;
+import static no.entra.bacnet.json.observation.ObservationParser.parseChangeOfValueNotification;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,7 +36,7 @@ class ObservationParserTest {
         String apduHexString = npduResult.getUnprocessedHexString();
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String covHexString = service.getUnprocessedHexString();
-        ObservationList observations = mapToChangeOfValueObservation(service, covHexString);
+        ObservationList observations = parseChangeOfValueNotification(service, covHexString);
         assertNotNull(observations);
         Source source = observations.getObservations().get(0).getSource();
         assertEquals("1001", source.getDeviceId());
@@ -69,7 +69,7 @@ class ObservationParserTest {
         String apduHexString = npduResult.getUnprocessedHexString();
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String covHexString = service.getUnprocessedHexString();
-        ObservationList observations = mapToChangeOfValueObservation(service, covHexString);
+        ObservationList observations = parseChangeOfValueNotification(service, covHexString);
         assertNotNull(observations);
         assertEquals(2, observations.getObservations().size());
     }
@@ -84,7 +84,7 @@ class ObservationParserTest {
         String apduHexString = npduResult.getUnprocessedHexString();
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String covHexString = service.getUnprocessedHexString();
-        ObservationList observations = mapToChangeOfValueObservation(service, covHexString);
+        ObservationList observations = parseChangeOfValueNotification(service, covHexString);
         assertNotNull(observations);
         Source source = observations.getObservations().get(0).getSource();
         assertEquals("1001", source.getDeviceId());
@@ -111,7 +111,7 @@ class ObservationParserTest {
     void validateConfirmedCovNotificationWithPresentValue() {
         String covHexString = "0f0109121c020200252c0000000039004e095519012e4441a4cccd2f4f";
         Service service = new Service(PduType.ConfirmedRequest, null);
-        ObservationList observations = mapToChangeOfValueObservation(service, covHexString);
+        ObservationList observations = parseChangeOfValueNotification(service, covHexString);
 //        ObservationList observations = parseConfirmedCOVNotification(covHexString);
         Observation observation = observations.getObservations().get(0);
         assertEquals("131109", observation.getSource().getDeviceId());
@@ -131,10 +131,9 @@ class ObservationParserTest {
         String apduHexString = npduResult.getUnprocessedHexString();
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String covHexString = service.getUnprocessedHexString();
-        ObservationList observations = mapToChangeOfValueObservation(service, covHexString);
+        ObservationList observations = parseChangeOfValueNotification(service, covHexString);
         assertNotNull(observations);
         assertEquals(2, observations.getObservations().size());
-        //#13 Fix test to fail, then succed
     }
 
     @Test
