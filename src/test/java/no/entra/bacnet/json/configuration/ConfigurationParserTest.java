@@ -37,12 +37,12 @@ class ConfigurationParserTest {
 
     @Test
     void parseWhoIsRequest() {
-        String hexString = "810b00160120ffff00ff10080c000000001c0000000039004e09552e443f8000002f096f2e8204002f4f";
+        String hexString = "810b00160120ffff00ff10080c000000001c00000000";
         String apduHexString = findApduPart(hexString);
-        assertEquals("10080c000000001c0000000039004e09552e443f8000002f096f2e8204002f4f", apduHexString);
+        assertEquals("10080c000000001c00000000", apduHexString);
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String whoIsBody = service.getUnprocessedHexString();
-        assertEquals("0c000000001c0000000039004e09552e443f8000002f096f2e8204002f4f", whoIsBody);
+        assertEquals("0c000000001c00000000", whoIsBody);
         ConfigurationRequest configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
         assertNotNull(configuration);
         assertEquals("0",configuration.getProperty("DeviceInstanceRangeLowLimit"));
