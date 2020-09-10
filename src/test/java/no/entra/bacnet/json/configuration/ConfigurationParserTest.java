@@ -1,8 +1,14 @@
 package no.entra.bacnet.json.configuration;
 
 import no.entra.bacnet.json.ConfigurationRequest;
+import no.entra.bacnet.json.bvlc.BvlcParser;
+import no.entra.bacnet.json.bvlc.BvlcResult;
+import no.entra.bacnet.json.npdu.NpduParser;
+import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.ObjectType;
 import no.entra.bacnet.json.objects.Segmentation;
+import no.entra.bacnet.json.services.Service;
+import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +33,20 @@ class ConfigurationParserTest {
         assertEquals("16",configuration.getProperty("DeviceInstanceRangeLowLimit"));
         assertEquals("16",configuration.getProperty("DeviceInstanceRangeHighLimit"));
 
+    }
+
+    @Test
+    void parseWhoIsRequest() {
+        String hexString = "810b00160120ffff00ff10080c000000001c0000000039004e09552e443f8000002f096f2e8204002f4f";
+        String apduHexString = findApduPart(hexString);
+        assertEquals("10080c000000001c0000000039004e09552e443f8000002f096f2e8204002f4f", apduHexString);
+        Service service = ServiceParser.fromApduHexString(apduHexString);
+        String whoIsBody = service.getUnprocessedHexString();
+        assertEquals("0c000000001c0000000039004e09552e443f8000002f096f2e8204002f4f", whoIsBody);
+        ConfigurationRequest configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        assertNotNull(configuration);
+        assertEquals("0",configuration.getProperty("DeviceInstanceRangeLowLimit"));
+        assertEquals("0",configuration.getProperty("DeviceInstanceRangeHighLimit"));
     }
 
     @Test
@@ -96,6 +116,15 @@ class ConfigurationParserTest {
         assertEquals("0", configuration.getProperty(ObjectType.NotificationClass.name()));
         assertEquals("", configuration.getProperty("ObjectName"));
         assertEquals("IHave", configuration.getProperty("Request"));
+    }
+
+    String findApduPart(String bacnetHexString) {
+        BvlcResult bvlcResult = BvlcParser.parse(bacnetHexString);
+        assertNotNull(bvlcResult);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        assertNotNull(npduResult);
+        String apduHexString = npduResult.getUnprocessedHexString();
+        return apduHexString;
     }
 
 

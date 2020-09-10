@@ -80,8 +80,11 @@ public class ConfigurationParser {
             case 'b':
                 length = 3;
                 break;
+            case 'c':
+                length = 4;
+                break;
             default:
-                log.debug("Unknown lenght of who is seccond nibble: {}", lengthKey);
+                log.debug("Unknown length of who is second nibble: {}", lengthKey);
                 break;
         }
         return length;
