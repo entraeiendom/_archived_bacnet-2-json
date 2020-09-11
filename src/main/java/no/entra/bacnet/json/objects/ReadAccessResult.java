@@ -2,6 +2,8 @@ package no.entra.bacnet.json.objects;
 
 import no.entra.bacnet.Octet;
 import no.entra.bacnet.json.EntraUnknownOperationException;
+import no.entra.bacnet.json.apdu.PDTag;
+import no.entra.bacnet.json.apdu.SDContextTag;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.utils.HexUtils;
 import org.slf4j.Logger;
@@ -16,11 +18,8 @@ public class ReadAccessResult {
     public static final String OBJECT_IDENTIFIER = "0c";
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
-    public static final String SD_CONTEXT_TAG_2 = "29";
     public static final char ExtendedValue = '5';
     public static final String PRESENT_VALUE_HEX = ExtendedValue + "5";
-    public static final String PD_OPENING_TAG_4 = "4e";
-    public static final String PD_CLOSING_TAG_4 = "4f";
     private ObjectId objectId;
     private HashMap<String, Object> results = new HashMap<>();
 
@@ -86,7 +85,7 @@ public class ReadAccessResult {
                 //Expect Object Identifier
                 Octet oidType = listReader.next();
                 log.debug("oid: {}", oidType);
-                if (oidType.equals(new Octet(PD_OPENING_TAG_4))) {
+                if (oidType.equals(PDTag.PDOpen4)) {
                     oidType = listReader.next();
                 }
                 if (oidType.equals(new Octet(OBJECT_IDENTIFIER))) {
@@ -133,15 +132,15 @@ public class ReadAccessResult {
         } else {
             log.debug("Context Tag: {}", contextTag);
             PropertyIdentifier presentValuePid = null;
-            if (contextTag.equals(Octet.fromHexString(SD_CONTEXT_TAG_2))) {
+            if (contextTag.equals(SDContextTag.TAG2LENGTH1)) {
                 Octet propertyIdentifierOctet = propertyReader.next();
                 presentValuePid = PropertyIdentifier.fromOctet(propertyIdentifierOctet);
             }
 
-            //Expect start of list eg 4e
+            //Expect start of list eg 4e PDTag.PDOpen4
             Octet startOfList = propertyReader.next();
             log.debug(propertyReader.unprocessedHexString());
-            if (startOfList.equals(Octet.fromHexString(PD_OPENING_TAG_4))) {
+            if (startOfList.equals(PDTag.PDOpen4)) {
                 Property property = null;
                 if (presentValuePid == PropertyIdentifier.PresentValue) {
                     Octet applicationTag = propertyReader.next();
