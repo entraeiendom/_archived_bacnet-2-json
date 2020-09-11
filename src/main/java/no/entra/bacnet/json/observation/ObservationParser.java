@@ -6,7 +6,10 @@ import no.entra.bacnet.json.ObservationList;
 import no.entra.bacnet.json.Source;
 import no.entra.bacnet.json.apdu.PDTag;
 import no.entra.bacnet.json.apdu.SDContextTag;
-import no.entra.bacnet.json.objects.*;
+import no.entra.bacnet.json.objects.ObjectId;
+import no.entra.bacnet.json.objects.ObjectIdMapper;
+import no.entra.bacnet.json.objects.PduType;
+import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.values.Value;
@@ -143,107 +146,7 @@ public class ObservationParser {
     }
 
 
-    public static ObservationList parseConfirmedCOVNotification(String changeOfValueHexString) {
 
-        /*
-        1. Subscriber Process Identifier (SD Context Tag 0, Length 1)
-        2. Initating Device Identifier (SD Context Tag 1, Length 4)
-        3. Monitored Object Idenfiter (SD Context Tag 2, Length 4)
-        4. Time remaining (SD Context Tag 3, Length 1)
-        5. List of values
-        Example hex: 0f0109121c020200252c0000000039004e095519012e4441a4cccd2f4f
-         */
-
-        List<Observation> observations = new ArrayList<>();
-        Map<String, Object> properties = new HashMap<>();
-
-        OctetReader covReader = new OctetReader(changeOfValueHexString);
-        Octet invokeIdOctet = covReader.next(); //0f == 15
-        Octet serviceChoice = covReader.next(); //05 == 05
-        //ProcessIdentifier
-        Integer subscriberProcessId = null;
-        Octet subscriberProcessLength = covReader.next(); //09 == length 1
-        if (subscriberProcessLength.toString().equals("09")) {
-            Octet subscriberProcessIdOctet = covReader.next();
-            subscriberProcessId = toInt(subscriberProcessIdOctet.toString());
-        } else {
-            //TODO find processId longer than one bit.
-            throw new IllegalArgumentException("SubscriberProcessId not implemented for integer > 15");
-        }
-        //DeviceIdentifier 1c02020025
-        Octet deviceIdLengthKey = covReader.next(); //1c
-        ObjectId deviceId = null;
-        if (deviceIdLengthKey.toString().equals("1c")) {
-            String objectIdHex = "1c" + covReader.next(4);
-            ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(objectIdHex);
-            deviceId = result.getParsedObject();
-        } else {
-            //TODO find DeviceIdentifier
-            throw  new IllegalArgumentException("ObjectIdentifier different key than 1c is not implemented yet.");
-        }
-        //ObjectIdentifier 1c00000000
-        Octet objectIdLengthKey = covReader.next(); //2c
-        ObjectId objectIdentifier = null;
-        if (objectIdLengthKey.toString().equals("2c")) {
-            //length is 4
-            String objectIdHex = "2c" + covReader.next(4);
-            ObjectIdMapperResult<ObjectId> result = ObjectIdMapper.parse(objectIdHex);
-            objectIdentifier = result.getParsedObject();
-        } else {
-            //TODO find ObjcetIdentifier
-            throw  new IllegalArgumentException("ObjectIdentifier different key than 2c is not implemented yet.");
-        }
-
-        //Time remaining
-        SDContextTag contextTag3 = new SDContextTag(covReader.next());
-        int numTimeRemainingOctets = contextTag3.findLength();
-        Octet[] timeRemainingOctets = covReader.nextOctets(numTimeRemainingOctets);
-        int timeRemainingSec = toInt(timeRemainingOctets);
-
-        //List of values
-        //4e095519012e4441a4cccd2f4f
-
-        String objectId = objectIdentifier.getObjectType() + "_" + objectIdentifier.getInstanceNumber();
-        Source source = new Source(deviceId.getInstanceNumber(), objectId);
-
-        String resultListHexString = covReader.unprocessedHexString();
-//        resultListHexString = filterResultList(resultListHexString);
-        List<Value> bacnetValues = parseListOfValues(resultListHexString);
-        for (Value bacnetValue : bacnetValues) {
-            String observationId = null; //TODO how to create unique id for the observation. Is that needed?
-            Object value = bacnetValue.getValue();
-            String name = bacnetValue.getPropertyIdentifier().name();
-            Observation observation = new Observation(observationId, source, value, name);
-            observations.add(observation);
-        }
-        /*
-        properties = findProperties(covReader, resultListHexString);
-
-        if (properties != null && properties.size() > 0) {
-            for (String key : properties.keySet()) {
-                Object value = properties.get(key);
-                String observationId = null;
-                Source source = null;
-                String sourceInstanceNumber = null;
-                if (deviceId != null) {
-                    sourceInstanceNumber = deviceId.getInstanceNumber();
-                } else {
-                    sourceInstanceNumber = "TODO";
-                }
-                String objectId = objectIdentifier.getObjectType() + "_" + objectIdentifier.getInstanceNumber();
-                source = new Source(deviceId.getInstanceNumber(), objectId);
-                Observation observation = new Observation(observationId, source, value, key);
-                observation.setName(key);
-                observations.add(observation);
-            }
-        }
-        */
-
-
-        ObservationList observationList = new ObservationList(observations);
-        observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
-        return observationList;
-    }
     protected static List<Value> parseListOfValues(String resultListHexString) {
         ArrayList<Value> values = new ArrayList<>();
         OctetReader listReader = new OctetReader(resultListHexString);
