@@ -78,7 +78,8 @@ public class Bacnet2Json {
 
         switch (pduType) {
             case ComplexAck:
-                Observation observation = BacNetParser.buildObservation(service.getUnprocessedHexString());
+                String unprocessedHexString = service.getUnprocessedHexString();
+                Observation observation = BacNetParser.buildObservation(unprocessedHexString);
                 observationJson = buildObservationJson(bvlc, npdu, observation);
                 bacnetJson.put(OBSERVATION, observationJson);
                 break;

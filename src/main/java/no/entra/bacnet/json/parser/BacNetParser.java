@@ -46,23 +46,6 @@ import static org.slf4j.LoggerFactory.getLogger;
         return apduHexString;
     }
 
-    public String jsonFromApdu(String apduHexString) {
-        //FIXME need implementation.
-        String json = null;
-        ReadAccessResult accessResult = buildReadAccessResult(apduHexString);
-        Observation observation = null;
-        Source source = null;
-
-
-        return json;
-    }
-
-    //TODO move to separate class
-    private ReadAccessResult buildReadAccessResult(String apduHexString) {
-        return null;
-    }
-
-
     public static Observation buildObservation(String hexString) {
         OctetReader apduReader = new OctetReader(hexString);
         Octet pduTypeKey = apduReader.next();
@@ -98,7 +81,7 @@ import static org.slf4j.LoggerFactory.getLogger;
         int listStartPos = hexString.indexOf(OBJECT_IDENTIFIER);
         int listEndPos = hexString.indexOf(LIST_END_HEX);
         String listResulHexString = null;
-        if (listStartPos > 0 && listEndPos > 0) {
+        if (listStartPos >= 0 && listEndPos > 0) {
             listResulHexString = hexString.substring(listStartPos, listEndPos + LIST_END_HEX.length());
         }
         return listResulHexString;
