@@ -35,7 +35,7 @@ public class UnconfirmedService extends Service {
                     break;
                 case TimeSynchronization:
                     String timeSyncHexString = service.getUnprocessedHexString();
-                    bacnetMessage = buildTimeSynchronizationRequest(timeSyncHexString);
+                    bacnetMessage = parseTimeSynchronizationRequest(timeSyncHexString);
                     break;
                 case IAm:
                     String iamHexString = service.getUnprocessedHexString();
@@ -43,7 +43,7 @@ public class UnconfirmedService extends Service {
                     break;
                 case IHave:
                     String ihaveHexString = service.getUnprocessedHexString();
-                    bacnetMessage = buildIHaveRequest(ihaveHexString);
+                    bacnetMessage = parseIHaveRequest(ihaveHexString);
                     break;
                 case UnconfirmedCovNotification:
                     String changeOfValueHexString = service.getUnprocessedHexString();

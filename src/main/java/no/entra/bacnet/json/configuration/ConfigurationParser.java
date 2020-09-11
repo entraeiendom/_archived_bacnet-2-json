@@ -181,7 +181,7 @@ public class ConfigurationParser {
         return configuration;
     }
 
-    public static ConfigurationRequest buildTimeSynchronizationRequest(String timeSyncHexString) {
+    public static ConfigurationRequest parseTimeSynchronizationRequest(String timeSyncHexString) {
         ConfigurationRequest configuration = null;
         LocalDate date = null;
         LocalTime time = null;
@@ -248,7 +248,7 @@ public class ConfigurationParser {
         return length;
     }
 
-    public static ConfigurationRequest buildIHaveRequest(String iHaveHexString) {
+    public static ConfigurationRequest parseIHaveRequest(String iHaveHexString) {
         ConfigurationRequest configuration = new ConfigurationRequest("TODO", null);
         configuration.setProperty("Request", "IHave");
         //1. NotificationClass

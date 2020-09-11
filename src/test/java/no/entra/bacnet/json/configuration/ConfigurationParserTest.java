@@ -75,7 +75,7 @@ class ConfigurationParserTest {
     @Test
     void buildTimeSynchronizationRequestTest() {
         String timeSyncBody = "a4770b1b03b40c0b3939";
-        ConfigurationRequest configuration = ConfigurationParser.buildTimeSynchronizationRequest(timeSyncBody);
+        ConfigurationRequest configuration = ConfigurationParser.parseTimeSynchronizationRequest(timeSyncBody);
         assertNotNull(configuration);
         assertEquals("2019-11-27",configuration.getProperty("TimeSyncDate"));
         assertEquals("12:11:57",configuration.getProperty("TimeSyncTime"));
@@ -109,7 +109,7 @@ class ConfigurationParserTest {
     @Test
     void iHaveTest() {
         String iHaveApdu = "c40200000bc403c000007100";
-        ConfigurationRequest configuration = ConfigurationParser.buildIHaveRequest(iHaveApdu);
+        ConfigurationRequest configuration = ConfigurationParser.parseIHaveRequest(iHaveApdu);
         assertNotNull(configuration);
         String deviceId = configuration.getProperty(ObjectType.Device.name());
         assertEquals("11", deviceId);
