@@ -32,7 +32,7 @@ public class ConfigurationParser {
     /*
     // Who Is
      */
-    public static ConfigurationRequest buildWhoIsRequest(String whoIsBody) {
+    public static ConfigurationRequest parseWhoIsRequest(String whoIsBody) {
         ConfigurationRequest configuration = null;
         Integer rangeLowLimit = null;
         Integer rangeHighLimit = null;

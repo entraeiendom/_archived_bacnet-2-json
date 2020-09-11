@@ -18,17 +18,17 @@ class ConfigurationParserTest {
     @Test
     void buildWhoIsRequest() {
         String whoIsBody = "0a07ae1a07ae";
-        ConfigurationRequest configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        ConfigurationRequest configuration = ConfigurationParser.parseWhoIsRequest(whoIsBody);
         assertNotNull(configuration);
         assertEquals("1966",configuration.getProperty("DeviceInstanceRangeLowLimit"));
         assertEquals("1966",configuration.getProperty("DeviceInstanceRangeHighLimit"));
         whoIsBody = "0b26259f1b26259f310036002d004e004100450032002f004600430042002e004c006f00630061006c0020004";
-        configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        configuration = ConfigurationParser.parseWhoIsRequest(whoIsBody);
         assertNotNull(configuration);
         assertEquals("2499999",configuration.getProperty("DeviceInstanceRangeLowLimit"));
         assertEquals("2499999",configuration.getProperty("DeviceInstanceRangeHighLimit"));
         whoIsBody = "09101910";
-        configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        configuration = ConfigurationParser.parseWhoIsRequest(whoIsBody);
         assertNotNull(configuration);
         assertEquals("16",configuration.getProperty("DeviceInstanceRangeLowLimit"));
         assertEquals("16",configuration.getProperty("DeviceInstanceRangeHighLimit"));
@@ -43,7 +43,7 @@ class ConfigurationParserTest {
         Service service = ServiceParser.fromApduHexString(apduHexString);
         String whoIsBody = service.getUnprocessedHexString();
         assertEquals("0c000000001c00000000", whoIsBody);
-        ConfigurationRequest configuration = ConfigurationParser.buildWhoIsRequest(whoIsBody);
+        ConfigurationRequest configuration = ConfigurationParser.parseWhoIsRequest(whoIsBody);
         assertNotNull(configuration);
         assertEquals("0",configuration.getProperty("DeviceInstanceRangeLowLimit"));
         assertEquals("0",configuration.getProperty("DeviceInstanceRangeHighLimit"));

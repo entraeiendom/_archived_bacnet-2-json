@@ -27,7 +27,7 @@ public class UnconfirmedService extends Service {
                 case WhoIs:
                     log.trace("Is WhoIsMessage. hexString: {}", service.getUnprocessedHexString());
                     String whoIsBody = service.getUnprocessedHexString();
-                    bacnetMessage = buildWhoIsRequest(whoIsBody);
+                    bacnetMessage = parseWhoIsRequest(whoIsBody);
                     break;
                 case WhoHas:
                     log.trace("Is WhoHasMessage");
