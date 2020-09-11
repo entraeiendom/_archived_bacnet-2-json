@@ -31,7 +31,7 @@ public class UnconfirmedService extends Service {
                     break;
                 case WhoHas:
                     log.trace("Is WhoHasMessage");
-                    bacnetMessage = buildWhoHasRequest(service.getUnprocessedHexString());
+                    bacnetMessage = parseWhoHasRequest(service.getUnprocessedHexString());
                     break;
                 case TimeSynchronization:
                     String timeSyncHexString = service.getUnprocessedHexString();

@@ -151,7 +151,7 @@ public class ConfigurationParser {
         return configuration;
     }
 
-    public static ConfigurationRequest buildWhoHasRequest(String whoHasBody) {
+    public static ConfigurationRequest parseWhoHasRequest(String whoHasBody) {
         ConfigurationRequest configuration = null;
         String objectName = null;
         OctetReader whoHasReader = new OctetReader(whoHasBody);
