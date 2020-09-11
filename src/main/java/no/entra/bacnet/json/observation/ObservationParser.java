@@ -9,7 +9,6 @@ import no.entra.bacnet.json.apdu.SDContextTag;
 import no.entra.bacnet.json.objects.ObjectId;
 import no.entra.bacnet.json.objects.ObjectIdMapper;
 import no.entra.bacnet.json.objects.PduType;
-import no.entra.bacnet.json.objects.PropertyIdentifier;
 import no.entra.bacnet.json.reader.OctetReader;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.values.Value;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static no.entra.bacnet.json.utils.HexUtils.toFloat;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -112,52 +110,6 @@ public class ObservationParser {
             }
         }
         return values;
-    }
-
-    protected static Map<String, Object> findProperties(OctetReader covReader, String resultListHexString) {
-        Map<String, Object> properties = new HashMap<>();
-        try {
-            Octet startList = covReader.next();
-            while (resultListHexString != null && resultListHexString.length() >= 2) {
-                Octet contextTagKey = covReader.next();
-                PropertyIdentifier propertyId = null;
-                if (contextTagKey != null && contextTagKey.equals(new Octet("09"))) {
-                    Octet contextTagValue = covReader.next();
-                    //PresentValue
-                    propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
-                }
-                //Property Array Index
-                //1901, 19 = array, 01 = length
-
-                if (propertyId != null) {
-                    Octet valueTypeOctet = covReader.next(); //19
-                    int arraySize = -1;
-                    if (valueTypeOctet.equals(new Octet("19"))) {
-                        Octet sizeOctet = covReader.next();
-                        arraySize = toInt(sizeOctet);
-                    }
-                    if (arraySize > -1) {
-                        //exptect array
-                        //array start = 2e, end i 2f
-                        String arrayContent = findArrayContent(covReader);
-                        OctetReader arrayReader = new OctetReader(arrayContent);
-                        Octet propertyIdKey = arrayReader.next();
-                        if (propertyIdKey.toString().equals("44")) {
-                            char lengthChar = propertyIdKey.getSecondNibble();
-                            int length = toInt(lengthChar);
-                            String realValueString = arrayReader.next(length);
-                            Float realValue = toFloat(realValueString);
-                            properties.put(propertyId.name(), realValue);
-                        }
-                    }
-
-                }
-                resultListHexString = covReader.unprocessedHexString();
-            }
-        } catch (Exception e) {
-            log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
-        }
-        return properties;
     }
 
     static String findArrayContent(OctetReader fullReader) {
