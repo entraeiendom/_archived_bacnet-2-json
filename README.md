@@ -44,7 +44,6 @@ ConfigurationRequest
   "service": "IHave"
 }
 ```
-{"configurationRequest":{"observedAt":"2020-01-13T14:15:54.643725","id":"TODO","source":"0961","properties":{"Request":"IHave","NotificationClass":"0","Device":"12","ObjectName":"6-NAE2/FCB.Local Application.UR nattsenk gulvvarm"}},"sender":{"gateway":{"gatewayDeviceId":12,"gatewayInstanceNumber":2401}},"service":"IHave"}
 ## How To
 
 String bacnetMessage -> You need to find the HexString from an Datagram Packet. [Bacnet2JsonExample](src/test/java/no/entra/bacnet/Bacnet2JsonExample.java)
