@@ -39,7 +39,7 @@ public class UnconfirmedService extends Service {
                     break;
                 case IAm:
                     String iamHexString = service.getUnprocessedHexString();
-                    bacnetMessage = buildIamRequest(iamHexString);
+                    bacnetMessage = parseIamRequest(iamHexString);
                     break;
                 case IHave:
                     String ihaveHexString = service.getUnprocessedHexString();

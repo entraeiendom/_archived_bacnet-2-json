@@ -93,7 +93,7 @@ public class ConfigurationParser {
     /*
     // I AM
      */
-    public static ConfigurationRequest buildIamRequest(String iamBody) {
+    public static ConfigurationRequest parseIamRequest(String iamBody) {
 //        String iamBody = "c40200020f22040091002105";
 //        String objectIdentifier = "c40200020f"; //c = BacnetObjectIdentifier, 4 = length, ObjectType device
 //        String maxADPULengthAccepted = "220400"; //2= unsigned integer, 2 = length 1024

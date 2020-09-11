@@ -96,7 +96,7 @@ class ConfigurationParserTest {
         String segmentationSupported = "9100"; //9 Enumerated, 1 = length
         String vendorId = "2105"; //2 = unsigned integer, 1 = length, 5 = Johnson Controls
 
-        ConfigurationRequest configuration = ConfigurationParser.buildIamRequest(iamBody);
+        ConfigurationRequest configuration = ConfigurationParser.parseIamRequest(iamBody);
         assertNotNull(configuration);
         assertEquals("Device", configuration.getProperty("ObjectType"));
         assertEquals("527", configuration.getProperty("InstanceNumber"));
