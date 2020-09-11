@@ -47,9 +47,23 @@ ConfigurationRequest
 {"configurationRequest":{"observedAt":"2020-01-13T14:15:54.643725","id":"TODO","source":"0961","properties":{"Request":"IHave","NotificationClass":"0","Device":"12","ObjectName":"6-NAE2/FCB.Local Application.UR nattsenk gulvvarm"}},"sender":{"gateway":{"gatewayDeviceId":12,"gatewayInstanceNumber":2401}},"service":"IHave"}
 ## How To
 
-String bacnetMessage -> You need to find the HexString from an Datagram Packet. [Baelung's UDP example](https://www.baeldung.com/udp-in-java)
+String bacnetMessage -> You need to find the HexString from an Datagram Packet. [Bacnet2JsonExample](src/test/java/no/entra/bacnet/Bacnet2JsonExample.java)
 
 ```
-import no.entra.bacnet.json.Bacnet2Json
-String json = Bacnet2Json.hexStringToJson(backentMessage);
+//Read hexString from UDP
+String hexString = "810b00160120ffff00ff10080c000000001c"; //WhoIs message
+String json = no.entra.bacnet.json.Bacnet2Json.hexStringToJson(backnetMessage);
+// Result is
+{
+	"configurationRequest": {
+		"observedAt": "2020-09-11T16:37:49.287224",
+		"id": "TODO",
+		"properties": {
+			"DeviceInstanceRangeHighLimit": "0",
+			"DeviceInstanceRangeLowLimit": "0"
+		}
+	},
+	"sender": "unknown",
+	"service": "WhoIs"
+}
 ```

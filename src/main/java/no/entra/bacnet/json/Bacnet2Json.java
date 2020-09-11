@@ -40,6 +40,11 @@ public class Bacnet2Json {
     public static final String GATEWAY_DEVICE_ID = "deviceId";
     public static final String GATEWAY_INSTANCE_NUMBER = "instanceNumber";
 
+    /**
+     * Parse BackNet message to a more conventional IoT Json format.
+     * @param hexString starting with 81...
+     * @return parsed hexString to valid Json
+     */
     public static String hexStringToJson(String hexString) {
         String bacnetMessage = null;
         JSONObject bacnetJson = new JSONObject();
