@@ -125,7 +125,6 @@ public class Observation implements BacnetMessage {
                 '}';
     }
 
-    //FIXME
     public String toJson() {
         JSONObject json = new JSONObject();
         json.put(ID, id);

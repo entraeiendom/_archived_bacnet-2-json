@@ -117,7 +117,8 @@ public class ConfirmedSegmentedRequestTest {
         assertNotNull(npdu);
         assertFalse(npdu.isDestinationAvailable());
         assertTrue(npdu.isExpectingResponse());
-        Service service = ServiceParser.fromApduHexString(npduResult.getUnprocessedHexString());
+        String apduHexString = npduResult.getUnprocessedHexString();
+        Service service = ServiceParser.fromApduHexString(apduHexString);
         assertNotNull(service);
         assertFalse(service.isWillAcceptSegmentedResponse());
         assertTrue(service.isSegmented());

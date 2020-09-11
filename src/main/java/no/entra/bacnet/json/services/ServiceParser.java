@@ -40,6 +40,10 @@ public class ServiceParser {
                 serviceBuilder = serviceBuilder.withWillAcceptSegmentedResponse(true)
                         .withMaxAPDUSize(numberOfOctets)
                         .withInvokId(invokeId);
+                if (hasServiceChoice(pduType)) {
+                    serviceChoiceOctet = serviceReader.next();
+                    serviceBuilder.withServiceChoice(serviceChoiceOctet);
+                }
             } else if (isSegmented(pduFlags) || pduType == PduType.SegmentACK) {
                 Octet invokeIdOctet = serviceReader.next();
                 int invokeId = toInt(invokeIdOctet);
@@ -50,8 +54,16 @@ public class ServiceParser {
                 Octet proposedWindowSizeOctet = serviceReader.next();
                 int proposedWindowSize = toInt(proposedWindowSizeOctet);
                 serviceBuilder = serviceBuilder.withProposedWindowSize(proposedWindowSize);
-            }
-            if (hasServiceChoice(pduType)) {
+                if (hasServiceChoice(pduType)) {
+                    serviceChoiceOctet = serviceReader.next();
+                    serviceBuilder.withServiceChoice(serviceChoiceOctet);
+                }
+            } else if (hasServiceChoice(pduType)) {
+                if (pduType.equals(PduType.ComplexAck)) {
+                    Octet invokeIdOctet = serviceReader.next();
+                    int invokeId = toInt(invokeIdOctet);
+                    serviceBuilder.withInvokId(invokeId);
+                }
                 serviceChoiceOctet = serviceReader.next();
                 serviceBuilder.withServiceChoice(serviceChoiceOctet);
             }
