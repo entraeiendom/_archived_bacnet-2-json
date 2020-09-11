@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static no.entra.bacnet.json.objects.ReadAccessResult.PD_CLOSING_TAG_4;
-import static no.entra.bacnet.json.objects.ReadAccessResult.PD_OPENING_TAG_4;
 import static no.entra.bacnet.json.utils.HexUtils.toFloat;
 import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -34,7 +32,8 @@ public class ObservationParser {
     /**
      * Transform a BacNet message notification describing values updated. Each message may contain a single update,
      * or multiple updates from multiple sensors.
-     * @param service detect if the notification is single, multiple, confirmed or unconfirmed.
+     *
+     * @param service                detect if the notification is single, multiple, confirmed or unconfirmed.
      * @param changeOfValueHexString BacNet hex string where the BVLC and NPDU part is previously parsed, and removed.
      * @return list of individual observations seen in this COV Notification.
      */
@@ -57,8 +56,10 @@ public class ObservationParser {
             Octet invokeId = covReader.next(); //06
             Octet serviceChoice = covReader.next();//01
         }
+        //Need to take these from the reader.
         Octet contextTag0 = covReader.next(); //09
         Octet subscriberProcess = covReader.next(); //12
+        //Parse the actual message.
         SDContextTag contextTag1 = new SDContextTag(covReader.next()); //1c
         Octet[] initiatingDeviceIdValue = covReader.nextOctets(contextTag1.findLength()); //020003e9
         ObjectId deviceId = ObjectIdMapper.decode4Octets(initiatingDeviceIdValue);
@@ -70,16 +71,10 @@ public class ObservationParser {
         Octet[] timeRemainingOctets = covReader.nextOctets(numTimeRemainingOctets);
         int timeRemainingSec = toInt(timeRemainingOctets);
 
-//        String resultListHexString = covReader.unprocessedHexString();
-//        resultListHexString = filterResultList(resultListHexString);
-//        log.info("*** {}", resultListHexString);
-//        properties = findProperties(covReader, resultListHexString);
-
         String objectId = monitoredObjectId.getObjectType() + "_" + monitoredObjectId.getInstanceNumber();
         Source source = new Source(deviceId.getInstanceNumber(), objectId);
 
         String resultListHexString = covReader.unprocessedHexString();
-//        resultListHexString = filterResultList(resultListHexString);
         List<Value> bacnetValues = parseListOfValues(resultListHexString);
         for (Value bacnetValue : bacnetValues) {
             String observationId = null; //TODO how to create unique id for the observation. Is that needed?
@@ -88,63 +83,11 @@ public class ObservationParser {
             Observation observation = new Observation(observationId, source, value, name);
             observations.add(observation);
         }
-        /*
-        try {
-            Octet startList = covReader.next();
-            while (resultListHexString != null && resultListHexString.length() >= 2) {
-                Octet contextTagKey = covReader.next();
-                PropertyIdentifier propertyId = null;
-                if (contextTagKey != null && contextTagKey.equals(new Octet("09"))) {
-                    Octet contextTagValue = covReader.next();
-                    propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
-                }
-                if (propertyId != null) {
-                    Octet valueTagKey = covReader.next();
-                    Octet propertyIdKey = covReader.next();
-                    char lengthChar = propertyIdKey.getSecondNibble();
-                    int length = toInt(lengthChar);
-                    String value = covReader.next(length);
-                    Octet valueTagEndKey = covReader.next();
-                    properties.put(propertyId.name(), value);
-                }
-                resultListHexString = covReader.unprocessedHexString();
-                log.trace("unprocessed: {}", resultListHexString);
-            }
-
-        } catch (Exception e) {
-            log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
-        }
-
-         */
-
-        /*
-        if (properties != null && properties.size() > 0) {
-            for (String key : properties.keySet()) {
-                Object value = properties.get(key);
-                String observationId = null;
-                String deviceIdInstance = null;
-                if (deviceId != null) {
-                    deviceIdInstance = deviceId.getInstanceNumber();
-                }
-                String sensorId = null;
-                if (monitoredObjectId != null) {
-                    sensorId = monitoredObjectId.toString();
-                }
-                Source source = new Source(deviceIdInstance, sensorId);
-                Observation observation = new Observation(observationId, source, value, key);
-                observation.setName(key);
-                observations.add(observation);
-            }
-        }
-
-         */
-
 
         ObservationList observationList = new ObservationList(observations);
         observationList.setSubscriptionRemainingSeconds(timeRemainingSec);
         return observationList;
     }
-
 
 
     protected static List<Value> parseListOfValues(String resultListHexString) {
@@ -169,54 +112,8 @@ public class ObservationParser {
             }
         }
         return values;
-            /*
-
-            while (resultListHexString != null && resultListHexString.length() >= 2) {
-                Octet contextTagKey = covReader.next();
-                PropertyIdentifier propertyId = null;
-                if (contextTagKey != null && contextTagKey.equals(new Octet("09"))) {
-                    Octet contextTagValue = covReader.next();
-                    //PresentValue
-                    propertyId = PropertyIdentifier.fromPropertyIdentifierHex(contextTagValue.toString());
-                }
-                //Property Array Index
-                //1901, 19 = array, 01 = length
-
-                if (propertyId != null) {
-                    Octet valueTypeOctet = covReader.next(); //19
-                    int arraySize = -1;
-                    if (valueTypeOctet.equals(new Octet("19"))) {
-                        Octet sizeOctet = covReader.next();
-                        arraySize = toInt(sizeOctet);
-                    }
-                    if (arraySize > -1) {
-                        //exptect array
-                        //array start = 2e, end i 2f
-                        String arrayContent = findArrayContent(covReader);
-                        OctetReader arrayReader = new OctetReader(arrayContent);
-                        Octet propertyIdKey = arrayReader.next();
-                        if (propertyIdKey.toString().equals("44")) {
-                            char lengthChar = propertyIdKey.getSecondNibble();
-                            int length = toInt(lengthChar);
-                            String realValueString = arrayReader.next(length);
-                            Float realValue = toFloat(realValueString);
-                            properties.put(propertyId.name(), realValue);
-                        }
-                    }
-
-                }
-                resultListHexString = covReader.unprocessedHexString();
-//                log.trace("unprocessed: {}", resultListHexString);
-            }
-
-        } catch (Exception e) {
-            log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
-        }
-
-        return properties;
-
-             */
     }
+
     protected static Map<String, Object> findProperties(OctetReader covReader, String resultListHexString) {
         Map<String, Object> properties = new HashMap<>();
         try {
@@ -256,24 +153,11 @@ public class ObservationParser {
 
                 }
                 resultListHexString = covReader.unprocessedHexString();
-//                log.trace("unprocessed: {}", resultListHexString);
             }
-
         } catch (Exception e) {
             log.debug("Failed to build ReadAccessResult from {}. Reason: {}", resultListHexString, e.getMessage());
         }
-
         return properties;
-    }
-
-    static String filterResultList(String hexString) {
-        int listStartPos = hexString.indexOf(PD_OPENING_TAG_4);
-        int listEndPos = hexString.indexOf(PD_CLOSING_TAG_4);
-        String listResulHexString = null;
-        if (listStartPos >= 0 && listEndPos > 0) {
-            listResulHexString = hexString.substring(listStartPos, listEndPos + PD_CLOSING_TAG_4.length());
-        }
-        return listResulHexString;
     }
 
     static String findArrayContent(OctetReader fullReader) {
@@ -281,10 +165,10 @@ public class ObservationParser {
         Octet foundOctet = null;
         do {
             foundOctet = fullReader.next();
-            if (foundOctet.equals(new Octet("2f"))) {
+            if (foundOctet.equals(PDTag.PDClose2)) {
                 break;
             }
-            if (!foundOctet.equals(new Octet("2e"))) {
+            if (!foundOctet.equals(PDTag.PDOpen2)) {
                 arrayContent += foundOctet.toString();
             }
 

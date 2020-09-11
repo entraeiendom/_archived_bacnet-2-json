@@ -46,6 +46,10 @@ class OctetTest {
     void equalsTest() {
         Octet first = Octet.fromHexString("0a");
         Octet second = Octet.fromHexString("0a");
+        Octet third = Octet.fromHexString("3a");
         assertEquals(first, second);
+        assertTrue(first.equals(second));
+        assertFalse(third.equals(first));
+        assertFalse(first == second);
     }
 }

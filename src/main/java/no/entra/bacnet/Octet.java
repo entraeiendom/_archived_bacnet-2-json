@@ -70,20 +70,6 @@ public class Octet {
         return String.valueOf(octet);
     }
 
-    /*
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj instanceof Octet) {
-            return Arrays.equals(((Octet) obj).octet, this.octet);
-        }
-        return false;
-    }
-
-     */
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
