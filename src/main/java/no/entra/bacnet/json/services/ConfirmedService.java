@@ -50,12 +50,12 @@ public class ConfirmedService extends Service {
                 case ReadProperty:
                     log.trace("Is ReadProperty message. hexString: {}", service.getUnprocessedHexString());
                     String readPropertyHexString = service.getUnprocessedHexString();
-                    configuration = buildReadPropertyRequest(readPropertyHexString);
+                    configuration = parseReadPropertyRequest(readPropertyHexString);
                     break;
                 case ConfirmedEventNotification:
                     log.trace("Is ConfirmedEventNotification message. hexString: {}", service.getUnprocessedHexString());
                     String confirmedEventHexString = service.getUnprocessedHexString();
-                    configuration = buildConfirmedEventNotification(confirmedEventHexString);
+                    configuration = parseConfirmedEventNotification(confirmedEventHexString);
                     break;
                 case AtomicReadFile:
                     log.trace("Ignoring for now: {}", confirmedServiceChoice);

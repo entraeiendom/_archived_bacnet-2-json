@@ -291,13 +291,13 @@ public class ConfigurationParser {
         return configuration;
     }
 
-    public static ConfigurationRequest buildReadPropertyRequest(String hexString) {
+    public static ConfigurationRequest parseReadPropertyRequest(String hexString) {
         ConfigurationRequest configuration = new ConfigurationRequest();
 
         return configuration;
     }
 
-    public static ConfigurationRequest buildConfirmedEventNotification(String confirmedEventHexString) {
+    public static ConfigurationRequest parseConfirmedEventNotification(String confirmedEventHexString) {
         ConfigurationRequest configuration = null;
         String objectName = null;
         OctetReader confirmedEventReader = new OctetReader(confirmedEventHexString);
