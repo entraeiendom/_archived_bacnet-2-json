@@ -27,7 +27,7 @@ public class ConfirmedService extends Service {
                 case WritePropertyMultiple:
                     log.trace("Is WritePropertyMultiple message. hexString: {}", service.getUnprocessedHexString());
                     String hexString = service.getUnprocessedHexString();
-                    configuration = buildWritePropertyMultipleRequest(hexString);
+                    configuration = parseWritePropertyMultipleRequest(hexString);
                     break;
                 /*
                 case WhoIs:

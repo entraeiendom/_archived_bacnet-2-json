@@ -279,7 +279,7 @@ public class ConfigurationParser {
         return decodeCharacterHexString(encodedHexString);
     }
 
-    public static ConfigurationRequest buildWritePropertyMultipleRequest(String hexString) {
+    public static ConfigurationRequest parseWritePropertyMultipleRequest(String hexString) {
         ConfigurationRequest configuration = null;
         //1. Object Identifier
         //2. List of bacnet property values
