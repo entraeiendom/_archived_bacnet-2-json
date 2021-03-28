@@ -87,4 +87,17 @@ class Bacnet2JsonTest {
                 .whenIgnoringPaths("observations[*].observedAt")
                 .isEqualTo(expected);
     }
+
+    @Test
+    void readPropertyMultipledComplexAck() {
+        String complexAckHexString = "810a0028010030010e0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f";
+        String expectedObjectId = "Device_8";
+        String expectedObjectName = "FWFCU";
+        String expectedProtocolVersion = "1";
+        String expectedProtocolRevision = "14";
+        String configurationRequestJson = Bacnet2Json.hexStringToJson(complexAckHexString);
+        log.trace("ConfigurationRequest: {}", configurationRequestJson);
+        assertNotNull(configurationRequestJson);
+
+    }
 }
