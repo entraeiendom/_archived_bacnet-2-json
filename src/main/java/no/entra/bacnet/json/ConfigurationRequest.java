@@ -2,7 +2,7 @@ package no.entra.bacnet.json;
 
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class ConfigurationRequest implements BacnetMessage {
     private String id;
     private Source source;
     private Map<String, String> properties = new HashMap<>();
-    private LocalDateTime observedAt;
+    private Instant observedAt;
 
     public ConfigurationRequest() {
 
@@ -34,7 +34,7 @@ public class ConfigurationRequest implements BacnetMessage {
     public ConfigurationRequest(String id, Source source) {
         this.id = id;
         this.source = source;
-        observedAt = LocalDateTime.now();
+        observedAt = Instant.now();
     }
 
     public String getId() {
@@ -53,11 +53,11 @@ public class ConfigurationRequest implements BacnetMessage {
         this.source = source;
     }
 
-    public LocalDateTime getObservedAt() {
+    public Instant getObservedAt() {
         return observedAt;
     }
 
-    public void setObservedAt(LocalDateTime observedAt) {
+    public void setObservedAt(Instant observedAt) {
         this.observedAt = observedAt;
     }
 
