@@ -104,7 +104,10 @@ class Bacnet2JsonTest {
     void emptyWhoIsBody() {
         String hexString = "810b000c0120ffff00ff1008";
 //        String hexString = "810b000c0120ffff00ff1008";
+        String expected = "{\"sender\":\"unknown\",\"service\":\"WhoIs\"}";
         String whoIs = Bacnet2Json.hexStringToJson(hexString);
         assertNotNull(whoIs);
+        assertThatJson(whoIs)
+                .isEqualTo(expected);
     }
 }
