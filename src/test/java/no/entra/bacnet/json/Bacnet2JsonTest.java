@@ -98,6 +98,13 @@ class Bacnet2JsonTest {
         String configurationRequestJson = Bacnet2Json.hexStringToJson(complexAckHexString);
         log.trace("ConfigurationRequest: {}", configurationRequestJson);
         assertNotNull(configurationRequestJson);
+    }
 
+    @Test
+    void emptyWhoIsBody() {
+        String hexString = "810b000c0120ffff00ff1008";
+//        String hexString = "810b000c0120ffff00ff1008";
+        String whoIs = Bacnet2Json.hexStringToJson(hexString);
+        assertNotNull(whoIs);
     }
 }

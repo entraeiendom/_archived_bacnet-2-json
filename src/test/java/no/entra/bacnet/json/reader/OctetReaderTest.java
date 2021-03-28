@@ -53,4 +53,11 @@ class OctetReaderTest {
         octetReader.next();
         assertEquals(expected, octetReader.unprocessedHexString());
     }
+
+    @Test
+    void bugFix() {
+        String hexString = "810b000c0120ffff00ff1008";
+        octetReader = new OctetReader(hexString);
+        assertNotNull(octetReader);
+    }
 }

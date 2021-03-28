@@ -37,32 +37,34 @@ public class ConfigurationParser {
         Integer rangeLowLimit = null;
         Integer rangeHighLimit = null;
         log.debug("whoisbody: {}", whoIsBody);
-        OctetReader whoHasReader = new OctetReader(whoIsBody);
-        Octet lowerLimitOctet = whoHasReader.next();
-        if (lowerLimitOctet.getFirstNibble() == LOWER_LIMIT_KEY) {
-            int numberOfOctets = mapWhoIsLength(lowerLimitOctet.getSecondNibble());
-            String lowerLimitHex = whoHasReader.next(numberOfOctets);
-            if (hasValue(lowerLimitHex)) {
-                rangeLowLimit = toInt(lowerLimitHex);
+        if (hasValue(whoIsBody)) {
+            OctetReader whoHasReader = new OctetReader(whoIsBody);
+            Octet lowerLimitOctet = whoHasReader.next();
+            if (lowerLimitOctet.getFirstNibble() == LOWER_LIMIT_KEY) {
+                int numberOfOctets = mapWhoIsLength(lowerLimitOctet.getSecondNibble());
+                String lowerLimitHex = whoHasReader.next(numberOfOctets);
+                if (hasValue(lowerLimitHex)) {
+                    rangeLowLimit = toInt(lowerLimitHex);
+                }
             }
-        }
-        Octet highLimitOctet = whoHasReader.next();
-        if (highLimitOctet.getFirstNibble() == HIGH_LIMIT_KEY) {
-            int numberOfOctets = mapWhoIsLength(highLimitOctet.getSecondNibble());
-            String highLimitHex = whoHasReader.next(numberOfOctets);
-            if (hasValue(highLimitHex)) {
-                rangeHighLimit = toInt(highLimitHex);
+            Octet highLimitOctet = whoHasReader.next();
+            if (highLimitOctet.getFirstNibble() == HIGH_LIMIT_KEY) {
+                int numberOfOctets = mapWhoIsLength(highLimitOctet.getSecondNibble());
+                String highLimitHex = whoHasReader.next(numberOfOctets);
+                if (hasValue(highLimitHex)) {
+                    rangeHighLimit = toInt(highLimitHex);
+                }
             }
-        }
 
-        if (rangeLowLimit != null || rangeHighLimit != null) {
-            configuration = new ConfigurationRequest("TODO", null);
-        }
-        if (rangeLowLimit != null) {
-            configuration.setProperty("DeviceInstanceRangeLowLimit", rangeLowLimit.toString());
-        }
-        if (rangeHighLimit != null) {
-            configuration.setProperty("DeviceInstanceRangeHighLimit", rangeHighLimit.toString());
+            if (rangeLowLimit != null || rangeHighLimit != null) {
+                configuration = new ConfigurationRequest("TODO", null);
+            }
+            if (rangeLowLimit != null) {
+                configuration.setProperty("DeviceInstanceRangeLowLimit", rangeLowLimit.toString());
+            }
+            if (rangeHighLimit != null) {
+                configuration.setProperty("DeviceInstanceRangeHighLimit", rangeHighLimit.toString());
+            }
         }
 
         return configuration;
