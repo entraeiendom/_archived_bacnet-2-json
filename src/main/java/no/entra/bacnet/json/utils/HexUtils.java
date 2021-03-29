@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 
 import static no.entra.bacnet.json.Constants.ENCODING_UCS_2;
+import static no.entra.bacnet.json.Constants.ENCODING_UTF_8;
 import static no.entra.bacnet.json.utils.HexByteConverter.hexStringToByteArray;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -27,6 +28,9 @@ public class HexUtils {
         if (encoding.equals(ENCODING_UCS_2)) {
             byte[] bytes = hexStringToByteArray(hexString);
             value = new String(bytes, StandardCharsets.UTF_16);
+        } else if (encoding.equals(ENCODING_UTF_8)) {
+            byte[] bytes = hexStringToByteArray(hexString);
+            value = new String(bytes, StandardCharsets.UTF_8);
         }
         return value;
     }

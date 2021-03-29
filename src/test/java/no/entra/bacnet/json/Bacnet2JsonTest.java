@@ -120,4 +120,32 @@ class Bacnet2JsonTest {
         assertThatJson(readPropertyJson).isEqualTo(expected);
 
     }
+
+    @Test
+    void readPropertyMultipleObjectNameProtocolVersionRevision() {
+        String hexString = "810a0028010030010e0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f";
+        String expected = "{\n" +
+                "  \"invokeId\": 1,\n" +
+                "  \"sender\": \"unknown\",\n" +
+                "  \"service\": \"ReadPropertyMultiple\",\n" +
+                "  \"observation\": {\n" +
+                "    \"observedAt\": \"2021-03-29T18:11:32.703812\",\n" +
+                "    \"name\": \"FWFCU\",\n" +
+//                "    \"protocolVersion\": \"1\",\n" +
+//                "    \"protocolRevision\": \"14\",\n" +
+                "    \"source\": {\n" +
+                "      \"deviceId\": \"TODO\",\n" +
+                "      \"objectId\": \"Device_8\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+        String readPropertiesResponseJson = Bacnet2Json.hexStringToJson(hexString);
+        assertNotNull(readPropertiesResponseJson);
+        //ObjectName FWFCU
+        assertThatJson(readPropertiesResponseJson)
+                .whenIgnoringPaths("$.observation.observedAt")
+//                .whenIgnoringPaths("$.observation.protocolVersion")
+//                .whenIgnoringPaths("observations[*].protocolRevision")
+                .isEqualTo(expected);
+    }
 }

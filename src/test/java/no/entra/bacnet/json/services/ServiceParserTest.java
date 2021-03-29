@@ -129,5 +129,6 @@ class ServiceParserTest {
         assertEquals(PduType.ComplexAck, service.getPduType());
         assertEquals(1, service.getInvokeId());
         assertEquals(ConfirmedServiceChoice.ReadPropertyMultiple, service.getServiceChoice());
+        assertEquals("0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f",service.getUnprocessedHexString());
     }
 }

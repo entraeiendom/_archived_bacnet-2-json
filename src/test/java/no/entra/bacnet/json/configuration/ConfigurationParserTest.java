@@ -6,7 +6,9 @@ import no.entra.bacnet.json.bvlc.BvlcResult;
 import no.entra.bacnet.json.npdu.NpduParser;
 import no.entra.bacnet.json.npdu.NpduResult;
 import no.entra.bacnet.json.objects.ObjectType;
+import no.entra.bacnet.json.objects.PduType;
 import no.entra.bacnet.json.objects.Segmentation;
+import no.entra.bacnet.json.services.ConfirmedServiceChoice;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
 import org.junit.jupiter.api.Test;
@@ -125,6 +127,21 @@ class ConfigurationParserTest {
         assertNotNull(npduResult);
         String apduHexString = npduResult.getUnprocessedHexString();
         return apduHexString;
+    }
+
+    @Test
+    void readPropertiesObjectNameProtocolVersionRevision() {
+        String hexString = "810a0028010030010e0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f";
+        BvlcResult bvlcResult = BvlcParser.parse(hexString);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        String apduHexString = npduResult.getUnprocessedHexString();
+        Service service = ServiceParser.fromApduHexString(apduHexString);
+        assertNotNull(service);
+        assertEquals(PduType.ComplexAck, service.getPduType());
+        assertEquals(1, service.getInvokeId());
+        assertEquals(ConfirmedServiceChoice.ReadPropertyMultiple, service.getServiceChoice());
+        assertEquals("0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f",service.getUnprocessedHexString());
+
     }
 
 

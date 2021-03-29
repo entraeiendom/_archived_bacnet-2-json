@@ -84,4 +84,12 @@ class ReadAccessResultTest {
         assertNotNull(result);
         assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getProperty().getValue());
     }
+
+    @Test
+    void buildReadPropertyMultipleObjectNameProtocolVersionRevision() {
+        String hexString = "294d4e75060046574643554f29624e21014f298b4e210e4f1f";
+        PropertyResult result = ReadAccessResult.parseProperty(hexString);
+        assertNotNull(result);
+        assertEquals("FWFCU", result.getProperty().getValue());
+    }
 }
