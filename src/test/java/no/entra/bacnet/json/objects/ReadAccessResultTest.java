@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import static no.entra.bacnet.json.objects.PropertyIdentifier.*;
+import static no.entra.bacnet.json.objects.ReadAccessResult.parseProperty;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReadAccessResultTest {
@@ -71,7 +72,7 @@ class ReadAccessResultTest {
     @Test
     void buildUnitsTest() {
         String unitsHexString = "29754e913e4f";
-        PropertyResult result = ReadAccessResult.parseProperty(unitsHexString);
+        PropertyResult result = parseProperty(unitsHexString);
         assertNotNull(result);
         assertEquals("DegreesCelcius", result.getProperty().getValue());
 
@@ -80,7 +81,7 @@ class ReadAccessResultTest {
     @Test
     void buildObjectNameTest() {
         String objectNameHexString = "294d4e7549040053004f004b005000310036002d004e004100450034002f004600430042002e003400330034005f003100300031002d0031004f0055003000300031002e005200540030003000314f";
-        PropertyResult result = ReadAccessResult.parseProperty(objectNameHexString);
+        PropertyResult result = parseProperty(objectNameHexString);
         assertNotNull(result);
         assertEquals("SOKP16-NAE4/FCB.434_101-1OU001.RT001", result.getProperty().getValue());
     }
@@ -88,8 +89,22 @@ class ReadAccessResultTest {
     @Test
     void buildReadPropertyMultipleObjectNameProtocolVersionRevision() {
         String hexString = "294d4e75060046574643554f29624e21014f298b4e210e4f1f";
-        PropertyResult result = ReadAccessResult.parseProperty(hexString);
-        assertNotNull(result);
-        assertEquals("FWFCU", result.getProperty().getValue());
+        String unprocessedHexString = hexString; //listReader.unprocessedHexString();
+        while (unprocessedHexString != null && !unprocessedHexString.isEmpty()) {
+            PropertyResult propertyResult = parseProperty(unprocessedHexString);
+            if (propertyResult != null ) {
+                if (propertyResult.getProperty() != null) {
+                    Property property = propertyResult.getProperty();
+                    String key = property.getKey();
+                    Object value = property.getValue();
+                    accessResult.setResultByKey(key, value);
+                }
+                unprocessedHexString = propertyResult.getUnprocessedHexString();
+            }
+        }
+//        PropertyResult result = parseProperty(hexString);
+        assertEquals("FWFCU", accessResult.getResultByKey("ObjectName"));
+        assertEquals(Integer.valueOf(1), accessResult.getResultByKey("ProtocolVersion"));
+        assertEquals(Integer.valueOf(14), accessResult.getResultByKey("ProtocolRevision"));
     }
 }

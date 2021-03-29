@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 
 import static java.lang.Integer.parseInt;
+import static no.entra.bacnet.json.utils.HexUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReadAccessResult {
@@ -19,6 +20,7 @@ public class ReadAccessResult {
     public static final String LIST_START_HEX = "1e";
     public static final String LIST_END_HEX = "1f";
     public static final char ExtendedValue = '5';
+    public static final char UnsignedInteger = '2';
     public static final String PRESENT_VALUE_HEX = ExtendedValue + "5";
     private ObjectId objectId;
     private HashMap<String, Object> results = new HashMap<>();
@@ -201,6 +203,20 @@ public class ReadAccessResult {
                         property = new Property(presentValuePid.name(), objectName);
                     }
 
+                } else if (presentValuePid == PropertyIdentifier.ProtocolVersion || presentValuePid == PropertyIdentifier.ProtocolRevision) {
+                    log.debug("Find ProtocolVersion from: {}", propertyReader.unprocessedHexString());
+                    int value = -1;
+                    Octet applicationTag = propertyReader.next();
+                    if (applicationTag.getFirstNibble() == UnsignedInteger) {
+                        log.debug("Expecting Integer.");
+                        char length = applicationTag.getSecondNibble();
+                        int numberOfOctets = toInt(length);
+                        String valueOctets = propertyReader.next(numberOfOctets);
+                        value = toInt(valueOctets);
+                    }
+                    if (value > -1) {
+                        property = new Property(presentValuePid.name(), Integer.valueOf(value));
+                    }
                 } else {
                     log.debug("PresentValuePid: {}", presentValuePid);
                     throw new EntraUnknownOperationException("I do not know how to parse PropertyIdentifier: " + presentValuePid + ". UnprocessedHexString: " + propertyReader.unprocessedHexString());
