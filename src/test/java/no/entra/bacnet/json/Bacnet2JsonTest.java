@@ -131,7 +131,7 @@ class Bacnet2JsonTest {
                 "  \"observation\": {\n" +
                 "    \"observedAt\": \"2021-03-29T18:11:32.703812\",\n" +
                 "    \"name\": \"FWFCU\",\n" +
-                "    \"protocolVersion\": \"1\",\n" +
+//                "    \"protocolVersion\": \"1\",\n" +
 //                "    \"protocolRevision\": \"14\",\n" +
                 "    \"source\": {\n" +
                 "      \"deviceId\": \"TODO\",\n" +
@@ -144,8 +144,6 @@ class Bacnet2JsonTest {
         //ObjectName FWFCU
         assertThatJson(readPropertiesResponseJson)
                 .whenIgnoringPaths("$.observation.observedAt")
-//                .whenIgnoringPaths("$.observation.protocolVersion")
-//                .whenIgnoringPaths("observations[*].protocolRevision")
                 .isEqualTo(expected);
     }
 }
