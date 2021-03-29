@@ -91,7 +91,11 @@ public class Bacnet2Json {
                 String unprocessedHexString = service.getUnprocessedHexString();
                 Observation observation = BacNetParser.buildObservation(unprocessedHexString);
                 observationJson = buildObservationJson(bvlc, npdu, observation);
-                bacnetJson.put(OBSERVATION, observationJson);
+                if (service.getServiceChoice() == ConfirmedServiceChoice.ReadPropertyMultiple) {
+                    bacnetJson.put(CONFIGURATION_REQUEST, observationJson);
+                } else {
+                    bacnetJson.put(OBSERVATION, observationJson);
+                }
                 break;
             case ConfirmedRequest:
                 BacnetMessage confirmedRequest = tryToUnderstandConfirmedRequest(service);
