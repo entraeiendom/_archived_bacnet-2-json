@@ -117,4 +117,17 @@ class ServiceParserTest {
         assertEquals(31, service.getInvokeId());
         assertEquals(ConfirmedServiceChoice.ReadProperty, service.getServiceChoice());
     }
+
+    @Test
+    void readPropertiesObjectNameProtocolVersionRevision() {
+        String hexString = "810a0028010030010e0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f";
+        BvlcResult bvlcResult = BvlcParser.parse(hexString);
+        NpduResult npduResult = NpduParser.parse(bvlcResult.getUnprocessedHexString());
+        String apduHexString = npduResult.getUnprocessedHexString();
+        Service service = ServiceParser.fromApduHexString(apduHexString);
+        assertNotNull(service);
+        assertEquals(PduType.ComplexAck, service.getPduType());
+        assertEquals(1, service.getInvokeId());
+        assertEquals(ConfirmedServiceChoice.ReadPropertyMultiple, service.getServiceChoice());
+    }
 }
