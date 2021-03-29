@@ -39,6 +39,7 @@ public class Bacnet2Json {
     public static final String GATEWAY = "gateway";
     public static final String GATEWAY_DEVICE_ID = "deviceId";
     public static final String GATEWAY_INSTANCE_NUMBER = "instanceNumber";
+    public static final String INVOKE_ID = "invokeId";
 
     /**
      * Parse BackNet message to a more conventional IoT Json format.
@@ -74,6 +75,10 @@ public class Bacnet2Json {
         }
         if (bacnetJson == null) {
             bacnetJson = new JSONObject();
+        }
+        Integer invokeId = service.getInvokeId();
+        if (invokeId != null) {
+            bacnetJson.put(INVOKE_ID, service.getInvokeId());
         }
         bacnetJson.put(SERVICE, service.getServiceChoice());
         Map<String, String> observationMap = new HashMap<>();

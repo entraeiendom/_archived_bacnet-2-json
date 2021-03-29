@@ -110,4 +110,14 @@ class Bacnet2JsonTest {
         assertThatJson(whoIs)
                 .isEqualTo(expected);
     }
+
+    @Test
+    void findInvokeId() {
+        String readPropertyAckHexString = "810a001a010030000c0c020003e919613e850600fffbe83cfb3f";
+        String expected = "{\"invokeId\":0,\"sender\":\"unknown\",\"service\":\"ReadProperty\"}";
+        String readPropertyJson = Bacnet2Json.hexStringToJson(readPropertyAckHexString);
+        assertNotNull(readPropertyJson);
+        assertThatJson(readPropertyJson).isEqualTo(expected);
+
+    }
 }
