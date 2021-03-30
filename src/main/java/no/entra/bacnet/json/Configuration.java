@@ -1,8 +1,9 @@
 package no.entra.bacnet.json;
 
+import no.entra.bacnet.json.utils.DateTimeHelper;
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class Configuration implements BacnetMessage {
     private String id;
     private Source source;
     private Map<String, String> properties = new HashMap<>();
-    private LocalDateTime observedAt;
+    private Instant observedAt;
 
     private Configuration() {
 
@@ -34,7 +35,7 @@ public class Configuration implements BacnetMessage {
     public Configuration(String id, Source source) {
         this.id = id;
         this.source = source;
-        observedAt = LocalDateTime.now();
+        observedAt = Instant.now();
     }
 
     public String getId() {
@@ -53,11 +54,11 @@ public class Configuration implements BacnetMessage {
         this.source = source;
     }
 
-    public LocalDateTime getObservedAt() {
+    public Instant getObservedAt() {
         return observedAt;
     }
 
-    public void setObservedAt(LocalDateTime observedAt) {
+    public void setObservedAt(Instant observedAt) {
         this.observedAt = observedAt;
     }
 
@@ -92,7 +93,7 @@ public class Configuration implements BacnetMessage {
         json.put(ID, id);
         json.put(SOURCE, source);
         json.put(PROPERTIES, properties);
-        json.put(OBSERVED_AT, observedAt);
+        json.put(OBSERVED_AT, DateTimeHelper.iso8601DateTime(observedAt));
         return json;
     }
 }

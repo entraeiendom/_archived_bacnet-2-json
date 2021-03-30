@@ -12,9 +12,9 @@ import no.entra.bacnet.json.parser.BacNetParser;
 import no.entra.bacnet.json.services.ConfirmedServiceChoice;
 import no.entra.bacnet.json.services.Service;
 import no.entra.bacnet.json.services.ServiceParser;
+import no.entra.bacnet.json.utils.DateTimeHelper;
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +82,7 @@ public class Bacnet2Json {
         }
         bacnetJson.put(SERVICE, service.getServiceChoice());
         Map<String, String> observationMap = new HashMap<>();
-        observationMap.put(OBSERVED_AT, LocalDateTime.now().toString());
+        observationMap.put(OBSERVED_AT, DateTimeHelper.iso8601DateTime());
         JSONObject observationJson = new JSONObject(observationMap);
         PduType pduType = service.getPduType();
 

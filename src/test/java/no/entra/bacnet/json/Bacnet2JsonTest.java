@@ -1,11 +1,15 @@
 package no.entra.bacnet.json;
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
+
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class Bacnet2JsonTest {
@@ -162,5 +166,24 @@ class Bacnet2JsonTest {
         assertThatJson(readPropertiesResponseJson)
                 .whenIgnoringPaths("$.configurationRequest.observedAt")
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void verifyDateTimeISO8601Format() {
+        String hexString = "810a0028010030010e0c020000081e294d4e75060046574643554f29624e21014f298b4e210e4f1f";
+        String json = Bacnet2Json.hexStringToJson(hexString);
+        try {
+            String observedAt = JsonPath.read(json, "$.configurationRequest.observedAt");
+            Instant observedAtInstant = Instant.parse(observedAt);
+            assertNotNull(observedAtInstant);
+//            String iso8601TimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+//            DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern(iso8601TimeFormat);
+            ZonedDateTime localDateTime = ZonedDateTime.parse(observedAt);
+            assertNotNull(localDateTime);
+            assertEquals( 24, observedAt.length(), "Nanos should not be included");
+        } catch (Exception e) {
+            log.info("Failed to parse json \n{}", json, e);
+            fail("Failed to parse json");
+        }
     }
 }

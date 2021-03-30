@@ -2,7 +2,9 @@ package no.entra.bacnet.json;
 
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
+import static no.entra.bacnet.json.utils.DateTimeHelper.iso8601DateTime;
 
 /**
  * "id": "uuid when known",
@@ -23,7 +25,7 @@ public class Observation implements BacnetMessage {
     private String unit;
     private String name;
     private String description;
-    private LocalDateTime observedAt;
+    private Instant observedAt;
 
     private Observation() {
 
@@ -48,7 +50,7 @@ public class Observation implements BacnetMessage {
         this.id = id;
         this.source = source;
         this.value = value;
-        observedAt = LocalDateTime.now();
+        observedAt = Instant.now();
     }
 
     public Observation(String id, Source source, Object value, String name) {
@@ -104,11 +106,11 @@ public class Observation implements BacnetMessage {
         this.description = description;
     }
 
-    public LocalDateTime getObservedAt() {
+    public Instant getObservedAt() {
         return observedAt;
     }
 
-    public void setObservedAt(LocalDateTime observedAt) {
+    public void setObservedAt(Instant observedAt) {
         this.observedAt = observedAt;
     }
 
@@ -133,7 +135,7 @@ public class Observation implements BacnetMessage {
         json.put(UNIT, unit);
         json.put(NAME, name);
         json.put(DESCRIPTION, description);
-        json.put(OBSERVED_AT, observedAt);
+        json.put(OBSERVED_AT, iso8601DateTime(observedAt));
 
         return json.toString();
     }
@@ -152,7 +154,7 @@ public class Observation implements BacnetMessage {
         json.put(UNIT, getUnit());
         json.put(NAME, getName());
         json.put(DESCRIPTION, getDescription());
-        json.put(OBSERVED_AT, getObservedAt());
+        json.put(OBSERVED_AT, iso8601DateTime(getObservedAt()));
         return json;
     }
 }

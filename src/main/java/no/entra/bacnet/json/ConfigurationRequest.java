@@ -1,5 +1,6 @@
 package no.entra.bacnet.json;
 
+import no.entra.bacnet.json.utils.DateTimeHelper;
 import org.json.JSONObject;
 
 import java.time.Instant;
@@ -93,7 +94,7 @@ public class ConfigurationRequest implements BacnetMessage {
         json.put(ID, id);
         json.put(SOURCE, source);
         json.put(PROPERTIES, properties);
-        json.put(OBSERVED_AT, observedAt);
+        json.put(OBSERVED_AT, DateTimeHelper.iso8601DateTime(observedAt));
         return json;
     }
 }
