@@ -12,6 +12,7 @@ import static no.entra.bacnet.json.utils.HexMatcher.isValidHex;
  * Enable readaing a HexString Octet by Octet.
  * An Octet has two nibbles.
  * Each nibble is one Hexadecimal character.
+ * @deprecated Use <a href="https://github.com/entraeiendom/bacnet-typelib/blob/main/src/main/java/no/entra/bacnet/internal/octet/OctetReader.java">OctetReader in bacnet-typelib</a>
  */
 public class OctetReader {
 
